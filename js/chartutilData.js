@@ -4,6 +4,7 @@ var areaData=[
             "seriesReg":"{{monitor_host}}:{{job}}",
             "yAxisUnit":"容量-KiB",
             "xAxisUnit":"-",
+            "zAxisUnit":"-",
             "xAxisType":"dataTime",
             "type":"areachart",
             "title":"内存大小"
@@ -73,6 +74,7 @@ var ringData=[
             "type":"piechartring",
             "yAxisUnit":"时间-KiB",
             "xAxisUnit":"-",
+            "zAxisUnit":"-",
             "xAxisType":"",
             "title":"性能指标",
             "outerData":[['健康','20'],['良好',50],['一般',30]]
@@ -116,6 +118,7 @@ var pieData=[
             "type":"piechart",
             "yAxisUnit":"时间-用户",
             "xAxisUnit":"-",
+            "zAxisUnit":"-",
             "xAxisType":"",
             "title":"2018 年浏览器市场份额",
             "drillData":[]
@@ -163,6 +166,7 @@ var pieDrillData= [
             "type":"piechart",
             "yAxisUnit":"时间-辆",
             "xAxisUnit":"-",
+            "zAxisUnit":"-",
             "xAxisType":"",
             "title":"2018 年浏览器市场份额",
             "drillData": [{
@@ -264,6 +268,7 @@ var lineData=[
             "seriesReg":"{{monitor_host}}:{{job}}",
             "yAxisUnit":"时间-KiB",
             "xAxisUnit":"-",
+            "zAxisUnit":"-",
             "xAxisType":"dataTime",
             "type":"linechart",
             "title":"运行时间"
@@ -307,6 +312,7 @@ var columnData=[
             "seriesReg":"{{people_name}}",
             "yAxisUnit":"数量-个",
             "xAxisUnit":"-",
+            "zAxisUnit":"-",
             "xAxisType":"",
             "type":"columnchart",
             "title":"水果分布柱形图"
@@ -373,6 +379,7 @@ var barData=[
             "seriesReg":"{{people_name}}",
             "yAxisUnit":"数量-个",
             "xAxisUnit":"-",
+            "zAxisUnit":"-",
             "xAxisType":"",
             "type":"barchart",
             "title":"水果分布条形图"
@@ -439,6 +446,7 @@ var scatterData=[
             "seriesReg":"{{people_name}}",
             "yAxisUnit":"体重-kg",
             "xAxisUnit":"身高-cm",
+            "zAxisUnit":"-",
             "xAxisType":"data",
             "type":"scatterchart",
             "title":"人按性别划分的身高和体重分布图"
@@ -572,7 +580,6 @@ var scatterData=[
             }
         ]
     }
-
 ];
 var areaPerData=[
     {
@@ -580,6 +587,7 @@ var areaPerData=[
             "seriesReg":"{{monitor_host}}:{{job}}",
             "yAxisUnit":"时间-%",
             "xAxisUnit":"-",
+            "zAxisUnit":"-",
             "xAxisType":"dataTime",
             "type":"areachartpercent",
             "title":"运行时间"
@@ -620,6 +628,7 @@ var areaPerData=[
             "seriesReg":"{{monitor_env}}:{{monitor_port}}",
             "yAxisUnit":"时间-%",
             "xAxisUnit":"-",
+            "zAxisUnit":"-",
             "xAxisType":"",
             "type":"areachart",
             "title":"运行时间"
@@ -642,6 +651,7 @@ var areaNorData=[
             "seriesReg":"{{monitor_host}}:{{job}}",
             "yAxisUnit":"时间-%",
             "xAxisUnit":"-",
+            "zAxisUnit":"-",
             "xAxisType":"dataTime",
             "type":"areachartnormal",
             "title":"运行时间"
@@ -704,6 +714,7 @@ var splineData=[
             "seriesReg":"{{monitor_host}}:{{job}}",
             "yAxisUnit":"时间-KiB",
             "xAxisUnit":"-",
+            "zAxisUnit":"-",
             "xAxisType":"dataTime",
             "type":"splinechart",
             "title":"运行时间"
@@ -747,6 +758,7 @@ var areaSplineData=[
             "seriesReg":"{{monitor_host}}:{{job}}",
             "yAxisUnit":"时间-KiB",
             "xAxisUnit":"-",
+            "zAxisUnit":"-",
             "xAxisType":"dataTime",
             "type":"areasplinechart",
             "title":"运行时间"
@@ -783,4 +795,65 @@ var areaSplineData=[
         ]
         
     }
+];
+var bubbleData=[
+    {
+        "label":{
+            "seriesReg":"{{people_name}}",
+            "yAxisUnit":"体重-cm",
+            "xAxisUnit":"身高-KiB",
+            "zAxisUnit":"数量-KiB",
+            "xAxisType":"",
+            "type":"bubblechart",
+            "title":"人按性别划分的身高和体重分布图"
+        },
+        "result":[
+            {
+                "seriesAttr":{
+                    "monitor_host":"172.16.26.41",
+                    "instance":"172.16.26.41:9990",
+                    "monitor_env":"kafka41",
+                    "monitor_port":"9092",
+                    "monitor_cluster":"blogic-kafka-cluster",
+                    "job":"kafka_jmx",
+                    "monitor_type":"MQ",
+                    "people_name":"数据列 1"
+                },
+                "values":[
+                    [97, 36, 79], [94, 74, 60], [68, 76, 58], [64, 87, 56], [68, 27, 73], [74, 99, 42], [7, 93, 87], [51, 69, 40], [38, 23, 33], [57, 86, 31]
+                ]
+            },
+            {
+                "seriesAttr":{                 
+                    "monitor_host":"172.16.3.117",
+                    "instance":"172.16.3.117:9990",
+                    "monitor_env":"kafka117",
+                    "monitor_port":"9092",
+                    "monitor_cluster":"blogic-kafka-cluster",
+                    "job":"kafka_jmx",
+                    "monitor_type":"MQ",
+                    "people_name":"数据列 2"
+                },
+                "values":[
+                    [25, 10, 87], [2, 75, 59], [11, 54, 8], [86, 55, 93], [5, 3, 58], [90, 63, 44], [91, 33, 17], [97, 3, 56], [15, 67, 48], [54, 25, 81]
+                ]
+            },
+            {
+                "seriesAttr":{                 
+                    "monitor_host":"172.16.3.117",
+                    "instance":"172.16.3.117:9990",
+                    "monitor_env":"kafka117",
+                    "monitor_port":"9092",
+                    "monitor_cluster":"blogic-kafka-cluster",
+                    "job":"kafka_jmx",
+                    "monitor_type":"MQ",
+                    "people_name":"数据列 3"
+                },
+                "values":[
+                    [47, 47, 21], [20, 12, 4], [6, 76, 91], [38, 30, 60], [57, 98, 64], [61, 17, 80], [83, 60, 13], [67, 78, 75], [64, 12, 10], [30, 77, 82]
+                ]
+            }
+        ]
+    }
+
 ];
