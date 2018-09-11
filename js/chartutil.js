@@ -30,6 +30,12 @@ var zAxisUnit;
                 fontSize: "12px" ,
                 fontWeight:"normal"
             },
+            stackLabels: {
+                enabled: true,
+                color: "contrast",
+                fontSize: "11px",
+                fontWeight: "bold"
+            },
             dataLabels: {
                 enabled: true,
                 color: "contrast",
@@ -127,6 +133,14 @@ var zAxisUnit;
                         color: options.labels.color, 
                         fontSize: options.labels.fontSize ,
                         fontWeight:options.labels.fontWeight
+                    }
+                },
+                stackLabels: {
+                    enabled: options.stackLabels.enabled,
+                    style: {
+                        color: options.stackLabels.color, 
+                        fontSize: options.stackLabels.fontSize ,
+                        fontWeight:options.stackLabels.fontWeight
                     }
                 }
             },
@@ -266,7 +280,12 @@ var zAxisUnit;
                 defaultChart["plotOptions"]={
                     pie: {
                         dataLabels: {
-                            enabled: false
+                            enabled: false,
+                            style: {
+                                color: options.dataLabels.color, 
+                                fontSize: options.dataLabels.fontSize ,
+                                fontWeight:options.dataLabels.fontWeight
+                            }
                         },
                         startAngle: -110, // 圆环的开始角度
                         endAngle: 110,    // 圆环的结束角度
@@ -301,6 +320,8 @@ var zAxisUnit;
                 drilldown(defaultChart);
                 break;
             case "columnchart":
+            case "columnchartpercent":
+            case "columnchartnormal":
                 defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
                 var yAxis={
                     labels:{
@@ -313,15 +334,23 @@ var zAxisUnit;
                 defaultChart["tooltip"]["headerFormat"]='<span>{point.key}</span><br/>';
                 defaultChart["plotOptions"]={
                     column: {
+                        stacking: data[0].label.type.split("chart")[1],
                         dataLabels: {
                             enabled: options.dataLabels.enabled,
-                            formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],false,data[0].label.type,true)
+                            formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],false,data[0].label.type,true),
+                            style: {
+                                color: options.dataLabels.color, 
+                                fontSize: options.dataLabels.fontSize ,
+                                fontWeight:options.dataLabels.fontWeight
+                            }
                         },
                         cursor: options.cursor
                     }
                 }
                 break;
             case "barchart":
+            case "barchartpercent":
+            case "barchartnormal":
                 defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
                 var yAxis={
                     title: {
@@ -338,9 +367,15 @@ var zAxisUnit;
                 defaultChart["tooltip"]["headerFormat"]='<span>{point.key}</span><br/>';
                 defaultChart["plotOptions"]={
                     bar: {
+                        stacking: data[0].label.type.split("chart")[1],
                         dataLabels: {
                             enabled: options.dataLabels.enabled,
-                            formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],false,data[0].label.type,true)
+                            formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],false,data[0].label.type,true),
+                            style: {
+                                color: options.dataLabels.color, 
+                                fontSize: options.dataLabels.fontSize ,
+                                fontWeight:options.dataLabels.fontWeight
+                            }
                         },
                         cursor: options.cursor
                     }
@@ -480,7 +515,11 @@ var parseData=function(data){
             }
             break;
         case "columnchart":
+        case "columnchartpercent":
+        case "columnchartnormal":
         case "barchart":
+        case "barchartpercent":
+        case "barchartnormal":
             data.map(function(batchData){
                 for(var oneDataResult of batchData.result){
                     oneDataResult.values.map(function(point){
@@ -579,6 +618,10 @@ function formatterFun(xUnit,yUnit,zUnit,tooltipBoolean,type,dataLabelsBoolean,ou
                 return '<span style="color: '+ this.series.color + '">'+this.x+xUnit+"  "+pointY+'</span> ';
             }else if(type=="bubblechart"){
                 return '<span style="color: '+ this.series.color + '">('+this.x+xUnit+","+pointY+")"+"  大小:"+pointZ+'</span> ';
+            }else if(type=="columnchartpercent"||type=="areachartpercent"||type=="barchartpercent"){
+                return '<span style="color: '+ this.series.color + '">\u25CF'+this.series.name+'</span> '+': <b>'+ decimal(Number(this.percentage))+'%'+'('+pointY+')</b><br/>'
+            }else if(type=="columnchartnormal"||type=="areachartnormal"||type=="barchartnormal"){
+                return '<span style="color: '+ this.series.color + '">\u25CF'+this.series.name+'</span> '+': <b>'+ pointY+'('+decimal(Number(this.percentage))+'%)</b><br/>'
             }else{
                 return '<span style="color: '+ this.series.color + '">\u25CF'+this.series.name+'</span> '+': <b>'+ pointY+'</b><br/>'
             }
@@ -643,6 +686,9 @@ function formatterFun(xUnit,yUnit,zUnit,tooltipBoolean,type,dataLabelsBoolean,ou
     if(tooltipBoolean){
         return pointFormat;
     }else{
+        if(type=="columnchartpercent"||type=="areachartpercent"||type=="barchartpercent"){
+            yUnit="%";
+        }
         if(yUnit=="KiB/S"){
             return formatterKiBs;
         }else if(yUnit=="KiB"){

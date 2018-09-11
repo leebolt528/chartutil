@@ -285,7 +285,7 @@ var lineData=[
                     "monitor_type":"MQ"
                 },
                 "values":[
-                    ["1536029467","486132.72"],["1536029468.5","486132.72"],["1536029765.5","775202.72"],["1536029767","775202.72"]
+                    ["1536029467","486132.72"],["1536029468.5","486132.72"],["1536029600.5","486132.72"],["1536029765.5","775202.72"],["1536029767","775202.72"]
                 ]
             },
             {
@@ -585,7 +585,7 @@ var areaPerData=[
     {
         "label":{
             "seriesReg":"{{monitor_host}}:{{job}}",
-            "yAxisUnit":"时间-%",
+            "yAxisUnit":"时间-KiB",
             "xAxisUnit":"-",
             "zAxisUnit":"-",
             "xAxisType":"dataTime",
@@ -626,7 +626,7 @@ var areaPerData=[
      {
         "label":{
             "seriesReg":"{{monitor_env}}:{{monitor_port}}",
-            "yAxisUnit":"时间-%",
+            "yAxisUnit":"时间-KiB",
             "xAxisUnit":"-",
             "zAxisUnit":"-",
             "xAxisType":"",
@@ -649,7 +649,7 @@ var areaNorData=[
     {
         "label":{
             "seriesReg":"{{monitor_host}}:{{job}}",
-            "yAxisUnit":"时间-%",
+            "yAxisUnit":"时间-KiB",
             "xAxisUnit":"-",
             "zAxisUnit":"-",
             "xAxisType":"dataTime",
@@ -690,7 +690,7 @@ var areaNorData=[
      {
         "label":{
             "seriesReg":"{{monitor_env}}:{{monitor_port}}",
-            "yAxisUnit":"时间-%",
+            "yAxisUnit":"时间-KiB",
             "xAxisUnit":"-",
             "xAxisType":"",
             "type":"areachart",
@@ -856,4 +856,272 @@ var bubbleData=[
         ]
     }
 
+];
+var columnPerData=[
+    {
+        "label":{
+            "seriesReg":"{{people_name}}",
+            "yAxisUnit":"数量-框",
+            "xAxisUnit":"-",
+            "zAxisUnit":"-",
+            "xAxisType":"",
+            "type":"columnchartpercent",
+            "title":"水果分布柱形图"
+        },
+        "result":[
+            {
+                "seriesAttr":{
+                    "monitor_host":"172.16.26.41",
+                    "instance":"172.16.26.41:9990",
+                    "monitor_env":"kafka41",
+                    "monitor_port":"9092",
+                    "monitor_cluster":"blogic-kafka-cluster",
+                    "job":"kafka_jmx",
+                    "monitor_type":"MQ",
+                    "people_name":"小明"
+                },
+                "values":[['苹果',699],['橘子',344], ['梨',090], ['葡萄',700], ['香蕉',2000]]
+            },
+            {
+                "seriesAttr":{                 
+                    "monitor_host":"172.16.3.117",
+                    "instance":"172.16.3.117:9990",
+                    "monitor_env":"kafka117",
+                    "monitor_port":"9092",
+                    "monitor_cluster":"blogic-kafka-cluster",
+                    "job":"kafka_jmx",
+                    "monitor_type":"MQ",
+                    "people_name":"小红"
+                },
+                "values":[['苹果',2060],['橘子',1555], ['梨',300], ['葡萄',2000], ['香蕉',100]]
+            }
+        ]
+        
+    },
+     {
+        "label":{
+            "seriesReg":"{{people_name}}",
+            "yAxisUnit":"数量-框",
+            "xAxisUnit":"-",
+            "xAxisType":"",
+            "type":"columnchartpercent",
+            "title":"包含负值的柱形图"
+        },
+        "result":[
+            {
+                "seriesAttr":{
+                    "monitor_host":"172.16.26.41",
+                    "instance":"172.16.26.41:9990",
+                    "monitor_env":"kafka41",
+                    "monitor_port":"9092",
+                    "monitor_cluster":"blogic-kafka-cluster",
+                    "job":"kafka_jmx",
+                    "monitor_type":"MQ",
+                    "people_name":"小王"
+                },
+                "values":[['苹果',999],['橘子',555], ['梨',795], ['葡萄',2787], ['香蕉',545]]
+            }
+        ]
+    }
+];
+var columnNorData=[
+    {
+        "label":{
+            "seriesReg":"{{people_name}}",
+            "yAxisUnit":"数量-框",
+            "xAxisUnit":"-",
+            "zAxisUnit":"-",
+            "xAxisType":"",
+            "type":"columnchartnormal",
+            "title":"水果分布柱形图"
+        },
+        "result":[
+            {
+                "seriesAttr":{
+                    "monitor_host":"172.16.26.41",
+                    "instance":"172.16.26.41:9990",
+                    "monitor_env":"kafka41",
+                    "monitor_port":"9092",
+                    "monitor_cluster":"blogic-kafka-cluster",
+                    "job":"kafka_jmx",
+                    "monitor_type":"MQ",
+                    "people_name":"小明"
+                },
+                "values":[['苹果',699],['橘子',344], ['梨',490], ['葡萄',700], ['香蕉',200]]
+            },
+            {
+                "seriesAttr":{                 
+                    "monitor_host":"172.16.3.117",
+                    "instance":"172.16.3.117:9990",
+                    "monitor_env":"kafka117",
+                    "monitor_port":"9092",
+                    "monitor_cluster":"blogic-kafka-cluster",
+                    "job":"kafka_jmx",
+                    "monitor_type":"MQ",
+                    "people_name":"小红"
+                },
+                "values":[['苹果',206],['橘子',555], ['梨',300], ['葡萄',200], ['香蕉',100]]
+            }
+        ]
+        
+    },
+     {
+        "label":{
+            "seriesReg":"{{people_name}}",
+            "yAxisUnit":"数量-框",
+            "xAxisUnit":"-",
+            "xAxisType":"",
+            "type":"columnchart",
+            "title":"包含负值的柱形图"
+        },
+        "result":[
+            {
+                "seriesAttr":{
+                    "monitor_host":"172.16.26.41",
+                    "instance":"172.16.26.41:9990",
+                    "monitor_env":"kafka41",
+                    "monitor_port":"9092",
+                    "monitor_cluster":"blogic-kafka-cluster",
+                    "job":"kafka_jmx",
+                    "monitor_type":"MQ",
+                    "people_name":"小王"
+                },
+                "values":[['苹果',999],['橘子',555], ['梨',795], ['葡萄',278], ['香蕉',545]]
+            }
+        ]
+    }
+];
+var barPerData=[
+    {
+        "label":{
+            "seriesReg":"{{people_name}}",
+            "yAxisUnit":"数量-框",
+            "xAxisUnit":"-",
+            "zAxisUnit":"-",
+            "xAxisType":"",
+            "type":"barchartpercent",
+            "title":"水果分布柱形图"
+        },
+        "result":[
+            {
+                "seriesAttr":{
+                    "monitor_host":"172.16.26.41",
+                    "instance":"172.16.26.41:9990",
+                    "monitor_env":"kafka41",
+                    "monitor_port":"9092",
+                    "monitor_cluster":"blogic-kafka-cluster",
+                    "job":"kafka_jmx",
+                    "monitor_type":"MQ",
+                    "people_name":"小明"
+                },
+                "values":[['苹果',699],['橘子',344], ['梨',090], ['葡萄',700], ['香蕉',2000]]
+            },
+            {
+                "seriesAttr":{                 
+                    "monitor_host":"172.16.3.117",
+                    "instance":"172.16.3.117:9990",
+                    "monitor_env":"kafka117",
+                    "monitor_port":"9092",
+                    "monitor_cluster":"blogic-kafka-cluster",
+                    "job":"kafka_jmx",
+                    "monitor_type":"MQ",
+                    "people_name":"小红"
+                },
+                "values":[['苹果',2060],['橘子',1555], ['梨',300], ['葡萄',2000], ['香蕉',100]]
+            }
+        ]
+        
+    },
+     {
+        "label":{
+            "seriesReg":"{{people_name}}",
+            "yAxisUnit":"数量-框",
+            "xAxisUnit":"-",
+            "xAxisType":"",
+            "type":"barchartpercent",
+            "title":"包含负值的柱形图"
+        },
+        "result":[
+            {
+                "seriesAttr":{
+                    "monitor_host":"172.16.26.41",
+                    "instance":"172.16.26.41:9990",
+                    "monitor_env":"kafka41",
+                    "monitor_port":"9092",
+                    "monitor_cluster":"blogic-kafka-cluster",
+                    "job":"kafka_jmx",
+                    "monitor_type":"MQ",
+                    "people_name":"小王"
+                },
+                "values":[['苹果',999],['橘子',555], ['梨',795], ['葡萄',2787], ['香蕉',545]]
+            }
+        ]
+    }
+];
+var barNorData=[
+    {
+        "label":{
+            "seriesReg":"{{people_name}}",
+            "yAxisUnit":"数量-框",
+            "xAxisUnit":"-",
+            "zAxisUnit":"-",
+            "xAxisType":"",
+            "type":"barchartnormal",
+            "title":"水果分布柱形图"
+        },
+        "result":[
+            {
+                "seriesAttr":{
+                    "monitor_host":"172.16.26.41",
+                    "instance":"172.16.26.41:9990",
+                    "monitor_env":"kafka41",
+                    "monitor_port":"9092",
+                    "monitor_cluster":"blogic-kafka-cluster",
+                    "job":"kafka_jmx",
+                    "monitor_type":"MQ",
+                    "people_name":"小明"
+                },
+                "values":[['苹果',699],['橘子',344], ['梨',490], ['葡萄',700], ['香蕉',200]]
+            },
+            {
+                "seriesAttr":{                 
+                    "monitor_host":"172.16.3.117",
+                    "instance":"172.16.3.117:9990",
+                    "monitor_env":"kafka117",
+                    "monitor_port":"9092",
+                    "monitor_cluster":"blogic-kafka-cluster",
+                    "job":"kafka_jmx",
+                    "monitor_type":"MQ",
+                    "people_name":"小红"
+                },
+                "values":[['苹果',206],['橘子',555], ['梨',300], ['葡萄',200], ['香蕉',100]]
+            }
+        ]
+        
+    },
+     {
+        "label":{
+            "seriesReg":"{{people_name}}",
+            "yAxisUnit":"数量-框",
+            "xAxisUnit":"-",
+            "xAxisType":"",
+            "type":"barchartnormal",
+            "title":"包含负值的柱形图"
+        },
+        "result":[
+            {
+                "seriesAttr":{
+                    "monitor_host":"172.16.26.41",
+                    "instance":"172.16.26.41:9990",
+                    "monitor_env":"kafka41",
+                    "monitor_port":"9092",
+                    "monitor_cluster":"blogic-kafka-cluster",
+                    "job":"kafka_jmx",
+                    "monitor_type":"MQ",
+                    "people_name":"小王"
+                },
+                "values":[['苹果',999],['橘子',555], ['梨',795], ['葡萄',278], ['香蕉',545]]
+            }
+        ]
+    }
 ];
