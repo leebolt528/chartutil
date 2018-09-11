@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="./css/addBoard.css">
+    <link rel="stylesheet" href="./css/common.css">
+
+    <link rel="stylesheet" href="./css/gridstack.css">
+    <script type="text/javascript" src='./js/jquery.min.js'></script>
+    <script type="text/javascript" src='./js/jquery-ui.min.js'></script>
+    
+	<script type='text/javascript' src='./js/lodash.min.js'></script>
+	<script type='text/javascript' src='./js/gridstack.all.js'></script>
+
+    <title>LogIc-监测日志</title>
+    <style type="text/css">
+        .highcharts-contextmenu hr{
+            margin:0px!important;
+        }
+    </style>
+</head>
+<body class="blogic-00c1de">
+    <div class="head_top">
+        <div class="header_nav"></div>
+    </div>
+    <div id="page-container">
+        <div id="page-content">
+            <div id="wrap">
+                <div id="app-header" class="app-header">
+                    <span>编辑仪表板</span>
+                    <a class="btn add-panel btn-default" style="margin-left:20px"><i class="fa fa-plus"></i> 添加面板</a>
+                    <div class="pull-right">
+                        <a class="btn edit-cancel btn-default" >取消</a>
+                        <a class="btn edit-done btn-default" >保存</a>
+                    </div>
+                </div>
+                <div class="app-content">
+                    <div id="embed-refreshable">
+                        <div class="dashboard edit-mode">
+                            <div class="dashboard-header">
+                                <input class="title-editor label-editor" type="text" placeholder="无标签">
+                                <textarea class="title-editor description-editor" type="text" placeholder="没有描述"></textarea>
+                            </div>
+                            <div class="dashboard-layout grid-stack">
+                                <div class="dashboard-row grid-stack-item"
+                                data-gs-x="0" data-gs-y="0"
+                                data-gs-width="4" data-gs-height="25">
+                                    <div class="grid-stack-item-content" style="width:100%">
+                                        <div class="dashboard-panel">
+                                            <div class="drag-handle">
+                                                <a  class="delete-panel">x</a>
+                                                <div class="handle-inner"></div>
+                                            </div>
+                                            <div class="panel-title">
+                                                <input class="title-editor label-editor" type="text" placeholder="无标题">
+                                            </div>
+                                            <div class="panel-description">
+                                                <input class="title-editor label-editor" type="text" placeholder="无描述">
+                                            </div>
+                                            <div class="panel-body" id="view1" style="padding:0px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="dashboard-row grid-stack-item"
+                                data-gs-x="4" data-gs-y="0"
+                                data-gs-width="4" data-gs-height="25">
+                                    <div class="grid-stack-item-content" style="width:100%">
+                                        <div class="dashboard-panel">
+                                            <div class="drag-handle">
+                                                <a  class="delete-panel">x</a>
+                                                <div class="handle-inner"></div>
+                                            </div>
+                                            <div class="panel-title">
+                                                <input class="title-editor label-editor" type="text" placeholder="无标题">
+                                            </div>
+                                            <div class="panel-description">
+                                                <input class="title-editor label-editor" type="text" placeholder="无描述">
+                                            </div>
+                                            <div class="panel-body" id="view2" style="padding:0px"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="dashboard-row grid-stack-item"
+                                data-gs-x="8" data-gs-y="0"
+                                data-gs-width="4" data-gs-height="25">
+                                    <div class="grid-stack-item-content" style="width:100%">
+                                        <div class="dashboard-panel">
+                                            <div class="drag-handle">
+                                                <a  class="delete-panel">x</a>
+                                                <div class="handle-inner"></div>
+                                            </div>
+                                            <div class="panel-title">
+                                                <input class="title-editor label-editor" type="text" placeholder="无标题">
+                                            </div>
+                                            <div class="panel-description">
+                                                <input class="title-editor label-editor" type="text" placeholder="无描述">
+                                            </div>
+                                            <div class="panel-body" id="view3" style="padding:0px"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="dashboard-row grid-stack-item"
+                                data-gs-x="0" data-gs-y="25"
+                                data-gs-width="4" data-gs-height="25">
+                                    <div class="grid-stack-item-content" style="width:100%">
+                                        <div class="dashboard-panel">
+                                            <div class="drag-handle">
+                                                <a  class="delete-panel">x</a>
+                                                <div class="handle-inner"></div>
+                                            </div>
+                                            <div class="panel-title">
+                                                <input class="title-editor label-editor" type="text" placeholder="无标题">
+                                            </div>
+                                            <div class="panel-description">
+                                                <input class="title-editor label-editor" type="text" placeholder="无描述">
+                                            </div>
+                                            <div class="panel-body" id="view4" style="padding:0px"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="dashboard-row grid-stack-item"
+                                data-gs-x="4" data-gs-y="25"
+                                data-gs-width="4" data-gs-height="25">
+                                    <div class="grid-stack-item-content" style="width:100%">
+                                        <div class="dashboard-panel">
+                                            <div class="drag-handle">
+                                                <a  class="delete-panel">x</a>
+                                                <div class="handle-inner"></div>
+                                            </div>
+                                            <div class="panel-title">
+                                                <input class="title-editor label-editor" type="text" placeholder="无标题">
+                                            </div>
+                                            <div class="panel-description">
+                                                <input class="title-editor label-editor" type="text" placeholder="无描述">
+                                            </div>
+                                            <div class="panel-body" id="view5" style="padding:0px"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="dashboard-row grid-stack-item"
+                                data-gs-x="8" data-gs-y="25"
+                                data-gs-width="4" data-gs-height="25">
+                                    <div class="grid-stack-item-content" style="width:100%">
+                                        <div class="dashboard-panel">
+                                            <div class="drag-handle">
+                                                <a  class="delete-panel">x</a>
+                                                <div class="handle-inner"></div>
+                                            </div>
+                                            <div class="panel-title">
+                                                <input class="title-editor label-editor" type="text" placeholder="无标题">
+                                            </div>
+                                            <div class="panel-description">
+                                                <input class="title-editor label-editor" type="text" placeholder="无描述">
+                                            </div>
+                                            <div class="panel-body" id="view6" style="padding:0px"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="dashboard-row grid-stack-item"
+                                data-gs-x="0" data-gs-y="50"
+                                data-gs-width="4" data-gs-height="25">
+                                    <div class="grid-stack-item-content" style="width:100%">
+                                        <div class="dashboard-panel">
+                                            <div class="drag-handle">
+                                                <a  class="delete-panel">x</a>
+                                                <div class="handle-inner"></div>
+                                            </div>
+                                            <div class="panel-title">
+                                                <input class="title-editor label-editor" type="text" placeholder="无标题">
+                                            </div>
+                                            <div class="panel-description">
+                                                <input class="title-editor label-editor" type="text" placeholder="无描述">
+                                            </div>
+                                            <div class="panel-body" id="view7" style="padding:0px"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="dashboard-row grid-stack-item"
+                                data-gs-x="4" data-gs-y="50"
+                                data-gs-width="4" data-gs-height="25">
+                                    <div class="grid-stack-item-content" style="width:100%">
+                                        <div class="dashboard-panel">
+                                            <div class="drag-handle">
+                                                <a  class="delete-panel">x</a>
+                                                <div class="handle-inner"></div>
+                                            </div>
+                                            <div class="panel-title">
+                                                <input class="title-editor label-editor" type="text" placeholder="无标题">
+                                            </div>
+                                            <div class="panel-description">
+                                                <input class="title-editor label-editor" type="text" placeholder="无描述">
+                                            </div>
+                                            <div class="panel-body" id="view8" style="padding:0px"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="dashboard-row grid-stack-item"
+                                data-gs-x="8" data-gs-y="50"
+                                data-gs-width="4" data-gs-height="25">
+                                    <div class="grid-stack-item-content" style="width:100%">
+                                        <div class="dashboard-panel">
+                                            <div class="drag-handle">
+                                                <a  class="delete-panel">x</a>
+                                                <div class="handle-inner"></div>
+                                            </div>
+                                            <div class="panel-title">
+                                                <input class="title-editor label-editor" type="text" placeholder="无标题">
+                                            </div>
+                                            <div class="panel-description">
+                                                <input class="title-editor label-editor" type="text" placeholder="无描述">
+                                            </div>
+                                            <div class="panel-body" id="view9" style="padding:0px"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="dashboard-row grid-stack-item"
+                                data-gs-x="0" data-gs-y="75"
+                                data-gs-width="4" data-gs-height="25">
+                                    <div class="grid-stack-item-content" style="width:100%">
+                                        <div class="dashboard-panel">
+                                            <div class="drag-handle">
+                                                <a  class="delete-panel">x</a>
+                                                <div class="handle-inner"></div>
+                                            </div>
+                                            <div class="panel-title">
+                                                <input class="title-editor label-editor" type="text" placeholder="无标题">
+                                            </div>
+                                            <div class="panel-description">
+                                                <input class="title-editor label-editor" type="text" placeholder="无描述">
+                                            </div>
+                                            <div class="panel-body" id="view10" style="padding:0px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="dashboard-row grid-stack-item"
+                                data-gs-x="4" data-gs-y="75"
+                                data-gs-width="4" data-gs-height="25">
+                                    <div class="grid-stack-item-content" style="width:100%">
+                                        <div class="dashboard-panel">
+                                            <div class="drag-handle">
+                                                <a  class="delete-panel">x</a>
+                                                <div class="handle-inner"></div>
+                                            </div>
+                                            <div class="panel-title">
+                                                <input class="title-editor label-editor" type="text" placeholder="无标题">
+                                            </div>
+                                            <div class="panel-description">
+                                                <input class="title-editor label-editor" type="text" placeholder="无描述">
+                                            </div>
+                                            <div class="panel-body" id="view11" style="padding:0px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="dashboard-row grid-stack-item"
+                                data-gs-x="8" data-gs-y="75"
+                                data-gs-width="4" data-gs-height="25">
+                                    <div class="grid-stack-item-content" style="width:100%">
+                                        <div class="dashboard-panel">
+                                            <div class="drag-handle">
+                                                <a  class="delete-panel">x</a>
+                                                <div class="handle-inner"></div>
+                                            </div>
+                                            <div class="panel-title">
+                                                <input class="title-editor label-editor" type="text" placeholder="无标题">
+                                            </div>
+                                            <div class="panel-description">
+                                                <input class="title-editor label-editor" type="text" placeholder="无描述">
+                                            </div>
+                                            <div class="panel-body" id="view12" style="padding:0px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+<script type='text/javascript' src='./js/bootstrap.min.js'></script>
+<script type="text/javascript" src='./js/highcharts.js'></script>
+<script type="text/javascript" src='./js/exporting.js'></script>
+<script type="text/javascript" src='./js/offline-exporting.js'></script>
+<script type="text/javascript" src='./js/highcharts-zh_CN.js'></script>
+<script type="text/javascript" src='./js/drilldown.js'></script>
+<script type="text/javascript" src='./js/addBoard.js'></script>
+<script type="text/javascript" src='./js/common.js'></script>
+<script type="text/javascript" src='./js/chartutil.js'></script>
+<script type="text/javascript" src='./js/chartutilData.js'></script>
+
+<script type="text/javascript">
+    var optionsRing={
+        color:['#38ae33','#ef8f40','#f64a4a']
+    };
+    $("#view1").chart(areaData);
+    $("#view2").chart(areaPerData);
+    $("#view3").chart(areaNorData);
+    $("#view4").chart(lineData);
+    $("#view5").chart(splineData);
+    $("#view6").chart(areaSplineData);
+    $("#view7").chart(pieData);
+    $("#view8").chart(ringData,optionsRing); 
+    $("#view9").chart(pieDrillData);
+    $("#view10").chart(scatterData);
+    $("#view11").chart(columnData);
+    $("#view12").chart(barData);
+    $(function () {
+        var options = {
+            verticalMargin: 5,
+            cellHeight:10,
+            handle: ".drag-handle"
+        };
+        $('.grid-stack').gridstack(options);
+        
+        $('.grid-stack').on('gsresizestop', function(event, elem) {
+            var contentH=$(elem).find('.grid-stack-item-content').innerHeight();
+            var panelH=Number($(elem).find(".grid-stack-item-content>.dashboard-panel").css("margin-bottom").replace('px',''));
+            var handleH=$(elem).find(".drag-handle").outerHeight(true);
+            var titleH=$(elem).find(".panel-title").outerHeight(true);
+            var descH=$(elem).find(".panel-description").outerHeight(true);
+            var aa=contentH-panelH-handleH-titleH-descH;
+
+            var $chart = $(elem).find('.panel-body');
+            $chart.height(aa);
+           
+            $chart.highcharts().reflow();
+        });  
+    });
+</script>
+</html>

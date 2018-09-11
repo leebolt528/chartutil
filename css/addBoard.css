@@ -1,0 +1,89 @@
+.app-header a.btn{
+    padding: 4px 12px;
+    font-size: 12px;
+    line-height: 16px;
+    background-color: #f3f3f3;
+    border: 1px solid #bfbfbf;
+    box-shadow: inset 0 1px 0 #fcfcfc;
+    text-shadow: none;
+    border-radius: 4px;
+}
+.app-header a.btn:hover{
+    text-decoration: none;
+    background-color: #e6e6e6;
+    border-color: #adadad;
+}
+.dashboard.edit-mode{
+    margin:0px 15px 20px;
+}
+.dashboard.edit-mode .dashboard-header{
+    padding:10px 0px;
+}
+.dashboard.edit-mode .title-editor {
+    display: block;
+    width: 100%;
+    background-color: transparent;
+    line-height: normal;
+    box-sizing: border-box;
+    border:1px solid transparent;
+    border-radius: 4px;
+    padding:4px 6px;
+}
+.dashboard.edit-mode .title-editor:hover:not(:focus) {
+    border-color: #ccc;
+    box-shadow: 0 1px 1px rgba(0,0,0,.075);
+    background-color: #fff;
+}
+.dashboard.edit-mode .title-editor:focus {
+    background-color: #fff;
+    border-color: rgba(82,168,236,.8);
+    outline: 0;
+    border-collapse: separate;
+    box-shadow: 0 0 8px rgba(82,168,236,.6);
+}
+.dashboard.edit-mode .dashboard-header .label-editor {
+    font-size: 24px;
+    font-weight: 200;
+    margin-bottom: 0;
+}
+.dashboard.edit-mode .dashboard-header .description-editor {
+    height: 26px;
+    word-break: break-all;
+}
+.dashboard-layout .dashboard-panel{
+    background: #fff;
+    margin: 0 5px 5px 0;
+}
+/* .dashboard-layout .dashboard-panel:not(:first-child){
+    margin-top: 20px;
+} */
+.dashboard-panel .drag-handle {
+    padding: 5px 5px 0;
+}
+.dashboard-panel .drag-handle .handle-inner {
+    background: url(../img/index.png) repeat;
+    opacity: .5;
+    height: 8px;
+    margin-right: 14px;
+}
+.dashboard-panel .drag-handle .delete-panel {
+    display: inline-block;
+    float: right;
+    font-size: 17px;
+    padding: 0 3px;
+    color: #97999b;
+    margin-right: -3px;
+    margin-top: -4px;
+    line-height: 14px;
+}
+.dashboard-panel .panel-title,
+.dashboard-panel .panel-description{
+    padding:3px 5px;
+    border-bottom: 1px solid #eee;
+}
+.dashboard-panel .panel-body{
+    height:286px;
+}
+.grid-stack > .grid-stack-item > .grid-stack-item-content{
+    overflow-y:hidden!important;
+}
