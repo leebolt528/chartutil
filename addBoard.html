@@ -372,6 +372,25 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="dashboard-row grid-stack-item"
+                                data-gs-x="8" data-gs-y="125"
+                                data-gs-width="4" data-gs-height="25">
+                                    <div class="grid-stack-item-content" style="width:100%">
+                                        <div class="dashboard-panel">
+                                            <div class="drag-handle">
+                                                <a  class="delete-panel">x</a>
+                                                <div class="handle-inner"></div>
+                                            </div>
+                                            <div class="panel-title">
+                                                <input class="title-editor label-editor" type="text" placeholder="无标题">
+                                            </div>
+                                            <div class="panel-description">
+                                                <input class="title-editor label-editor" type="text" placeholder="无描述">
+                                            </div>
+                                            <div class="panel-body" id="view18" style="padding:0px"></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -415,6 +434,7 @@
     $("#view15").chart(columnNorData);
     $("#view16").chart(barPerData);
     $("#view17").chart(barNorData);
+    $("#view18").chart(columnDrillData);
     $(function () {
         var options = {
             verticalMargin: 5,

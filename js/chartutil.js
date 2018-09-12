@@ -31,7 +31,7 @@ var zAxisUnit;
                 fontWeight:"normal"
             },
             stackLabels: {
-                enabled: true,
+                enabled: false,
                 color: "contrast",
                 fontSize: "11px",
                 fontWeight: "bold"
@@ -317,11 +317,14 @@ var zAxisUnit;
                     }
                 };
                 defaultChart["series"]=dataproArr;
-                drilldown(defaultChart);
+                pieDrilldown(defaultChart);
                 break;
+            case "columnchartdrill":
+                defaultChart["legend"]["enabled"]=false;
             case "columnchart":
             case "columnchartpercent":
             case "columnchartnormal":
+            case "columnchartdrill":
                 defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
                 var yAxis={
                     labels:{
@@ -347,6 +350,7 @@ var zAxisUnit;
                         cursor: options.cursor
                     }
                 }
+                columnDrilldown(defaultChart);
                 break;
             case "barchart":
             case "barchartpercent":
@@ -419,7 +423,7 @@ var zAxisUnit;
     };
 })( jQuery );
 //饼图下钻处理
- function drilldown(defaultChart){
+ function pieDrilldown(defaultChart){
     data.map(function(batchData){
         if(batchData.label.hasOwnProperty("drillData")){
             batchData.label.drillData.map(function(elem){
@@ -431,6 +435,29 @@ var zAxisUnit;
         }
     });
  }
+ //柱状图下钻处理
+function columnDrilldown(defaultChart){
+    data.map(function(batchData){
+        if(batchData.label.hasOwnProperty("drillData")){
+            batchData.label.drillData.map(function(elem){
+                elem.tooltip=formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false)
+            });
+            defaultChart["drilldown"]={
+                series:getColDrillData(data)
+            };
+        }
+    });
+}
+//获取柱状图下钻数据drillData
+function getColDrillData(){
+    var drillData=[];
+    data.map(function(batchData){
+        if(batchData.label.drillData){
+            drillData=drillData.concat(batchData.label.drillData);
+        }
+    });
+    return drillData;
+}
  //获取数据项名称
  function transSeriesName(batchData,oneDataResult){
     var newString;
@@ -534,6 +561,28 @@ var parseData=function(data){
                 }
             });
             break;
+        case "columnchartdrill":
+            var series=[];
+            data.map(function(batchData){
+                for(var oneDataResult of batchData.result){
+                    oneDataResult.values.map(function(point){
+                        point[1]=(point[1]=='null'?null:Number(point[1]));
+                        var seriesElem={
+                            "name":point[0],
+                            "y":point[1],
+                            "drilldown":point[2]
+                        };
+                        series.push(seriesElem);
+                    });
+                };
+            });
+            dataproArr.push({
+                "name":transSeriesName(data[0],data[0].result[0]),
+                "tooltip": formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false),
+                "colorByPoint": true,
+                "data":series
+            });
+            break;
         case "scatterchart":
             data.map(function(batchData){
                 for(var oneDataResult of batchData.result){
@@ -590,7 +639,7 @@ function decimal(number){
 function yTitleUnit(){
     return yAxisUnit.split("-")[1]!=''&&options.yTitleUnit&&yAxisUnit.split("-")[1]!="KiB/S"&&yAxisUnit.split("-")[1]!="KiB";
 }
-//单位转换
+//Y轴和Z轴单位刻度+提示框格式单位处理
 function formatterFun(xUnit,yUnit,zUnit,tooltipBoolean,type,dataLabelsBoolean,outerBoolean){
     pointFormat={
         pointFormatter: function() {
@@ -609,7 +658,6 @@ function formatterFun(xUnit,yUnit,zUnit,tooltipBoolean,type,dataLabelsBoolean,ou
                 var pointZ=formatterOtherY(this.z)+zUnit;
             }
             
-            
             if((type=="piechart"||type=="piechartring")&&outerBoolean){
                 return '<span style="color: '+ this.color + '">\u25CF占比</span> '+': <b>'+decimal(Number(this.percentage))+'%</b>'
             }else if(type=="piechart"||type=="piechartring"){
@@ -622,6 +670,8 @@ function formatterFun(xUnit,yUnit,zUnit,tooltipBoolean,type,dataLabelsBoolean,ou
                 return '<span style="color: '+ this.series.color + '">\u25CF'+this.series.name+'</span> '+': <b>'+ decimal(Number(this.percentage))+'%'+'('+pointY+')</b><br/>'
             }else if(type=="columnchartnormal"||type=="areachartnormal"||type=="barchartnormal"){
                 return '<span style="color: '+ this.series.color + '">\u25CF'+this.series.name+'</span> '+': <b>'+ pointY+'('+decimal(Number(this.percentage))+'%)</b><br/>'
+            }else if(type=="columnchartdrill"){
+                return '<span style="color: '+ this.series.color + '">\u25CF</span> '+'<b>'+ pointY+'</b><br/>'
             }else{
                 return '<span style="color: '+ this.series.color + '">\u25CF'+this.series.name+'</span> '+': <b>'+ pointY+'</b><br/>'
             }

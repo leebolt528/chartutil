@@ -1125,3 +1125,90 @@ var barNorData=[
         ]
     }
 ];
+var columnDrillData=[
+    {
+        "label":{
+            "seriesReg":"{{monitor_host}}",
+            "type":"columnchartdrill",
+            "yAxisUnit":"时间-辆",
+            "xAxisUnit":"-",
+            "zAxisUnit":"-",
+            "xAxisType":"",
+            "title":"2018 年浏览器市场份额",
+            "drillData": [{
+                id: 'dazhong',
+                data: [
+                    {
+                        name: '一汽',
+                        y: 100
+                    },{
+                        name: '上汽', 
+                        y:100,
+                        drilldown: 'shangqi'
+                    }
+                ]
+            }, {
+                id: 'bentian',
+                data: [{
+                    name: '雅阁',
+                    y: 120
+                },{
+                    name: 'CR-V', 
+                    y:30
+                }]
+            }, {
+                id: 'xuefulan',
+                data: [
+                    ['科鲁兹', 50],
+                    ['迈锐宝XL', 40],
+                    ['探界者', 10]
+                ]
+            },{
+                id: 'shangqi',
+                data: [
+                    ['帕萨特', 70],
+                    ['辉昂', 20],
+                    ['途观', 10]
+                ]
+            }]
+        },
+        "result":[
+            {
+                "seriesAttr":{
+                    "monitor_host":"汽车"
+                },
+                "values":[
+                    ["大众",'200',"dazhong"],["本田",'150',"bentian"],["雪佛兰",'100',"xuefulan"]
+                ]
+            }
+        ]
+    },
+    {
+        "label":{
+            "seriesReg":"{{monitor_host}}",
+            "drillData":[{
+                id: 'baoma',
+                data: [
+                    {
+                        name: '华晨',
+                        y: 100
+                    },{
+                        name: '非华晨', 
+                        y:100,
+                        drilldown: 'shangqi'
+                    }
+                ]
+            }]
+        },
+        "result":[
+            {
+                "seriesAttr":{
+                    "monitor_host":"汽车"
+                },
+                "values":[
+                    ["宝马",'25',"baoma"]
+                ]
+            }
+        ]
+    }
+];
