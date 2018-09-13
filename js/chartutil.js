@@ -10,11 +10,11 @@ var zAxisUnit;
         }
        var options0={
             zoomType:"xy",
-            export:true,
+            export:false,
             lineWidth:1.2,
             cursor:'pointer',
-            yTitleUnit:false,
             title: {
+                enabled:true,
                 align: 'left',
                 color: '#55B951',
                 fontSize:'14px'
@@ -57,7 +57,8 @@ var zAxisUnit;
                 enabledTitle:true
             },
             yAxis:{
-                enabledTitle:true
+                enabledTitle:true,
+                yTitleUnit:false
             },
             color:["#64bcff","#0dd8d1","#ff7f31", "#d84d4d", "#8085e9",
             "#90ed7d", "#f15c80", "#e4d354","#91e8e1",
@@ -97,7 +98,7 @@ var zAxisUnit;
                 zoomType: options.zoomType
             },
             title: {
-                text: data[0].label.title,
+                text: options.title.enabled?data[0].label.title:null,
                 align: options.title.align,
                 style: {
                     color: options.title.color,
@@ -126,7 +127,7 @@ var zAxisUnit;
             yAxis:{
                 title: {
                     enabled:options.yAxis.enabledTitle,
-                    text:yAxisUnit.split("-")[0]+(yTitleUnit()?"("+yAxisUnit.split("-")[1]+")":"")
+                    text:yAxisUnit.split("-")[0]+(yTitleUnit()?"("+yTitleUnitTrans()+")":"")
                 },
                 labels: {
                     style: { 
@@ -186,33 +187,7 @@ var zAxisUnit;
             case "linechart":
             case "splinechart":
                 defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
-                if(data[0].label.xAxisType=="dataTime"){
-                    var xAxis={
-                        tickPixelInterval: 170,
-                        type: 'datetime',
-                        dateTimeLabelFormats: {
-                            millisecond: '%Y-%m-%d %H:%M:%S',
-                            second: '%Y-%m-%d %H:%M:%S',
-                            minute: '%Y-%m-%d %H:%M',
-                            hour: '%Y-%m-%d %H',
-                            day: '%Y-%m-%d',
-                            week: '%Y-%m',
-                            month: '%Y-%m',
-                            year: '%Y'
-                        }
-                    };
-                    defaultChart["tooltip"]["dateTimeLabelFormats"]={
-                        millisecond: '%Y-%m-%d %H:%M:%S',
-                        second: '%Y-%m-%d %H:%M:%S',
-                        minute: '%Y-%m-%d %H:%M',
-                        hour: '%Y-%m-%d %H',
-                        day: '%Y-%m-%d',
-                        week: '%Y-%m',
-                        month: '%Y-%m',
-                        year: '%Y'
-                    };
-                    defaultChart["xAxis"]=$.extend(true,{},defaultChart["xAxis"],xAxis);
-                }
+                xAxisData(defaultChart);
                 var yAxis={
                     labels:{
                         formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],false,data[0].label.type,false)
@@ -326,6 +301,7 @@ var zAxisUnit;
             case "columnchartnormal":
             case "columnchartdrill":
                 defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
+                xAxisData(defaultChart);
                 var yAxis={
                     labels:{
                         formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],false,data[0].label.type,false)
@@ -356,6 +332,7 @@ var zAxisUnit;
             case "barchartpercent":
             case "barchartnormal":
                 defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
+                xAxisData(defaultChart);
                 var yAxis={
                     title: {
                         align: 'high'
@@ -387,6 +364,7 @@ var zAxisUnit;
                 break;
             case "scatterchart":
                 defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
+                xAxisData(defaultChart);
                 var yAxis={
                     labels:{
                         formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],false,data[0].label.type,false)
@@ -405,6 +383,7 @@ var zAxisUnit;
                 break;
             case "bubblechart":
                 defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
+                xAxisData(defaultChart);
                 var yAxis={
                     labels:{
                         formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],false,data[0].label.type,false)
@@ -422,12 +401,52 @@ var zAxisUnit;
         return defaultChart;
     };
 })( jQuery );
+//Y轴单位显示在标题后面时yTitleUnit=true;
+function yTitleUnitTrans(){
+    if(data[0].label.type=="columnchartpercent"||data[0].label.type=="areachartpercent"||data[0].label.type=="barchartpercent"){
+        return "%";
+    }else{
+        return yAxisUnit.split("-")[1];
+    }
+}
+//x轴为时间戳时xAxis属性处理
+function xAxisData(defaultChart){
+    if(data[0].label.xAxisType=="dataTime"){
+        var xAxis={
+            tickPixelInterval: 170,
+            type: 'datetime',
+            dateTimeLabelFormats: {
+                millisecond: '%Y-%m-%d %H:%M:%S',
+                second: '%Y-%m-%d %H:%M:%S',
+                minute: '%Y-%m-%d %H:%M',
+                hour: '%Y-%m-%d %H',
+                day: '%Y-%m-%d',
+                week: '%Y-%m',
+                month: '%Y-%m',
+                year: '%Y'
+            }
+        };
+        defaultChart["tooltip"]["dateTimeLabelFormats"]={
+            millisecond: '%Y-%m-%d %H:%M:%S',
+            second: '%Y-%m-%d %H:%M:%S',
+            minute: '%Y-%m-%d %H:%M',
+            hour: '%Y-%m-%d %H',
+            day: '%Y-%m-%d',
+            week: '%Y-%m',
+            month: '%Y-%m',
+            year: '%Y'
+        };
+        defaultChart["xAxis"]=$.extend(true,{},defaultChart["xAxis"],xAxis);
+    }
+}
 //饼图下钻处理
  function pieDrilldown(defaultChart){
     data.map(function(batchData){
         if(batchData.label.hasOwnProperty("drillData")){
             batchData.label.drillData.map(function(elem){
-                elem.tooltip=formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false)
+                elem.tooltip={
+                    "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false)
+                }
             });
             defaultChart["drilldown"]={
                 series:getPieColorData(data).drillData
@@ -440,7 +459,9 @@ function columnDrilldown(defaultChart){
     data.map(function(batchData){
         if(batchData.label.hasOwnProperty("drillData")){
             batchData.label.drillData.map(function(elem){
-                elem.tooltip=formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false)
+                elem.tooltip={
+                    "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false)
+                }
             });
             defaultChart["drilldown"]={
                 series:getColDrillData(data)
@@ -478,9 +499,9 @@ function getColDrillData(){
 function add0(m){
     return m<10?'0'+m:m
 }
-function format(times){
+function dateFormat(times){
     var time = new Date(times);
-    var y = time.getFullYear().toString().slice(2);
+    var y = time.getFullYear().toString()/* .slice(2) */;
     var m = time.getMonth()+1;
     var d = time.getDate();
     var h = time.getHours();
@@ -501,14 +522,14 @@ var parseData=function(data){
             data.map(function(batchData){
                 for(var oneDataResult of batchData.result){
                     oneDataResult.values.map(function(point){
-                        if(data[0].label.xAxisType=="dataTime"){
-                            point[0]=Number(point[0])*1000;
-                        }
-                        point[1]=(point[1]=='null'?null:Number(point[1]));
+                        xAxisTypeFun(data,point);
+                        point[1]=((point[1]=='null'||point[1]==null)?null:Number(point[1]));
                     });
                     var seriesElem={
                         "data":oneDataResult.values,
-                        "tooltip": formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false),
+                        "tooltip": {
+                            "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false)
+                        },
                         "name":transSeriesName(batchData,oneDataResult)
                     };
                     dataproArr.push(seriesElem);
@@ -523,14 +544,18 @@ var parseData=function(data){
                 innerSize: '65%',
                 data:colorData.innerData,
                 colors: colorData.color,
-                tooltip: formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false)
+                tooltip: {
+                    "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false)
+                }
             };
             var outSiteObj={
                 size:options.pie.size,
                 innerSize: '90%',
                 data: colorData.outerData,
                 colors: options.color,
-                tooltip: formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false,true)
+                tooltip: {
+                    "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false,true)
+                }
             };
             if(data[0].label.type=='piechart'){
                 innerObj['innerSize']='0';
@@ -550,11 +575,13 @@ var parseData=function(data){
             data.map(function(batchData){
                 for(var oneDataResult of batchData.result){
                     oneDataResult.values.map(function(point){
-                        point[1]=(point[1]=='null'?null:Number(point[1]));
+                        point[1]=((point[1]=='null'||point[1]==null)?null:Number(point[1]));
                     });
                     var seriesElem={
                         "data":oneDataResult.values,
-                        "tooltip": formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false),
+                        "tooltip": {
+                            "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false)
+                        },
                         "name":transSeriesName(batchData,oneDataResult)
                     };
                     dataproArr.push(seriesElem);
@@ -566,7 +593,8 @@ var parseData=function(data){
             data.map(function(batchData){
                 for(var oneDataResult of batchData.result){
                     oneDataResult.values.map(function(point){
-                        point[1]=(point[1]=='null'?null:Number(point[1]));
+                        xAxisTypeFun(data,point);
+                        point[1]=((point[1]=='null'||point[1]==null)?null:Number(point[1]));
                         var seriesElem={
                             "name":point[0],
                             "y":point[1],
@@ -578,7 +606,9 @@ var parseData=function(data){
             });
             dataproArr.push({
                 "name":transSeriesName(data[0],data[0].result[0]),
-                "tooltip": formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false),
+                "tooltip": {
+                    "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false)
+                },
                 "colorByPoint": true,
                 "data":series
             });
@@ -587,13 +617,15 @@ var parseData=function(data){
             data.map(function(batchData){
                 for(var oneDataResult of batchData.result){
                     oneDataResult.values.map(function(point){
-                        point[0]=Number(point[0]);
-                        point[1]=(point[1]=='null'?null:Number(point[1]));
+                        xAxisTypeFun(data,point);
+                        point[1]=((point[1]=='null'||point[1]==null)?null:Number(point[1]));
                     });
                     var seriesElem={
                         "marker":{enabled: true},
                         "data":oneDataResult.values,
-                        "tooltip": formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false),
+                        "tooltip": {
+                            "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false)
+                        },
                         "name":transSeriesName(batchData,oneDataResult)
                     };
                     dataproArr.push(seriesElem);
@@ -604,13 +636,16 @@ var parseData=function(data){
             data.map(function(batchData){
                 for(var oneDataResult of batchData.result){
                     oneDataResult.values.map(function(point){
-                        point[0]=Number(point[0]);
-                        point[1]=(point[1]=='null'?null:Number(point[1]));
+                        xAxisTypeFun(data,point);
+                        point[1]=((point[1]=='null'||point[1]==null)?null:Number(point[1]));
+                        point[2]=((point[2]=='null'||point[2]==null)?null:Number(point[2]));
                     });
                     var seriesElem={
                         "marker":{enabled: true},
                         "data":oneDataResult.values,
-                        "tooltip": formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false),
+                        "tooltip": {
+                            "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false)
+                        },
                         "name":transSeriesName(batchData,oneDataResult)
                     };
                     dataproArr.push(seriesElem);
@@ -620,6 +655,14 @@ var parseData=function(data){
         default:
     }
     return dataproArr;
+}
+//封装series数据时,X轴数据不同类型时的处理
+function xAxisTypeFun(data,point){
+    if(data[0].label.xAxisType=="dataTime"){
+        point[0]=Number(point[0])*1000;
+    }else if(!isNaN(Number(point[0]))){
+        point[0]=Number(point[0]);
+    }
 }
 //科学计数法
 function scienceNum(num){
@@ -637,44 +680,56 @@ function decimal(number){
 }
 //Y轴刻度是否显示单位判断
 function yTitleUnit(){
-    return yAxisUnit.split("-")[1]!=''&&options.yTitleUnit&&yAxisUnit.split("-")[1]!="KiB/S"&&yAxisUnit.split("-")[1]!="KiB";
+    return yAxisUnit.split("-")[1]!=''&&options.yAxis.yTitleUnit&&yAxisUnit.split("-")[1]!="KiB/S"&&yAxisUnit.split("-")[1]!="KiB";
 }
 //Y轴和Z轴单位刻度+提示框格式单位处理
 function formatterFun(xUnit,yUnit,zUnit,tooltipBoolean,type,dataLabelsBoolean,outerBoolean){
-    pointFormat={
-        pointFormatter: function() {
-            if(yUnit=="KiB/S"){
-                var pointY=formatterKiBs(this.y,"y");
-            }else if(yUnit=="KiB"){
-                var pointY=formatterKiB(this.y,"y");
+    var data1=data;
+    var pointFormat=function() {
+        if(yUnit=="KiB/S"){
+            var pointY=formatterKiBs(this.y,"y");
+        }else if(yUnit=="KiB"){
+            var pointY=formatterKiB(this.y,"y");
+        }else{
+            var pointY=formatterOtherY(this.y)+yUnit;
+        }
+
+        if(zUnit=="KiB/S"){
+            var pointZ=formatterKiBs(this.z,"z");
+        }else if(zUnit=="KiB"){
+            var pointZ=formatterKiB(this.z,"z");
+        }else{
+            var pointZ=formatterOtherY(this.z)+zUnit;
+        }
+
+        if(data1[0].label.xAxisType=="dataTime"){
+            var pointX=dateFormat(this.x);
+        }else if(Number(this.x)){
+            if(xUnit=="KiB/S"){
+                var pointX=formatterKiBs(this.x,"x");
+            }else if(xUnit=="KiB"){
+                var pointX=formatterKiB(this.x,"x");
             }else{
-                var pointY=formatterOtherY(this.y)+yUnit;
+                var pointX=formatterOtherY(this.x)+xUnit;
             }
-            if(zUnit=="KiB/S"){
-                var pointZ=formatterKiBs(this.z,"z");
-            }else if(zUnit=="KiB"){
-                var pointZ=formatterKiB(this.z,"z");
-            }else{
-                var pointZ=formatterOtherY(this.z)+zUnit;
-            }
-            
-            if((type=="piechart"||type=="piechartring")&&outerBoolean){
-                return '<span style="color: '+ this.color + '">\u25CF占比</span> '+': <b>'+decimal(Number(this.percentage))+'%</b>'
-            }else if(type=="piechart"||type=="piechartring"){
-                return '<span style="color: '+ this.color + '">\u25CF占比</span> '+': <b>'+decimal(Number(this.percentage))+'%</b><br/><span style="color: '+ this.color + '">\u25CF值</span> '+': <b>'+pointY+'</b>'
-            }else if(type=="scatterchart"){
-                return '<span style="color: '+ this.series.color + '">'+this.x+xUnit+"  "+pointY+'</span> ';
-            }else if(type=="bubblechart"){
-                return '<span style="color: '+ this.series.color + '">('+this.x+xUnit+","+pointY+")"+"  大小:"+pointZ+'</span> ';
-            }else if(type=="columnchartpercent"||type=="areachartpercent"||type=="barchartpercent"){
-                return '<span style="color: '+ this.series.color + '">\u25CF'+this.series.name+'</span> '+': <b>'+ decimal(Number(this.percentage))+'%'+'('+pointY+')</b><br/>'
-            }else if(type=="columnchartnormal"||type=="areachartnormal"||type=="barchartnormal"){
-                return '<span style="color: '+ this.series.color + '">\u25CF'+this.series.name+'</span> '+': <b>'+ pointY+'('+decimal(Number(this.percentage))+'%)</b><br/>'
-            }else if(type=="columnchartdrill"){
-                return '<span style="color: '+ this.series.color + '">\u25CF</span> '+'<b>'+ pointY+'</b><br/>'
-            }else{
-                return '<span style="color: '+ this.series.color + '">\u25CF'+this.series.name+'</span> '+': <b>'+ pointY+'</b><br/>'
-            }
+        }
+        
+        if((type=="piechart"||type=="piechartring")&&outerBoolean){
+            return '<span style="color: '+ this.color + '">\u25CF占比</span> '+': <b>'+decimal(Number(this.percentage))+'%</b>'
+        }else if(type=="piechart"||type=="piechartring"){
+            return '<span style="color: '+ this.color + '">\u25CF占比</span> '+': <b>'+decimal(Number(this.percentage))+'%</b><br/><span style="color: '+ this.color + '">\u25CF值</span> '+': <b>'+pointY+'</b>'
+        }else if(type=="scatterchart"){
+            return '<span style="color: '+ this.series.color + '">'+pointX+"  "+pointY+'</span> ';
+        }else if(type=="bubblechart"){
+            return '<span style="color: '+ this.series.color + '">('+pointX+","+pointY+")"+"  大小:"+pointZ+'</span> ';
+        }else if(type=="columnchartpercent"||type=="areachartpercent"||type=="barchartpercent"){
+            return '<span style="color: '+ this.series.color + '">\u25CF'+this.series.name+'</span> '+': <b>'+ decimal(Number(this.percentage))+'%'+'('+pointY+')</b><br/>'
+        }else if(type=="columnchartnormal"||type=="areachartnormal"||type=="barchartnormal"){
+            return '<span style="color: '+ this.series.color + '">\u25CF'+this.series.name+'</span> '+': <b>'+ pointY+'('+decimal(Number(this.percentage))+'%)</b><br/>'
+        }else if(type=="columnchartdrill"){
+            return '<span style="color: '+ this.series.color + '">\u25CF</span> '+'<b>'+ pointY+'</b><br/>'
+        }else{
+            return '<span style="color: '+ this.series.color + '">\u25CF'+this.series.name+'</span> '+': <b>'+ pointY+'</b><br/>'
         }
     };
     var formatterOtherY=function(value) {
@@ -725,6 +780,10 @@ function formatterFun(xUnit,yUnit,zUnit,tooltipBoolean,type,dataLabelsBoolean,ou
         if(dataLabelsBoolean||yTitleUnit()){
             yUnit='';
         }
+        if(dataLabelsBoolean&&(data1[0].label.type=="columnchartpercent"||data1[0].label.type=="areachartpercent"||data1[0].label.type=="barchartpercent")){
+
+            return decimal(Number(this.percentage))+"%";
+        }
         if(Math.abs(yValue)>=10000){
             return Math.abs(yValue)>=Math.pow(10,8)?decimal(yValue)+yUnit:decimal(yValue/10000) + 'w'+yUnit;
         }else if(Math.abs(yValue)>=1000){
@@ -742,9 +801,9 @@ function formatterFun(xUnit,yUnit,zUnit,tooltipBoolean,type,dataLabelsBoolean,ou
         if(yUnit=="KiB/S"){
             return formatterKiBs;
         }else if(yUnit=="KiB"){
-        return formatterKiB;
+            return formatterKiB;
         }else{
-        return formatterOtherV;
+            return formatterOtherV;
         }
     }
 }
@@ -755,7 +814,7 @@ function getPieColorData(data){
     data.map(function(batchData){
         for(var oneDataResult of batchData.result){
             var elem=oneDataResult.values[0];
-            elem[1]=Number((Number(elem[1]).toFixed(2)));
+            elem[1]=((elem[1]=='null'||elem[1]==null)?null:Number((Number(elem[1]).toFixed(2))));
             innerData.push({
                 name:transSeriesName(batchData,oneDataResult),
                 y:elem[1]
@@ -775,7 +834,7 @@ function getPieColorData(data){
         color=[options.color[0],'#e6e6e6'];
         var allPre=0;
         data[0].label.outerData.map(function(elem,index){
-            elem[1]=Number((Number(elem[1]).toFixed(2)));
+            elem[1]=((elem[1]=='null'||elem[1]==null)?null:Number((Number(elem[1]).toFixed(2))));
             outerData.push({
                 name:elem[0],
                 y:elem[1]
