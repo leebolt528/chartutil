@@ -313,7 +313,7 @@ var columnData=[
             "yAxisUnit":"数量-个",
             "xAxisUnit":"-",
             "zAxisUnit":"-",
-            "xAxisType":"",
+            "xAxisType":"string",
             "type":"columnchart",
             "title":"水果分布柱形图"
         },
@@ -380,7 +380,7 @@ var barData=[
             "yAxisUnit":"数量-个",
             "xAxisUnit":"-",
             "zAxisUnit":"-",
-            "xAxisType":"",
+            "xAxisType":"string",
             "type":"barchart",
             "title":"水果分布条形图"
         },
@@ -447,7 +447,7 @@ var scatterData=[
             "yAxisUnit":"体重-kg",
             "xAxisUnit":"身高-cm",
             "zAxisUnit":"-",
-            "xAxisType":"data",
+            "xAxisType":"number",
             "type":"scatterchart",
             "title":"人按性别划分的身高和体重分布图"
         },
@@ -803,7 +803,7 @@ var bubbleData=[
             "yAxisUnit":"体重-cm",
             "xAxisUnit":"身高-KiB",
             "zAxisUnit":"数量-KiB",
-            "xAxisType":"",
+            "xAxisType":"number",
             "type":"bubblechart",
             "title":"人按性别划分的身高和体重分布图"
         },
@@ -864,7 +864,7 @@ var columnPerData=[
             "yAxisUnit":"数量-框",
             "xAxisUnit":"-",
             "zAxisUnit":"-",
-            "xAxisType":"",
+            "xAxisType":"string",
             "type":"columnchartpercent",
             "title":"水果分布柱形图"
         },
@@ -931,7 +931,7 @@ var columnNorData=[
             "yAxisUnit":"数量-框",
             "xAxisUnit":"-",
             "zAxisUnit":"-",
-            "xAxisType":"",
+            "xAxisType":"string",
             "type":"columnchartnormal",
             "title":"水果分布柱形图"
         },
@@ -998,7 +998,7 @@ var barPerData=[
             "yAxisUnit":"数量-框",
             "xAxisUnit":"-",
             "zAxisUnit":"-",
-            "xAxisType":"",
+            "xAxisType":"string",
             "type":"barchartpercent",
             "title":"水果分布柱形图"
         },
@@ -1065,7 +1065,7 @@ var barNorData=[
             "yAxisUnit":"数量-框",
             "xAxisUnit":"-",
             "zAxisUnit":"-",
-            "xAxisType":"",
+            "xAxisType":"string",
             "type":"barchartnormal",
             "title":"水果分布柱形图"
         },

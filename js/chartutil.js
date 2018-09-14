@@ -54,7 +54,8 @@ var zAxisUnit;
                 fontWeight:"normal"
             },
             xAxis:{
-                enabledTitle:true
+                enabledTitle:true,
+                xTitleUnit:true
             },
             yAxis:{
                 enabledTitle:true,
@@ -115,7 +116,7 @@ var zAxisUnit;
                 },
                 title: {
                     enabled:options.xAxis.enabledTitle,
-                    text:xAxisUnit.split("-")[0]+(xAxisUnit.split("-")[1]!=''?"("+xAxisUnit.split("-")[1]+")":""),
+                    text:xAxisUnit.split("-")[0]+(xTitleUnit()?"("+xAxisUnit.split("-")[1]+")":""),
                     align: 'high',
                     style: { 
                         color: options.labels.color, 
@@ -187,10 +188,22 @@ var zAxisUnit;
             case "linechart":
             case "splinechart":
                 defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
-                xAxisData(defaultChart);
+                if(data[0].label.xAxisType=="dataTime"){
+                    xAxisData(defaultChart);
+                }else if(data[0].label.xAxisType=="number"){
+                    var xAxis={
+                        labels:{
+                            formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"xAxis",data[0].label.type,false),
+                        }
+                    };
+                    defaultChart["xAxis"]=$.extend(true,{},defaultChart["xAxis"],xAxis);
+                }else{
+                    defaultChart["xAxis"]["type"]="category";
+                    defaultChart["xAxis"]["tickmarkPlacement"]="on";
+                };
                 var yAxis={
                     labels:{
-                        formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],false,data[0].label.type,false)
+                        formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"yAxis",data[0].label.type,false)
                     }
                 };
                 defaultChart["yAxis"]=$.extend(true,{},defaultChart["yAxis"],yAxis);
@@ -301,14 +314,24 @@ var zAxisUnit;
             case "columnchartnormal":
             case "columnchartdrill":
                 defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
-                xAxisData(defaultChart);
+                if(data[0].label.xAxisType=="dataTime"){
+                    xAxisData(defaultChart);
+                }else if(data[0].label.xAxisType=="number"){
+                    var xAxis={
+                        labels:{
+                            formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"xAxis",data[0].label.type,false),
+                        }
+                    };
+                    defaultChart["xAxis"]=$.extend(true,{},defaultChart["xAxis"],xAxis);
+                }else{
+                    defaultChart["xAxis"]["type"]="category";
+                };
                 var yAxis={
                     labels:{
-                        formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],false,data[0].label.type,false)
+                        formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"yAxis",data[0].label.type,false)
                     }
                 };
                 defaultChart["yAxis"]=$.extend(true,{},defaultChart["yAxis"],yAxis);
-                defaultChart["xAxis"]["type"]="category";
                 defaultChart["series"]=dataproArr;
                 defaultChart["tooltip"]["headerFormat"]='<span>{point.key}</span><br/>';
                 defaultChart["plotOptions"]={
@@ -316,7 +339,7 @@ var zAxisUnit;
                         stacking: data[0].label.type.split("chart")[1],
                         dataLabels: {
                             enabled: options.dataLabels.enabled,
-                            formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],false,data[0].label.type,true),
+                            formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"yAxis",data[0].label.type,true),
                             style: {
                                 color: options.dataLabels.color, 
                                 fontSize: options.dataLabels.fontSize ,
@@ -332,17 +355,27 @@ var zAxisUnit;
             case "barchartpercent":
             case "barchartnormal":
                 defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
-                xAxisData(defaultChart);
+                if(data[0].label.xAxisType=="dataTime"){
+                    xAxisData(defaultChart);
+                }else if(data[0].label.xAxisType=="number"){
+                    var xAxis={
+                        labels:{
+                            formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"xAxis",data[0].label.type,false),
+                        }
+                    };
+                    defaultChart["xAxis"]=$.extend(true,{},defaultChart["xAxis"],xAxis);
+                }else{
+                    defaultChart["xAxis"]["type"]="category";
+                };
                 var yAxis={
                     title: {
                         align: 'high'
                     },
                     labels:{
-                        formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],false,data[0].label.type)
+                        formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"yAxis",data[0].label.type)
                     }
                 };
                 defaultChart["yAxis"]=$.extend(true,{},defaultChart["yAxis"],yAxis);
-                defaultChart["xAxis"]["type"]="category";
                 defaultChart["xAxis"]["title"]["align"]="middle";
                 defaultChart["series"]=dataproArr;
                 defaultChart["tooltip"]["headerFormat"]='<span>{point.key}</span><br/>';
@@ -351,7 +384,7 @@ var zAxisUnit;
                         stacking: data[0].label.type.split("chart")[1],
                         dataLabels: {
                             enabled: options.dataLabels.enabled,
-                            formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],false,data[0].label.type,true),
+                            formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"yAxis",data[0].label.type,true),
                             style: {
                                 color: options.dataLabels.color, 
                                 fontSize: options.dataLabels.fontSize ,
@@ -364,10 +397,22 @@ var zAxisUnit;
                 break;
             case "scatterchart":
                 defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
-                xAxisData(defaultChart);
+                if(data[0].label.xAxisType=="dataTime"){
+                    xAxisData(defaultChart);
+                }else if(data[0].label.xAxisType=="number"){
+                    var xAxis={
+                        labels:{
+                            formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"xAxis",data[0].label.type,false),
+                        }
+                    };
+                    defaultChart["xAxis"]=$.extend(true,{},defaultChart["xAxis"],xAxis);
+                }else{
+                    defaultChart["xAxis"]["type"]="category";
+                    defaultChart["xAxis"]["tickmarkPlacement"]="on";
+                };
                 var yAxis={
                     labels:{
-                        formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],false,data[0].label.type,false)
+                        formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"yAxis",data[0].label.type,false)
                     }
                 };
                 defaultChart["yAxis"]=$.extend(true,{},defaultChart["yAxis"],yAxis);
@@ -383,10 +428,22 @@ var zAxisUnit;
                 break;
             case "bubblechart":
                 defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
-                xAxisData(defaultChart);
+                if(data[0].label.xAxisType=="dataTime"){
+                    xAxisData(defaultChart);
+                }else if(data[0].label.xAxisType=="number"){
+                    var xAxis={
+                        labels:{
+                            formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"xAxis",data[0].label.type,false),
+                        }
+                    };
+                    defaultChart["xAxis"]=$.extend(true,{},defaultChart["xAxis"],xAxis);
+                }else{
+                    defaultChart["xAxis"]["type"]="category";
+                    defaultChart["xAxis"]["tickmarkPlacement"]="on";
+                };
                 var yAxis={
                     labels:{
-                        formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],false,data[0].label.type,false)
+                        formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"yAxis",data[0].label.type,false)
                     }
                 };
                 defaultChart["yAxis"]=$.extend(true,{},defaultChart["yAxis"],yAxis);
@@ -411,22 +468,10 @@ function yTitleUnitTrans(){
 }
 //x轴为时间戳时xAxis属性处理
 function xAxisData(defaultChart){
-    if(data[0].label.xAxisType=="dataTime"){
-        var xAxis={
-            tickPixelInterval: 170,
-            type: 'datetime',
-            dateTimeLabelFormats: {
-                millisecond: '%Y-%m-%d %H:%M:%S',
-                second: '%Y-%m-%d %H:%M:%S',
-                minute: '%Y-%m-%d %H:%M',
-                hour: '%Y-%m-%d %H',
-                day: '%Y-%m-%d',
-                week: '%Y-%m',
-                month: '%Y-%m',
-                year: '%Y'
-            }
-        };
-        defaultChart["tooltip"]["dateTimeLabelFormats"]={
+    var xAxis={
+        tickPixelInterval: 170,
+        type: 'datetime',
+        dateTimeLabelFormats: {
             millisecond: '%Y-%m-%d %H:%M:%S',
             second: '%Y-%m-%d %H:%M:%S',
             minute: '%Y-%m-%d %H:%M',
@@ -435,9 +480,19 @@ function xAxisData(defaultChart){
             week: '%Y-%m',
             month: '%Y-%m',
             year: '%Y'
-        };
-        defaultChart["xAxis"]=$.extend(true,{},defaultChart["xAxis"],xAxis);
-    }
+        }
+    };
+    defaultChart["tooltip"]["dateTimeLabelFormats"]={
+        millisecond: '%Y-%m-%d %H:%M:%S',
+        second: '%Y-%m-%d %H:%M:%S',
+        minute: '%Y-%m-%d %H:%M',
+        hour: '%Y-%m-%d %H',
+        day: '%Y-%m-%d',
+        week: '%Y-%m',
+        month: '%Y-%m',
+        year: '%Y'
+    };
+    defaultChart["xAxis"]=$.extend(true,{},defaultChart["xAxis"],xAxis);
 }
 //饼图下钻处理
  function pieDrilldown(defaultChart){
@@ -445,7 +500,7 @@ function xAxisData(defaultChart){
         if(batchData.label.hasOwnProperty("drillData")){
             batchData.label.drillData.map(function(elem){
                 elem.tooltip={
-                    "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false)
+                    "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"tooltip",data[0].label.type,false)
                 }
             });
             defaultChart["drilldown"]={
@@ -460,7 +515,7 @@ function columnDrilldown(defaultChart){
         if(batchData.label.hasOwnProperty("drillData")){
             batchData.label.drillData.map(function(elem){
                 elem.tooltip={
-                    "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false)
+                    "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"tooltip",data[0].label.type,false)
                 }
             });
             defaultChart["drilldown"]={
@@ -528,7 +583,7 @@ var parseData=function(data){
                     var seriesElem={
                         "data":oneDataResult.values,
                         "tooltip": {
-                            "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false)
+                            "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"tooltip",data[0].label.type,false)
                         },
                         "name":transSeriesName(batchData,oneDataResult)
                     };
@@ -545,7 +600,7 @@ var parseData=function(data){
                 data:colorData.innerData,
                 colors: colorData.color,
                 tooltip: {
-                    "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false)
+                    "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"tooltip",data[0].label.type,false)
                 }
             };
             var outSiteObj={
@@ -554,7 +609,7 @@ var parseData=function(data){
                 data: colorData.outerData,
                 colors: options.color,
                 tooltip: {
-                    "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false,true)
+                    "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"tooltip",data[0].label.type,false,true)
                 }
             };
             if(data[0].label.type=='piechart'){
@@ -580,7 +635,7 @@ var parseData=function(data){
                     var seriesElem={
                         "data":oneDataResult.values,
                         "tooltip": {
-                            "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false)
+                            "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"tooltip",data[0].label.type,false)
                         },
                         "name":transSeriesName(batchData,oneDataResult)
                     };
@@ -607,7 +662,7 @@ var parseData=function(data){
             dataproArr.push({
                 "name":transSeriesName(data[0],data[0].result[0]),
                 "tooltip": {
-                    "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false)
+                    "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"tooltip",data[0].label.type,false)
                 },
                 "colorByPoint": true,
                 "data":series
@@ -624,7 +679,7 @@ var parseData=function(data){
                         "marker":{enabled: true},
                         "data":oneDataResult.values,
                         "tooltip": {
-                            "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false)
+                            "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"tooltip",data[0].label.type,false)
                         },
                         "name":transSeriesName(batchData,oneDataResult)
                     };
@@ -644,7 +699,7 @@ var parseData=function(data){
                         "marker":{enabled: true},
                         "data":oneDataResult.values,
                         "tooltip": {
-                            "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],true,data[0].label.type,false)
+                            "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"tooltip",data[0].label.type,false)
                         },
                         "name":transSeriesName(batchData,oneDataResult)
                     };
@@ -660,7 +715,7 @@ var parseData=function(data){
 function xAxisTypeFun(data,point){
     if(data[0].label.xAxisType=="dataTime"){
         point[0]=Number(point[0])*1000;
-    }else if(!isNaN(Number(point[0]))){
+    }else if(data[0].label.xAxisType=="number"){
         point[0]=Number(point[0]);
     }
 }
@@ -682,8 +737,12 @@ function decimal(number){
 function yTitleUnit(){
     return yAxisUnit.split("-")[1]!=''&&options.yAxis.yTitleUnit&&yAxisUnit.split("-")[1]!="KiB/S"&&yAxisUnit.split("-")[1]!="KiB";
 }
+//X轴刻度是否显示单位判断
+function xTitleUnit(){
+    return xAxisUnit.split("-")[1]!=''&&options.xAxis.xTitleUnit&&xAxisUnit.split("-")[1]!="KiB/S"&&xAxisUnit.split("-")[1]!="KiB";
+}
 //Y轴和Z轴单位刻度+提示框格式单位处理
-function formatterFun(xUnit,yUnit,zUnit,tooltipBoolean,type,dataLabelsBoolean,outerBoolean){
+function formatterFun(xUnit,yUnit,zUnit,positionType,chartType,dataLabelsBoolean,outerBoolean){
     var data1=data;
     var pointFormat=function() {
         if(yUnit=="KiB/S"){
@@ -704,7 +763,7 @@ function formatterFun(xUnit,yUnit,zUnit,tooltipBoolean,type,dataLabelsBoolean,ou
 
         if(data1[0].label.xAxisType=="dataTime"){
             var pointX=dateFormat(this.x);
-        }else if(Number(this.x)){
+        }else if(data1[0].label.xAxisType=="number"){
             if(xUnit=="KiB/S"){
                 var pointX=formatterKiBs(this.x,"x");
             }else if(xUnit=="KiB"){
@@ -712,21 +771,23 @@ function formatterFun(xUnit,yUnit,zUnit,tooltipBoolean,type,dataLabelsBoolean,ou
             }else{
                 var pointX=formatterOtherY(this.x)+xUnit;
             }
+        }else{
+            var pointX=this.x;
         }
         
-        if((type=="piechart"||type=="piechartring")&&outerBoolean){
+        if((chartType=="piechart"||chartType=="piechartring")&&outerBoolean){
             return '<span style="color: '+ this.color + '">\u25CF占比</span> '+': <b>'+decimal(Number(this.percentage))+'%</b>'
-        }else if(type=="piechart"||type=="piechartring"){
+        }else if(chartType=="piechart"||chartType=="piechartring"){
             return '<span style="color: '+ this.color + '">\u25CF占比</span> '+': <b>'+decimal(Number(this.percentage))+'%</b><br/><span style="color: '+ this.color + '">\u25CF值</span> '+': <b>'+pointY+'</b>'
-        }else if(type=="scatterchart"){
+        }else if(chartType=="scatterchart"){
             return '<span style="color: '+ this.series.color + '">'+pointX+"  "+pointY+'</span> ';
-        }else if(type=="bubblechart"){
+        }else if(chartType=="bubblechart"){
             return '<span style="color: '+ this.series.color + '">('+pointX+","+pointY+")"+"  大小:"+pointZ+'</span> ';
-        }else if(type=="columnchartpercent"||type=="areachartpercent"||type=="barchartpercent"){
+        }else if(chartType=="columnchartpercent"||chartType=="areachartpercent"||chartType=="barchartpercent"){
             return '<span style="color: '+ this.series.color + '">\u25CF'+this.series.name+'</span> '+': <b>'+ decimal(Number(this.percentage))+'%'+'('+pointY+')</b><br/>'
-        }else if(type=="columnchartnormal"||type=="areachartnormal"||type=="barchartnormal"){
+        }else if(chartType=="columnchartnormal"||chartType=="areachartnormal"||chartType=="barchartnormal"){
             return '<span style="color: '+ this.series.color + '">\u25CF'+this.series.name+'</span> '+': <b>'+ pointY+'('+decimal(Number(this.percentage))+'%)</b><br/>'
-        }else if(type=="columnchartdrill"){
+        }else if(chartType=="columnchartdrill"){
             return '<span style="color: '+ this.series.color + '">\u25CF</span> '+'<b>'+ pointY+'</b><br/>'
         }else{
             return '<span style="color: '+ this.series.color + '">\u25CF'+this.series.name+'</span> '+': <b>'+ pointY+'</b><br/>'
@@ -742,65 +803,80 @@ function formatterFun(xUnit,yUnit,zUnit,tooltipBoolean,type,dataLabelsBoolean,ou
         }
     };
     var formatterKiBs=function(value,tooltipBoolean) {
-        var yValue=dataLabelsBoolean?this.y:this.value;
+        var thisValue=dataLabelsBoolean?this.y:this.value;
         if(tooltipBoolean){
-            yValue=value;
+            thisValue=value;
         }
-        if(Math.abs(yValue)>=Math.pow(1024,3)){
-            return decimal(yValue/Math.pow(1024,3))+'TiB/s';
-        }else if(Math.abs(yValue)>=Math.pow(1024,2)){
-            return decimal(yValue/Math.pow(1024,2))+'GiB/s';
-        }else if(Math.abs(yValue)>=1024){
-            return decimal(yValue/1024)+'MiB/s';
-        }else if(Math.abs(yValue)<1){
-            return decimal(yValue*1024)+'Byte/s';
+        if(Math.abs(thisValue)>=Math.pow(1024,3)){
+            return decimal(thisValue/Math.pow(1024,3))+'TiB/s';
+        }else if(Math.abs(thisValue)>=Math.pow(1024,2)){
+            return decimal(thisValue/Math.pow(1024,2))+'GiB/s';
+        }else if(Math.abs(thisValue)>=1024){
+            return decimal(thisValue/1024)+'MiB/s';
+        }else if(Math.abs(thisValue)<1){
+            return decimal(thisValue*1024)+'Byte/s';
         }else{
-            return parseInt(yValue)+'KiB/s';
+            return parseInt(thisValue)+'KiB/s';
         }
     };
     var formatterKiB=function(value,tooltipBoolean) {
-        var yValue=dataLabelsBoolean?this.y:this.value;
+        var thisValue=dataLabelsBoolean?this.y:this.value;
         if(tooltipBoolean){
-            yValue=value;
+            thisValue=value;
         }
-        if(Math.abs(yValue)>=Math.pow(1024,3)){
-            return decimal(yValue/Math.pow(1024,3))+ 'TiB';
-        }else if(Math.abs(yValue)>=Math.pow(1024,2)){
-            return decimal(yValue/Math.pow(1024,2))+'GiB';
-        }else if(Math.abs(yValue)>=1024){
-            return decimal(yValue/1024)+'MiB';
-        }else if(Math.abs(yValue)<1){
-            return decimal(yValue*1024)+'Byte';
+        if(Math.abs(thisValue)>=Math.pow(1024,3)){
+            return decimal(thisValue/Math.pow(1024,3))+ 'TiB';
+        }else if(Math.abs(thisValue)>=Math.pow(1024,2)){
+            return decimal(thisValue/Math.pow(1024,2))+'GiB';
+        }else if(Math.abs(thisValue)>=1024){
+            return decimal(thisValue/1024)+'MiB';
+        }else if(Math.abs(thisValue)<1){
+            return decimal(thisValue*1024)+'Byte';
         }else{
-            return parseInt(yValue)+'KiB';
+            return parseInt(thisValue)+'KiB';
         }
     };
     var formatterOtherV=function(){
-        var yValue=dataLabelsBoolean?this.y:this.value;
-        if(dataLabelsBoolean||yTitleUnit()){
-            yUnit='';
+        var xyUnit;
+        var thisValue=dataLabelsBoolean?this.y:this.value;
+        if(positionType=="yAxis"){
+            xyUnit=yUnit;
+        }else{
+            xyUnit=xUnit;
+        }
+        if(dataLabelsBoolean||yTitleUnit()||xTitleUnit()){
+            xyUnit='';
         }
         if(dataLabelsBoolean&&(data1[0].label.type=="columnchartpercent"||data1[0].label.type=="areachartpercent"||data1[0].label.type=="barchartpercent")){
 
             return decimal(Number(this.percentage))+"%";
         }
-        if(Math.abs(yValue)>=10000){
-            return Math.abs(yValue)>=Math.pow(10,8)?decimal(yValue)+yUnit:decimal(yValue/10000) + 'w'+yUnit;
-        }else if(Math.abs(yValue)>=1000){
-            return decimal(yValue/1000)+'k'+yUnit;
+        
+        if(Math.abs(thisValue)>=10000){
+            return Math.abs(thisValue)>=Math.pow(10,8)?decimal(thisValue)+xyUnit:decimal(thisValue/10000) + 'w'+xyUnit;
+        }else if(Math.abs(thisValue)>=1000){
+            return decimal(thisValue/1000)+'k'+xyUnit;
         }else{
-            return decimal(yValue)+yUnit;
+            return decimal(thisValue)+xyUnit;
         }
     };
-    if(tooltipBoolean){
+    if(positionType=="tooltip"){
         return pointFormat;
-    }else{
-        if(type=="columnchartpercent"||type=="areachartpercent"||type=="barchartpercent"){
+    }else if(positionType=="yAxis"){//Y轴刻度显示和数据标签都使用yAxis
+        if(chartType=="columnchartpercent"||chartType=="areachartpercent"||chartType=="barchartpercent"){
             yUnit="%";
         }
         if(yUnit=="KiB/S"){
             return formatterKiBs;
         }else if(yUnit=="KiB"){
+            return formatterKiB;
+        }else{
+            return formatterOtherV;
+        }
+    }else{
+        if(xUnit=="KiB/S"){
+            return formatterKiBs;
+        }else if(xUnit=="KiB"){
             return formatterKiB;
         }else{
             return formatterOtherV;
