@@ -11,7 +11,7 @@ var zAxisUnit;
        var options0={
             zoomType:"xy",
             export:false,
-            lineWidth:1.2,
+            lineWidth:1.7,
             cursor:'pointer',
             title: {
                 enabled:true,
@@ -23,7 +23,9 @@ var zAxisUnit;
                 enabled:true,
                 fontWeight:"normal",
                 fontSize:"12px",
-                color:'#000'
+                color:'#000',
+                navEnabled:true,
+                navHeight:40
             },
             labels: {
                 color: "#666666", 
@@ -168,7 +170,11 @@ var zAxisUnit;
 					fontSize : options.legend.fontSize,
 					fontWeight : options.legend.fontWeight
 				},
-				color: options.legend.color,
+                color: options.legend.color,
+                maxHeight:options.legend.navHeight,
+                navigation:{
+                    enabled:options.legend.navEnabled
+                }
             },
             tooltip: {
                 shared: options.tooltip.shared,
@@ -213,18 +219,18 @@ var zAxisUnit;
                     area: {
                         cursor: options.cursor,
                         fillOpacity: 0.3,
-                        lineWidth: options.lineWidth,
+                        lineWidth: 1.2,
                         states: {
                             hover: {
-                                lineWidth: options.lineWidth
+                                lineWidth: 1.2
                             }
                         },
                         marker: {
                             enabled: options.marker.enabled,
-                            radius: options.marker.radius,
+                            radius: 5,
                             states: {
                                 hover: {
-                                    radius:options.marker.radius
+                                    radius:5
                                 }
                             }
                         },
@@ -244,6 +250,45 @@ var zAxisUnit;
                             states: {
                                 hover: {
                                     radius: options.marker.radius
+                                }
+                            }
+                        },
+                        shadow: false
+                    },
+                    spline:{
+                        cursor: options.cursor,
+                        lineWidth: options.lineWidth,
+                        states: {
+                            hover: {
+                                lineWidth: options.lineWidth
+                            }
+                        },
+                        marker: {
+                            enabled: options.marker.enabled,
+                            radius: options.marker.radius,
+                            states: {
+                                hover: {
+                                    radius: options.marker.radius
+                                }
+                            }
+                        },
+                        shadow: false
+                    },
+                    areaspline:{
+                        cursor: options.cursor,
+                        fillOpacity: 0.3,
+                        lineWidth: 1.2,
+                        states: {
+                            hover: {
+                                lineWidth: 1.2
+                            }
+                        },
+                        marker: {
+                            enabled: options.marker.enabled,
+                            radius: 5,
+                            states: {
+                                hover: {
+                                    radius: 5
                                 }
                             }
                         },
