@@ -14,7 +14,7 @@ var zAxisUnit;
             lineWidth:1.7,
             cursor:'pointer',
             title: {
-                enabled:true,
+                enabled:false,
                 align: 'left',
                 color: '#55B951',
                 fontSize:'14px'
@@ -87,7 +87,8 @@ var zAxisUnit;
     var defaultChart = function(divId,data,options) {
         Highcharts.setOptions({
             lang : {
-                loading : "加载中..."
+                loading : "加载中...",
+                noData: '无响应数据'
             },
             global : {
                 useUTC : false
@@ -621,10 +622,12 @@ var parseData=function(data){
         case "splinechart":
             data.map(function(batchData){
                 for(var oneDataResult of batchData.result){
-                    oneDataResult.values.map(function(point){
-                        xAxisTypeFun(data,point);
-                        point[1]=((point[1]=='null'||point[1]==null)?null:Number(point[1]));
-                    });
+                    if(oneDataResult.values!=null){
+                        oneDataResult.values.map(function(point){
+                            xAxisTypeFun(data,point);
+                            point[1]=((point[1]=='null'||point[1]==null)?null:Number(point[1]));
+                        });
+                    }
                     var seriesElem={
                         "data":oneDataResult.values,
                         "tooltip": {
@@ -674,9 +677,11 @@ var parseData=function(data){
         case "barchartnormal":
             data.map(function(batchData){
                 for(var oneDataResult of batchData.result){
-                    oneDataResult.values.map(function(point){
-                        point[1]=((point[1]=='null'||point[1]==null)?null:Number(point[1]));
-                    });
+                    if(oneDataResult.values!=null){
+                        oneDataResult.values.map(function(point){
+                            point[1]=((point[1]=='null'||point[1]==null)?null:Number(point[1]));
+                        });
+                    }
                     var seriesElem={
                         "data":oneDataResult.values,
                         "tooltip": {
@@ -692,16 +697,18 @@ var parseData=function(data){
             var series=[];
             data.map(function(batchData){
                 for(var oneDataResult of batchData.result){
-                    oneDataResult.values.map(function(point){
-                        xAxisTypeFun(data,point);
-                        point[1]=((point[1]=='null'||point[1]==null)?null:Number(point[1]));
-                        var seriesElem={
-                            "name":point[0],
-                            "y":point[1],
-                            "drilldown":point[2]
-                        };
-                        series.push(seriesElem);
-                    });
+                    if(oneDataResult.values!=null){
+                        oneDataResult.values.map(function(point){
+                            xAxisTypeFun(data,point);
+                            point[1]=((point[1]=='null'||point[1]==null)?null:Number(point[1]));
+                            var seriesElem={
+                                "name":point[0],
+                                "y":point[1],
+                                "drilldown":point[2]
+                            };
+                            series.push(seriesElem);
+                        });
+                    }
                 };
             });
             dataproArr.push({
@@ -716,10 +723,12 @@ var parseData=function(data){
         case "scatterchart":
             data.map(function(batchData){
                 for(var oneDataResult of batchData.result){
-                    oneDataResult.values.map(function(point){
-                        xAxisTypeFun(data,point);
-                        point[1]=((point[1]=='null'||point[1]==null)?null:Number(point[1]));
-                    });
+                    if(oneDataResult.values!=null){
+                        oneDataResult.values.map(function(point){
+                            xAxisTypeFun(data,point);
+                            point[1]=((point[1]=='null'||point[1]==null)?null:Number(point[1]));
+                        });
+                    }
                     var seriesElem={
                         "marker":{enabled: true},
                         "data":oneDataResult.values,
@@ -735,11 +744,13 @@ var parseData=function(data){
         case "bubblechart":
             data.map(function(batchData){
                 for(var oneDataResult of batchData.result){
-                    oneDataResult.values.map(function(point){
-                        xAxisTypeFun(data,point);
-                        point[1]=((point[1]=='null'||point[1]==null)?null:Number(point[1]));
-                        point[2]=((point[2]=='null'||point[2]==null)?null:Number(point[2]));
-                    });
+                    if(oneDataResult.values!=null){
+                        oneDataResult.values.map(function(point){
+                            xAxisTypeFun(data,point);
+                            point[1]=((point[1]=='null'||point[1]==null)?null:Number(point[1]));
+                            point[2]=((point[2]=='null'||point[2]==null)?null:Number(point[2]));
+                        });
+                    }
                     var seriesElem={
                         "marker":{enabled: true},
                         "data":oneDataResult.values,
@@ -780,17 +791,17 @@ function decimal(number){
 }
 //Y轴刻度是否显示单位判断
 function yTitleUnit(){
-    return yAxisUnit.split("-")[1]!=''&&options.yAxis.yTitleUnit&&yAxisUnit.split("-")[1]!="KiB/S"&&yAxisUnit.split("-")[1]!="KiB";
+    return yAxisUnit.split("-")[1]!=''&&options.yAxis.yTitleUnit&&yAxisUnit.split("-")[1]!="KiB/s"&&yAxisUnit.split("-")[1]!="KiB";
 }
 //X轴刻度是否显示单位判断
 function xTitleUnit(){
-    return xAxisUnit.split("-")[1]!=''&&options.xAxis.xTitleUnit&&xAxisUnit.split("-")[1]!="KiB/S"&&xAxisUnit.split("-")[1]!="KiB";
+    return xAxisUnit.split("-")[1]!=''&&options.xAxis.xTitleUnit&&xAxisUnit.split("-")[1]!="KiB/s"&&xAxisUnit.split("-")[1]!="KiB";
 }
 //Y轴和Z轴单位刻度+提示框格式单位处理
 function formatterFun(xUnit,yUnit,zUnit,positionType,chartType,dataLabelsBoolean,outerBoolean){
     var data1=data;
     var pointFormat=function() {
-        if(yUnit=="KiB/S"){
+        if(yUnit=="KiB/s"){
             var pointY=formatterKiBs(this.y,"y");
         }else if(yUnit=="KiB"){
             var pointY=formatterKiB(this.y,"y");
@@ -798,7 +809,7 @@ function formatterFun(xUnit,yUnit,zUnit,positionType,chartType,dataLabelsBoolean
             var pointY=formatterOtherY(this.y)+yUnit;
         }
 
-        if(zUnit=="KiB/S"){
+        if(zUnit=="KiB/s"){
             var pointZ=formatterKiBs(this.z,"z");
         }else if(zUnit=="KiB"){
             var pointZ=formatterKiB(this.z,"z");
@@ -809,7 +820,7 @@ function formatterFun(xUnit,yUnit,zUnit,positionType,chartType,dataLabelsBoolean
         if(data1[0].label.xAxisType=="dataTime"){
             var pointX=dateFormat(this.x);
         }else if(data1[0].label.xAxisType=="number"){
-            if(xUnit=="KiB/S"){
+            if(xUnit=="KiB/s"){
                 var pointX=formatterKiBs(this.x,"x");
             }else if(xUnit=="KiB"){
                 var pointX=formatterKiB(this.x,"x");
@@ -911,7 +922,7 @@ function formatterFun(xUnit,yUnit,zUnit,positionType,chartType,dataLabelsBoolean
         if(chartType=="columnchartpercent"||chartType=="areachartpercent"||chartType=="barchartpercent"){
             yUnit="%";
         }
-        if(yUnit=="KiB/S"){
+        if(yUnit=="KiB/s"){
             return formatterKiBs;
         }else if(yUnit=="KiB"){
             return formatterKiB;
@@ -919,7 +930,7 @@ function formatterFun(xUnit,yUnit,zUnit,positionType,chartType,dataLabelsBoolean
             return formatterOtherV;
         }
     }else{
-        if(xUnit=="KiB/S"){
+        if(xUnit=="KiB/s"){
             return formatterKiBs;
         }else if(xUnit=="KiB"){
             return formatterKiB;
@@ -934,14 +945,24 @@ function getPieColorData(data){
     var drillData=[];
     data.map(function(batchData){
         for(var oneDataResult of batchData.result){
-            var elem=oneDataResult.values[0];
-            elem[1]=((elem[1]=='null'||elem[1]==null)?null:Number((Number(elem[1]).toFixed(2))));
-            innerData.push({
-                name:transSeriesName(batchData,oneDataResult),
-                y:elem[1]
-            });
-            if(batchData.label.hasOwnProperty("drillData")){
-                innerData[innerData.length-1]["drilldown"]=elem[2];
+            if(oneDataResult.values!=null&&oneDataResult.values!=[]){
+                var elem=oneDataResult.values[0];
+                elem[1]=((elem[1]=='null'||elem[1]==null)?null:Number((Number(elem[1]).toFixed(2))));
+                innerData.push({
+                    name:transSeriesName(batchData,oneDataResult),
+                    y:elem[1]
+                });
+                if(batchData.label.hasOwnProperty("drillData")){
+                    innerData[innerData.length-1]["drilldown"]=elem[2];
+                }
+            }else{
+                innerData.push({
+                    name:transSeriesName(batchData,oneDataResult),
+                    y:null
+                });
+                if(batchData.label.hasOwnProperty("drillData")){
+                    innerData[innerData.length-1]["drilldown"]=null;
+                }
             }
         };
         if(batchData.label.drillData){
