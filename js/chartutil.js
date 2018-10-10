@@ -49,6 +49,7 @@ var zAxisUnit;
                 radius:5
             },
             tooltip: {
+                enabled:true,
                 shared: true,
                 color: "#333333", 
                 fontSize: "12px",
@@ -69,8 +70,13 @@ var zAxisUnit;
             '#DB843D', '#92A8CD', '#A47D7C', '#B5CA92'],
             pie:{
                 subY:55,
-                subfontSize:'25px',
+                subfontSize:'35px',
                 size:'100%'
+            },
+            gauge:{
+                subY:20,
+                subfontSize:'35px',
+                borderWidth:'28px'
             }
        };
        options=$.extend(true,{},options0,options1);
@@ -178,6 +184,7 @@ var zAxisUnit;
                 }
             },
             tooltip: {
+                enabled:options.tooltip.enabled,
                 shared: options.tooltip.shared,
                 style:{ 
                     color: options.tooltip.color, 
@@ -299,9 +306,8 @@ var zAxisUnit;
                 break;
             case "piechartring":
                 defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
-                var title=parseInt(getPieColorData(data).innerData[0].y/(getPieColorData(data).innerData[0].y+getPieColorData(data).innerData[1].y)*100)+"%";
                 defaultChart["subtitle"]={
-                    text: title,
+                    text: singlePreValue(),
                     align: 'center',
                     verticalAlign: 'middle',
                     y: options.pie.subY,
@@ -499,6 +505,58 @@ var zAxisUnit;
                         cursor: options.cursor
                     }
                 }
+                break;
+            case "solidgaugechartnum":
+            case "solidgaugechart":
+                defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
+                if(data[0].label.type.split("chart")[1]!=="num"){
+                    var title=singlePreValue();
+                }else{
+                    var title=singleValue(data[0].result[0].values[0][1],data[0].label.yAxisUnit.split("-")[1],false);
+                }
+                defaultChart["subtitle"]={
+                    text: title,
+                    align: 'center',
+                    verticalAlign: 'middle',
+                    y: options.gauge.subY,
+                    style: {
+                        color: options.color[0],
+                        fontSize:options.gauge.subfontSize
+                    }
+                };
+                defaultChart["tooltip"]["headerFormat"]='<span>{point.key}</span><br/>';
+                defaultChart["pane"]={
+                    startAngle: 395,
+                    endAngle: 35,
+                    background: [{
+                        outerRadius: '112%',
+                        innerRadius: '88%',
+                        backgroundColor: options.color[1],
+                        borderWidth: 0
+                    }]
+                };
+                var maxV=Number(data[0].result[0].values[0][1])+Number(data[0].result[1].values[0][1]);
+                var yAxis={
+                    min: 0,
+                    max: maxV,
+                    lineWidth: 0,
+                    tickPositions: []
+                };
+                defaultChart["yAxis"]=$.extend(true,{},defaultChart["yAxis"],yAxis);
+                defaultChart["plotOptions"]={
+                    solidgauge: {
+                        cursor: options.cursor,
+                        fillOpacity: 0.3,
+                        borderWidth: options.gauge.borderWidth,
+                        dataLabels: {
+                            enabled: false
+                        },
+                        linecap: 'round',
+                        stickyTracking: false,
+                        showInLegend: false
+                    }
+                };
+                defaultChart["series"]=dataproArr;
                 break;
         }
         return defaultChart;
@@ -763,6 +821,22 @@ var parseData=function(data){
                 }
             });
             break;
+        case "solidgaugechartnum":
+        case "solidgaugechart":
+            var yValue=Number(data[0].result[0].values[0][1]);
+            dataproArr=[{
+                name: '',
+                tooltip: {
+                    "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"tooltip",data[0].label.type,false)
+                },
+                borderColor:options.color[0],
+                data: [{
+                    radius: '100%',
+                    innerRadius: '100%',
+                    y: yValue
+                }]
+            }];
+            break;
         default:
     }
     return dataproArr;
@@ -783,6 +857,7 @@ function scienceNum(num){
 }
 //保留两位小数并去除小数点后无用的0
 function decimal(number){
+    number=Number(number);
     if(Math.abs(number)<10000){
         return parseFloat(number.toFixed(2));
     }else{
@@ -797,33 +872,75 @@ function yTitleUnit(){
 function xTitleUnit(){
     return xAxisUnit.split("-")[1]!=''&&options.xAxis.xTitleUnit&&xAxisUnit.split("-")[1]!="KiB/s"&&xAxisUnit.split("-")[1]!="KiB";
 }
+var formatterOtherY=function(value) {
+    if(Math.abs(value)>=10000){
+        return Math.abs(value)>=Math.pow(10,8)?decimal(value):decimal(value/10000) + 'w';
+    }else if(Math.abs(value)>=1000){
+        return decimal(value/1000) + 'k';
+    }else{
+        return decimal(value);
+    }
+};
+var formatterKiBs=function(value,tooltipBoolean,dataLabelsBoolean) {
+    var thisValue=dataLabelsBoolean?this.y:this.value;
+    if(tooltipBoolean){
+        thisValue=value;
+    }
+    if(Math.abs(thisValue)>=Math.pow(1024,3)){
+        return decimal(thisValue/Math.pow(1024,3))+'TiB/s';
+    }else if(Math.abs(thisValue)>=Math.pow(1024,2)){
+        return decimal(thisValue/Math.pow(1024,2))+'GiB/s';
+    }else if(Math.abs(thisValue)>=1024){
+        return decimal(thisValue/1024)+'MiB/s';
+    }else if(Math.abs(thisValue)<1){
+        return decimal(thisValue*1024)+'Byte/s';
+    }else{
+        return parseInt(thisValue)+'KiB/s';
+    }
+};
+var formatterKiB=function(value,tooltipBoolean,dataLabelsBoolean) {
+    var thisValue=dataLabelsBoolean?this.y:this.value;
+    if(tooltipBoolean){
+        thisValue=value;
+    }
+    if(Math.abs(thisValue)>=Math.pow(1024,3)){
+        return decimal(thisValue/Math.pow(1024,3))+ 'TiB';
+    }else if(Math.abs(thisValue)>=Math.pow(1024,2)){
+        return decimal(thisValue/Math.pow(1024,2))+'GiB';
+    }else if(Math.abs(thisValue)>=1024){
+        return decimal(thisValue/1024)+'MiB';
+    }else if(Math.abs(thisValue)<1){
+        return decimal(thisValue*1024)+'Byte';
+    }else{
+        return parseInt(thisValue)+'KiB';
+    }
+};
 //Y轴和Z轴单位刻度+提示框格式单位处理
 function formatterFun(xUnit,yUnit,zUnit,positionType,chartType,dataLabelsBoolean,outerBoolean){
     var data1=data;
     var pointFormat=function() {
         if(yUnit=="KiB/s"){
-            var pointY=formatterKiBs(this.y,"y");
+            var pointY=formatterKiBs(this.y,"y",dataLabelsBoolean);
         }else if(yUnit=="KiB"){
-            var pointY=formatterKiB(this.y,"y");
+            var pointY=formatterKiB(this.y,"y",dataLabelsBoolean);
         }else{
             var pointY=formatterOtherY(this.y)+yUnit;
         }
 
         if(zUnit=="KiB/s"){
-            var pointZ=formatterKiBs(this.z,"z");
+            var pointZ=formatterKiBs(this.z,"z",dataLabelsBoolean);
         }else if(zUnit=="KiB"){
-            var pointZ=formatterKiB(this.z,"z");
+            var pointZ=formatterKiB(this.z,"z",dataLabelsBoolean);
         }else{
             var pointZ=formatterOtherY(this.z)+zUnit;
         }
-
         if(data1[0].label.xAxisType=="dataTime"){
             var pointX=dateFormat(this.x);
         }else if(data1[0].label.xAxisType=="number"){
             if(xUnit=="KiB/s"){
-                var pointX=formatterKiBs(this.x,"x");
+                var pointX=formatterKiBs(this.x,"x",dataLabelsBoolean);
             }else if(xUnit=="KiB"){
-                var pointX=formatterKiB(this.x,"x");
+                var pointX=formatterKiB(this.x,"x",dataLabelsBoolean);
             }else{
                 var pointX=formatterOtherY(this.x)+xUnit;
             }
@@ -845,51 +962,10 @@ function formatterFun(xUnit,yUnit,zUnit,positionType,chartType,dataLabelsBoolean
             return '<span style="color: '+ this.series.color + '">\u25CF'+this.series.name+'</span> '+': <b>'+ pointY+'('+decimal(Number(this.percentage))+'%)</b><br/>'
         }else if(chartType=="columnchartdrill"){
             return '<span style="color: '+ this.series.color + '">\u25CF</span> '+'<b>'+ pointY+'</b><br/>'
+        }else if(chartType=="solidgaugechart"||chartType=="solidgaugechartnum"){
+            return '<span style="color: '+ this.color + '">\u25CF占比</span> '+': <b>'+singlePreValue()+'</b><br/><span style="color: '+ this.color + '">\u25CF值</span> '+': <b>'+pointY+'</b>'
         }else{
             return '<span style="color: '+ this.series.color + '">\u25CF'+this.series.name+'</span> '+': <b>'+ pointY+'</b><br/>'
-        }
-    };
-    var formatterOtherY=function(value) {
-        if(Math.abs(value)>=10000){
-            return Math.abs(value)>=Math.pow(10,8)?decimal(value):decimal(value/10000) + 'w';
-        }else if(Math.abs(value)>=1000){
-            return decimal(value/1000) + 'k';
-        }else{
-            return decimal(value);
-        }
-    };
-    var formatterKiBs=function(value,tooltipBoolean) {
-        var thisValue=dataLabelsBoolean?this.y:this.value;
-        if(tooltipBoolean){
-            thisValue=value;
-        }
-        if(Math.abs(thisValue)>=Math.pow(1024,3)){
-            return decimal(thisValue/Math.pow(1024,3))+'TiB/s';
-        }else if(Math.abs(thisValue)>=Math.pow(1024,2)){
-            return decimal(thisValue/Math.pow(1024,2))+'GiB/s';
-        }else if(Math.abs(thisValue)>=1024){
-            return decimal(thisValue/1024)+'MiB/s';
-        }else if(Math.abs(thisValue)<1){
-            return decimal(thisValue*1024)+'Byte/s';
-        }else{
-            return parseInt(thisValue)+'KiB/s';
-        }
-    };
-    var formatterKiB=function(value,tooltipBoolean) {
-        var thisValue=dataLabelsBoolean?this.y:this.value;
-        if(tooltipBoolean){
-            thisValue=value;
-        }
-        if(Math.abs(thisValue)>=Math.pow(1024,3)){
-            return decimal(thisValue/Math.pow(1024,3))+ 'TiB';
-        }else if(Math.abs(thisValue)>=Math.pow(1024,2)){
-            return decimal(thisValue/Math.pow(1024,2))+'GiB';
-        }else if(Math.abs(thisValue)>=1024){
-            return decimal(thisValue/1024)+'MiB';
-        }else if(Math.abs(thisValue)<1){
-            return decimal(thisValue*1024)+'Byte';
-        }else{
-            return parseInt(thisValue)+'KiB';
         }
     };
     var formatterOtherV=function(){
@@ -904,7 +980,7 @@ function formatterFun(xUnit,yUnit,zUnit,positionType,chartType,dataLabelsBoolean
             xyUnit='';
         }
         if(dataLabelsBoolean&&(data1[0].label.type=="columnchartpercent"||data1[0].label.type=="areachartpercent"||data1[0].label.type=="barchartpercent")){
-
+    
             return decimal(Number(this.percentage))+"%";
         }
         
@@ -938,6 +1014,21 @@ function formatterFun(xUnit,yUnit,zUnit,positionType,chartType,dataLabelsBoolean
             return formatterOtherV;
         }
     }
+}
+//活动图单值单位换算
+function singleValue(value,unit,dataLabelsBoolean){
+    if(unit=="KiB/s"){
+        var pointZ=formatterKiBs(value,true,dataLabelsBoolean);
+    }else if(unit=="KiB"){
+        var pointZ=formatterKiB(value,true,dataLabelsBoolean);
+    }else{
+        var pointZ=formatterOtherY(value)+unit;
+    }
+    return pointZ;
+}
+//环图和活动图百分比计算
+function singlePreValue(){
+    return parseInt(getPieColorData(data).innerData[0].y/(getPieColorData(data).innerData[0].y+getPieColorData(data).innerData[1].y)*100)+"%";
 }
 //得到饼图内环颜色+内外环值
 function getPieColorData(data){

@@ -1212,3 +1212,65 @@ var columnDrillData=[
         ]
     }
 ];
+var solidgaugeData=[
+    {
+        "label":{
+            "seriesReg":"{{monitor_host}}",
+            "type":"solidgaugechart",
+            "yAxisUnit":"-KiB",
+            "xAxisUnit":"-",
+            "zAxisUnit":"-",
+            "xAxisType":"",
+            "title":"CPU使用率"
+        },
+        "result":[
+            {
+                "seriesAttr":{
+                    "monitor_host":""
+                },
+                "values":[
+                    ["","100000"]
+                ]
+            },
+            {
+                "seriesAttr":{                 
+                    "monitor_host":""
+                },
+                "values":[
+                    ["","105888"]
+                ]
+            }
+        ]
+    }
+];
+var solidgaugeNumData=[
+    {
+        "label":{
+            "seriesReg":"{{monitor_host}}",
+            "type":"solidgaugechartnum",
+            "yAxisUnit":"-KiB",
+            "xAxisUnit":"-",
+            "zAxisUnit":"-",
+            "xAxisType":"",
+            "title":"CPU使用率"
+        },
+        "result":[
+            {
+                "seriesAttr":{
+                    "monitor_host":""
+                },
+                "values":[
+                    ["","100000.488"]
+                ]
+            },
+            {
+                "seriesAttr":{                 
+                    "monitor_host":""
+                },
+                "values":[
+                    ["","105888"]
+                ]
+            }
+        ]
+    }
+];
