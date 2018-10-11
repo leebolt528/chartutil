@@ -67,11 +67,11 @@ var areaData=[
         ]
     }
 ];
-var ringData=[
+var ringRuleData=[
     {
         "label":{
             "seriesReg":"{{monitor_host}}",
-            "type":"piechartring",
+            "type":"piechartringrule",
             "yAxisUnit":"时间-KiB",
             "xAxisUnit":"-",
             "zAxisUnit":"-",
@@ -1269,6 +1269,54 @@ var solidgaugeNumData=[
                 },
                 "values":[
                     ["","105888"]
+                ]
+            }
+        ]
+    }
+];
+var ringData=[
+    {
+        "label":{
+            "seriesReg":"{{monitor_host}}",
+            "type":"piechartring",
+            "yAxisUnit":"时间-用户",
+            "xAxisUnit":"-",
+            "zAxisUnit":"-",
+            "xAxisType":"",
+            "title":"2018 年浏览器市场份额",
+            "drillData":[]
+        },
+        "result":[
+            {
+                "seriesAttr":{
+                    "monitor_host":"谷歌"
+                },
+                "values":[
+                    ["",'25']
+                ]
+            },
+            {
+                "seriesAttr":{                 
+                    "monitor_host":"火狐"
+                },
+                "values":[
+                    ["",5000]
+                ]
+            },
+            {
+                "seriesAttr":{
+                    "monitor_host":"IE"
+                },
+                "values":[
+                    ["",300]
+                ]
+            },
+            {
+                "seriesAttr":{                 
+                    "monitor_host":"其它"
+                },
+                "values":[
+                    ["",300]
                 ]
             }
         ]

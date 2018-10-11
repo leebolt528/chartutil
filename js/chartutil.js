@@ -3,6 +3,7 @@ var data;
 var xAxisUnit;
 var yAxisUnit;
 var zAxisUnit;
+var chart;
 (function( $ ){
     $.fn.chart = function(data1,options1) {
         if (arguments.length == 1) {
@@ -69,14 +70,26 @@ var zAxisUnit;
             '#4572A7', '#AA4643', '#89A54E', '#80699B', '#3D96AE',
             '#DB843D', '#92A8CD', '#A47D7C', '#B5CA92'],
             pie:{
+                size:'100%',
+                startAngle:-110,
+                endAngle:110,
+                innerSize:'65%',
+                outerSize:'90%'
+            },
+            pieRingRule:{
                 subY:55,
-                subfontSize:'35px',
-                size:'100%'
+                subfontSize:'35px'
             },
             gauge:{
                 subY:20,
                 subfontSize:'35px',
                 borderWidth:'28px'
+            },
+            pieRing:{
+                subEnabled:false,
+                subY:35,
+                subfontSize:'15px',
+                subColor:"#333333"
             }
        };
        options=$.extend(true,{},options0,options1);
@@ -88,7 +101,7 @@ var zAxisUnit;
             return false;
         }
         var id=$(this).attr("id");
-        new Highcharts.Chart(defaultChart(id,data,options));
+        chart=new Highcharts.Chart(defaultChart(id,data,options));
     }
     var defaultChart = function(divId,data,options) {
         Highcharts.setOptions({
@@ -304,16 +317,16 @@ var zAxisUnit;
                     }
                 };
                 break;
-            case "piechartring":
+            case "piechartringrule":
                 defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
                 defaultChart["subtitle"]={
                     text: singlePreValue(),
                     align: 'center',
                     verticalAlign: 'middle',
-                    y: options.pie.subY,
+                    y: options.pieRingRule.subY,
                     style: {
                         color: getPieColorData(data).color[0],
-                        fontSize:options.pie.subfontSize
+                        fontSize:options.pieRingRule.subfontSize
                     }
                 };
                 defaultChart["tooltip"]["headerFormat"]='<span>{point.key}</span><br/>';
@@ -327,8 +340,8 @@ var zAxisUnit;
                                 fontWeight:options.dataLabels.fontWeight
                             }
                         },
-                        startAngle: -110, // 圆环的开始角度
-                        endAngle: 110,    // 圆环的结束角度
+                        startAngle: options.pie.startAngle, // 圆环的开始角度
+                        endAngle: options.pie.endAngle,    // 圆环的结束角度
                         center: ['50%', '65%'],
                         showInLegend: false,
                         cursor: options.cursor
@@ -359,6 +372,63 @@ var zAxisUnit;
                 defaultChart["series"]=dataproArr;
                 pieDrilldown(defaultChart);
                 break;
+            case "piechartring":
+                defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
+                defaultChart["subtitle"]={
+                    //text: '',
+                    text:options.pieRing.subEnabled?data[0].label.title:null,
+                    align: 'center',
+                    verticalAlign: 'middle',
+                    y: options.pieRing.subY,
+                    style: {
+                        color: options.pieRing.subColor,
+                        fontSize:options.pieRing.subfontSize
+                    }
+                };
+                defaultChart["tooltip"]["headerFormat"]='<span>{point.key}</span><br/>';
+                defaultChart["plotOptions"]={
+                    pie: {
+                        cursor: options.cursor,
+                        fillOpacity: 0.3,
+                        allowPointSelect: true,
+                        dataLabels: {
+                            enabled:options.dataLabels.enabled,
+                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                            style: {
+                                color: options.dataLabels.color, 
+                                fontSize: options.dataLabels.fontSize ,
+                                fontWeight:options.dataLabels.fontWeight
+                            }
+                        },
+                        startAngle: options.pie.startAngle, // 圆环的开始角度
+                        endAngle: options.pie.endAngle,    // 圆环的结束角度
+                        showInLegend: options.legend?true:false,
+                        point: {
+                            events: {
+                                // mouseOver: function(e) {  // 鼠标滑过时动态更新标题
+                                //     if(options.pieRing.subEnabled){
+                                //         chart.setTitle(null,{
+                                //             text: e.target.name+ '\t'+ e.target.y + ' %'
+                                //         });
+                                //     }
+                                // },
+                                click: function(e) { // 同样的可以在点击事件里处理
+                                    if(options.pieRing.subEnabled){
+                                        chart.setTitle(null,{
+                                            text: e.point.name+ '\t'+ e.point.y + ' %'
+                                        });
+                                    }
+                                }
+                            }
+                        },
+                    }
+                };
+                if(Math.abs(options.pie.startAngle-options.pie.endAngle)<300){
+                    defaultChart["plotOptions"]["pie"]["center"]=['50%', '65%'];
+                }
+                defaultChart["series"]=dataproArr;
+                //pieDrilldown(defaultChart);
+            break;
             case "columnchartdrill":
                 defaultChart["legend"]["enabled"]=false;
             case "columnchart":
@@ -697,12 +767,13 @@ var parseData=function(data){
                 }
             });
             break;
-        case "piechartring":
+        case "piechartringrule":
         case "piechart":
+        case "piechartring":
             var colorData=getPieColorData(data);
             var innerObj={
                 size:options.pie.size,
-                innerSize: '65%',
+                innerSize: options.pie.innerSize,
                 data:colorData.innerData,
                 colors: colorData.color,
                 tooltip: {
@@ -711,7 +782,7 @@ var parseData=function(data){
             };
             var outSiteObj={
                 size:options.pie.size,
-                innerSize: '90%',
+                innerSize: options.pie.outerSize,
                 data: colorData.outerData,
                 colors: options.color,
                 tooltip: {
@@ -723,7 +794,7 @@ var parseData=function(data){
                 innerObj['size']='100%';
             }
             dataproArr.push(innerObj);
-            if (data[0].label.type=='piechartring') {
+            if (data[0].label.type=='piechartringrule') {
                 dataproArr.push(outSiteObj);
             }
             break;
@@ -948,9 +1019,9 @@ function formatterFun(xUnit,yUnit,zUnit,positionType,chartType,dataLabelsBoolean
             var pointX=this.x;
         }
         
-        if((chartType=="piechart"||chartType=="piechartring")&&outerBoolean){
+        if((chartType=="piechart"||chartType=="piechartringrule")&&outerBoolean){
             return '<span style="color: '+ this.color + '">\u25CF占比</span> '+': <b>'+decimal(Number(this.percentage))+'%</b>'
-        }else if(chartType=="piechart"||chartType=="piechartring"){
+        }else if(chartType=="piechart"||chartType=="piechartringrule"||chartType=="piechartring"){
             return '<span style="color: '+ this.color + '">\u25CF占比</span> '+': <b>'+decimal(Number(this.percentage))+'%</b><br/><span style="color: '+ this.color + '">\u25CF值</span> '+': <b>'+pointY+'</b>'
         }else if(chartType=="scatterchart"){
             return '<span style="color: '+ this.series.color + '">'+pointX+"  "+pointY+'</span> ';
@@ -963,7 +1034,7 @@ function formatterFun(xUnit,yUnit,zUnit,positionType,chartType,dataLabelsBoolean
         }else if(chartType=="columnchartdrill"){
             return '<span style="color: '+ this.series.color + '">\u25CF</span> '+'<b>'+ pointY+'</b><br/>'
         }else if(chartType=="solidgaugechart"||chartType=="solidgaugechartnum"){
-            return '<span style="color: '+ this.color + '">\u25CF占比</span> '+': <b>'+singlePreValue()+'</b><br/><span style="color: '+ this.color + '">\u25CF值</span> '+': <b>'+pointY+'</b>'
+            return '<span style="color: '+ this.color + '">\u25CF值</span> '+': <b>'+pointY+'</b>'
         }else{
             return '<span style="color: '+ this.series.color + '">\u25CF'+this.series.name+'</span> '+': <b>'+ pointY+'</b><br/>'
         }
@@ -1062,7 +1133,7 @@ function getPieColorData(data){
     });
     var outerData=[];
     var color=options.color;
-    if(data[0].label.type=="piechartring"){
+    if(data[0].label.type=="piechartringrule"){
         var allValue=innerData[0]["y"]+innerData[1]["y"];
         color=[options.color[0],'#e6e6e6'];
         var allPre=0;
