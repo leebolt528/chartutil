@@ -610,8 +610,8 @@ var chart;
                 defaultChart["tooltip"]["headerFormat"]='<span>{point.key}</span><br/>';
                 defaultChart["pane"]={
                     size:options.size,
-                    startAngle: 395,
-                    endAngle: 35,
+                    // startAngle: 395,
+                    // endAngle: 35,
                     background: [{
                         outerRadius: options.gauge.outerRadius,
                         innerRadius: options.gauge.innerRadius,
@@ -629,9 +629,7 @@ var chart;
                     max: maxV,
                     lineWidth: 0,
                     stops: [
-                        [0.5, options.colorRule[0]], // green
-                        [0.7, options.colorRule[1]], // yellow
-                        [1, options.colorRule[2]] // red
+                        [1,defaultChart["subtitle"]["style"]["color"]]
                     ]
                 };
                 defaultChart["yAxis"]=$.extend(true,{},defaultChart["yAxis"],yAxis);
@@ -643,15 +641,21 @@ var chart;
                     defaultChart["yAxis"]["tickAmount"]=options.gauge.tickAmount,
                     defaultChart["yAxis"]["showFirstLabel"]=true,
                     defaultChart["yAxis"]["showLastLabel"]=true
-                    if(options.gauge.tickAmount<=2){
-                        defaultChart["yAxis"]["minorTickInterval"]=null,
-                        defaultChart["yAxis"]["tickPixelInterval"]=[]
-                    }
                 }else{
                     defaultChart["pane"]["size"]=(Number(options.size.replace("%",""))-20)+"%";
-                        defaultChart["yAxis"]["tickAmount"]=options.gauge.tickAmount-1,
-                        defaultChart["yAxis"]["showFirstLabel"]=false,
-                        defaultChart["yAxis"]["showLastLabel"]=true
+                    defaultChart["yAxis"]["tickAmount"]=options.gauge.tickAmount-1,
+                    defaultChart["yAxis"]["showFirstLabel"]=false,
+                    defaultChart["yAxis"]["showLastLabel"]=true
+                }
+                if(options.gauge.tickAmount<=2){
+                    defaultChart["yAxis"]["minorTickInterval"]=null,
+                    defaultChart["yAxis"]["tickPixelInterval"]=[]
+                }
+                if(options.gauge.tickAmount==0){
+                    defaultChart["yAxis"]["showFirstLabel"]=false,
+                    defaultChart["yAxis"]["showLastLabel"]=false
+                }else{
+                    defaultChart["yAxis"]["tickPositions"]=tickPositions(options.gauge.tickAmount,maxV)
                 }
                 defaultChart["plotOptions"]={
                     solidgauge: {
@@ -1194,4 +1198,22 @@ function getPieColorData(data){
         });
     }
     return {color:color,innerData:innerData,outerData:outerData,drillData:drillData};
+}
+//获取仪表盘刻度数组
+function tickPositions(amount,max){
+    if(amount==1){
+        amount=2;
+    }
+    var step=max/(amount-1);
+    var tickArr=[0];
+    var tick=0;
+    for(var i=1;i<amount;i++){
+        if(i!==amount-1){
+            tick+=step;
+        }else{
+            tick=max;
+        }
+        tickArr.push(tick);
+    }
+    return tickArr;
 }

@@ -1260,7 +1260,7 @@ var solidgaugeNumData=[
                     "monitor_host":"内存占用"
                 },
                 "values":[
-                    ["","100000.488"]
+                    ["","20"]
                 ]
             },
             {
@@ -1268,7 +1268,7 @@ var solidgaugeNumData=[
                     "monitor_host":""
                 },
                 "values":[
-                    ["","105888"]
+                    ["","15"]
                 ]
             }
         ]
@@ -1291,7 +1291,7 @@ var solidgaugehalfData=[
                     "monitor_host":"内存占用"
                 },
                 "values":[
-                    ["","15"]
+                    ["","31"]
                 ]
             },
             {
