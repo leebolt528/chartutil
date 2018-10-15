@@ -69,12 +69,14 @@ var chart;
             "#90ed7d", "#f15c80", "#e4d354","#91e8e1",
             '#4572A7', '#AA4643', '#89A54E', '#80699B', '#3D96AE',
             '#DB843D', '#92A8CD', '#A47D7C', '#B5CA92'],
-            pie:{
-                size:'100%',
+            colorRule:['#38ae33','#ef8f40','#f64a4a',"#e6e6e6"],
+            size:'100%',
+            halfChart:{
                 startAngle:-110,
                 endAngle:110,
                 innerSize:'65%',
-                outerSize:'90%'
+                outerSize:'90%',
+                center:['50%', '65%']
             },
             pieRingRule:{
                 subY:55,
@@ -83,11 +85,14 @@ var chart;
             gauge:{
                 subY:20,
                 subfontSize:'35px',
-                borderWidth:'28px'
+                //borderWidth:'28px',
+                outerRadius:'100%',
+                innerRadius:'70%',
+                tickAmount:2
             },
             pieRing:{
-                subEnabled:false,
-                subY:35,
+                subEnabled:true,
+                subY:-10,
                 subfontSize:'15px',
                 subColor:"#333333"
             }
@@ -340,9 +345,9 @@ var chart;
                                 fontWeight:options.dataLabels.fontWeight
                             }
                         },
-                        startAngle: options.pie.startAngle, // 圆环的开始角度
-                        endAngle: options.pie.endAngle,    // 圆环的结束角度
-                        center: ['50%', '65%'],
+                        startAngle: options.halfChart.startAngle, // 圆环的开始角度
+                        endAngle: options.halfChart.endAngle,    // 圆环的结束角度
+                        center: options.halfChart.center,
                         showInLegend: false,
                         cursor: options.cursor
                     }
@@ -373,6 +378,7 @@ var chart;
                 pieDrilldown(defaultChart);
                 break;
             case "piechartring":
+            case "piechartringhalf":
                 defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
                 defaultChart["subtitle"]={
                     //text: '',
@@ -400,32 +406,36 @@ var chart;
                                 fontWeight:options.dataLabels.fontWeight
                             }
                         },
-                        startAngle: options.pie.startAngle, // 圆环的开始角度
-                        endAngle: options.pie.endAngle,    // 圆环的结束角度
                         showInLegend: options.legend?true:false,
-                        point: {
-                            events: {
-                                // mouseOver: function(e) {  // 鼠标滑过时动态更新标题
-                                //     if(options.pieRing.subEnabled){
-                                //         chart.setTitle(null,{
-                                //             text: e.target.name+ '\t'+ e.target.y + ' %'
-                                //         });
-                                //     }
-                                // },
-                                click: function(e) { // 同样的可以在点击事件里处理
-                                    if(options.pieRing.subEnabled){
-                                        chart.setTitle(null,{
-                                            text: e.point.name+ '\t'+ e.point.y + ' %'
-                                        });
-                                    }
-                                }
-                            }
-                        },
+                        // point: {
+                        //     events: {
+                        //         // mouseOver: function(e) {  // 鼠标滑过时动态更新标题
+                        //         //     if(options.pieRing.subEnabled){
+                        //         //         chart.setTitle(null,{
+                        //         //             text: e.target.name+ '\t'+ e.target.y + ' %'
+                        //         //         });
+                        //         //     }
+                        //         // },
+                        //         click: function(e) { // 同样的可以在点击事件里处理
+                        //             if(options.pieRing.subEnabled){
+                        //                 chart.setTitle(null,{
+                        //                     text: e.point.name+ '\t'+ e.point.y + ' %'
+                        //                 });
+                        //             }
+                        //         }
+                        //     }
+                        // },
                     }
                 };
-                if(Math.abs(options.pie.startAngle-options.pie.endAngle)<300){
-                    defaultChart["plotOptions"]["pie"]["center"]=['50%', '65%'];
+                if(data[0].label.type=="piechartringhalf"){
+                    defaultChart["plotOptions"]["pie"]["startAngle"]=options.halfChart.startAngle, // 圆环的开始角度
+                    defaultChart["plotOptions"]["pie"]["endAngle"]=options.halfChart.endAngle   // 圆环的结束角度
+                    defaultChart["plotOptions"]["pie"]["center"]=options.halfChart.center,
+                    defaultChart["subtitle"]["y"]=options.pieRing.subY+25
                 }
+                // if(Math.abs(options.halfChart.startAngle-options.halfChart.endAngle)<300){
+                //     defaultChart["plotOptions"]["pie"]["center"]=['50%', '85%'];
+                // }
                 defaultChart["series"]=dataproArr;
                 //pieDrilldown(defaultChart);
             break;
@@ -578,46 +588,77 @@ var chart;
                 break;
             case "solidgaugechartnum":
             case "solidgaugechart":
+            case "solidgaugecharthalf":
+            case "solidgaugechartnumhalf":
                 defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
-                if(data[0].label.type.split("chart")[1]!=="num"){
+                if(data[0].label.type.split("chart")[1]!=="num"&&data[0].label.type.split("chart")[1]!=="numhalf"){
                     var title=singlePreValue();
                 }else{
                     var title=singleValue(data[0].result[0].values[0][1],data[0].label.yAxisUnit.split("-")[1],false);
                 }
+                var preValue=Number(singlePreValue().replace("%",""));
                 defaultChart["subtitle"]={
                     text: title,
                     align: 'center',
                     verticalAlign: 'middle',
                     y: options.gauge.subY,
                     style: {
-                        color: options.color[0],
+                        color:preValue<=50?options.colorRule[0]:preValue>70?options.colorRule[2]:options.colorRule[1],
                         fontSize:options.gauge.subfontSize
                     }
                 };
                 defaultChart["tooltip"]["headerFormat"]='<span>{point.key}</span><br/>';
                 defaultChart["pane"]={
+                    size:options.size,
                     startAngle: 395,
                     endAngle: 35,
                     background: [{
-                        outerRadius: '112%',
-                        innerRadius: '88%',
-                        backgroundColor: options.color[1],
-                        borderWidth: 0
+                        outerRadius: options.gauge.outerRadius,
+                        innerRadius: options.gauge.innerRadius,
+                        backgroundColor: options.colorRule[3],
+                        shape: 'arc'
                     }]
                 };
                 var maxV=Number(data[0].result[0].values[0][1])+Number(data[0].result[1].values[0][1]);
                 var yAxis={
+                    labels:{
+                        formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"yAxis",data[0].label.type,false),
+                        y:15
+                    },
                     min: 0,
                     max: maxV,
                     lineWidth: 0,
-                    tickPositions: []
+                    stops: [
+                        [0.5, options.colorRule[0]], // green
+                        [0.7, options.colorRule[1]], // yellow
+                        [1, options.colorRule[2]] // red
+                    ]
                 };
                 defaultChart["yAxis"]=$.extend(true,{},defaultChart["yAxis"],yAxis);
+                if(data[0].label.type=="solidgaugecharthalf"||data[0].label.type=="solidgaugechartnumhalf"){
+                    defaultChart["pane"]["startAngle"]=options.halfChart.startAngle, // 圆环的开始角度
+                    defaultChart["pane"]["endAngle"]=options.halfChart.endAngle   // 圆环的结束角度
+                    defaultChart["pane"]["center"]=options.halfChart.center,
+                    defaultChart["subtitle"]["y"]=options.gauge.subY+25,
+                    defaultChart["yAxis"]["tickAmount"]=options.gauge.tickAmount,
+                    defaultChart["yAxis"]["showFirstLabel"]=true,
+                    defaultChart["yAxis"]["showLastLabel"]=true
+                    if(options.gauge.tickAmount<=2){
+                        defaultChart["yAxis"]["minorTickInterval"]=null,
+                        defaultChart["yAxis"]["tickPixelInterval"]=[]
+                    }
+                }else{
+                    defaultChart["pane"]["size"]=(Number(options.size.replace("%",""))-20)+"%";
+                        defaultChart["yAxis"]["tickAmount"]=options.gauge.tickAmount-1,
+                        defaultChart["yAxis"]["showFirstLabel"]=false,
+                        defaultChart["yAxis"]["showLastLabel"]=true
+                }
                 defaultChart["plotOptions"]={
                     solidgauge: {
                         cursor: options.cursor,
                         fillOpacity: 0.3,
-                        borderWidth: options.gauge.borderWidth,
+                        //borderWidth: options.gauge.borderWidth,
+                        //borderColor:options.color[0],
                         dataLabels: {
                             enabled: false
                         },
@@ -770,10 +811,11 @@ var parseData=function(data){
         case "piechartringrule":
         case "piechart":
         case "piechartring":
+        case "piechartringhalf":
             var colorData=getPieColorData(data);
             var innerObj={
-                size:options.pie.size,
-                innerSize: options.pie.innerSize,
+                size:options.size,
+                innerSize: options.halfChart.innerSize,
                 data:colorData.innerData,
                 colors: colorData.color,
                 tooltip: {
@@ -781,10 +823,10 @@ var parseData=function(data){
                 }
             };
             var outSiteObj={
-                size:options.pie.size,
-                innerSize: options.pie.outerSize,
+                size:options.size,
+                innerSize: options.halfChart.outerSize,
                 data: colorData.outerData,
-                colors: options.color,
+                colors: options.colorRule,
                 tooltip: {
                     "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"tooltip",data[0].label.type,false,true)
                 }
@@ -894,16 +936,18 @@ var parseData=function(data){
             break;
         case "solidgaugechartnum":
         case "solidgaugechart":
+        case "solidgaugecharthalf":
+        case "solidgaugechartnumhalf":
             var yValue=Number(data[0].result[0].values[0][1]);
             dataproArr=[{
-                name: '',
+                name: transSeriesName(data[0],data[0].result[0]),
                 tooltip: {
                     "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"tooltip",data[0].label.type,false)
                 },
-                borderColor:options.color[0],
                 data: [{
-                    radius: '100%',
-                    innerRadius: '100%',
+                    color:options.color[0],
+                    radius: options.gauge.outerRadius,
+                    innerRadius: options.gauge.innerRadius,
                     y: yValue
                 }]
             }];
@@ -1021,7 +1065,7 @@ function formatterFun(xUnit,yUnit,zUnit,positionType,chartType,dataLabelsBoolean
         
         if((chartType=="piechart"||chartType=="piechartringrule")&&outerBoolean){
             return '<span style="color: '+ this.color + '">\u25CF占比</span> '+': <b>'+decimal(Number(this.percentage))+'%</b>'
-        }else if(chartType=="piechart"||chartType=="piechartringrule"||chartType=="piechartring"){
+        }else if(chartType=="piechart"||chartType=="piechartringrule"||chartType=="piechartring"||chartType=="piechartringhalf"){
             return '<span style="color: '+ this.color + '">\u25CF占比</span> '+': <b>'+decimal(Number(this.percentage))+'%</b><br/><span style="color: '+ this.color + '">\u25CF值</span> '+': <b>'+pointY+'</b>'
         }else if(chartType=="scatterchart"){
             return '<span style="color: '+ this.series.color + '">'+pointX+"  "+pointY+'</span> ';
@@ -1033,7 +1077,7 @@ function formatterFun(xUnit,yUnit,zUnit,positionType,chartType,dataLabelsBoolean
             return '<span style="color: '+ this.series.color + '">\u25CF'+this.series.name+'</span> '+': <b>'+ pointY+'('+decimal(Number(this.percentage))+'%)</b><br/>'
         }else if(chartType=="columnchartdrill"){
             return '<span style="color: '+ this.series.color + '">\u25CF</span> '+'<b>'+ pointY+'</b><br/>'
-        }else if(chartType=="solidgaugechart"||chartType=="solidgaugechartnum"){
+        }else if(chartType=="solidgaugechart"||chartType=="solidgaugechartnum"||chartType=="solidgaugecharthalf"||chartType=="solidgaugechartnumhalf"){
             return '<span style="color: '+ this.color + '">\u25CF值</span> '+': <b>'+pointY+'</b>'
         }else{
             return '<span style="color: '+ this.series.color + '">\u25CF'+this.series.name+'</span> '+': <b>'+ pointY+'</b><br/>'
@@ -1095,7 +1139,7 @@ function singleValue(value,unit,dataLabelsBoolean){
     }else{
         var pointZ=formatterOtherY(value)+unit;
     }
-    return pointZ;
+    return pointZ.indexOf(".")==-1?pointZ:pointZ.split(/\.\d*/)[0]+pointZ.split(/\.\d*/)[1];
 }
 //环图和活动图百分比计算
 function singlePreValue(){
@@ -1135,7 +1179,7 @@ function getPieColorData(data){
     var color=options.color;
     if(data[0].label.type=="piechartringrule"){
         var allValue=innerData[0]["y"]+innerData[1]["y"];
-        color=[options.color[0],'#e6e6e6'];
+        //color=[options.color[0],'#e6e6e6'];
         var allPre=0;
         data[0].label.outerData.map(function(elem,index){
             elem[1]=((elem[1]=='null'||elem[1]==null)?null:Number((Number(elem[1]).toFixed(2))));
@@ -1145,7 +1189,7 @@ function getPieColorData(data){
             });
             allPre+=elem[1];
             if(innerData[0]["y"]/allValue>allPre/100){
-                color=[index==options.color.length-1?options.color[index]:options.color[index+1],'#e6e6e6'];
+                color=[index==options.colorRule.length-1?options.colorRule[index]:options.colorRule[index+1],options.colorRule[3]];
             }
         });
     }

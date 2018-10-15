@@ -467,6 +467,44 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="dashboard-row grid-stack-item"
+                                data-gs-x="4" data-gs-y="175"
+                                data-gs-width="4" data-gs-height="25">
+                                    <div class="grid-stack-item-content" style="width:100%">
+                                        <div class="dashboard-panel">
+                                            <div class="drag-handle">
+                                                <a  class="delete-panel">x</a>
+                                                <div class="handle-inner"></div>
+                                            </div>
+                                            <div class="panel-title">
+                                                <input class="title-editor label-editor" type="text" placeholder="无标题">
+                                            </div>
+                                            <div class="panel-description">
+                                                <input class="title-editor label-editor" type="text" placeholder="无描述">
+                                            </div>
+                                            <div class="panel-body" id="view23" style="padding:0px"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="dashboard-row grid-stack-item"
+                                data-gs-x="8" data-gs-y="175"
+                                data-gs-width="4" data-gs-height="25">
+                                    <div class="grid-stack-item-content" style="width:100%">
+                                        <div class="dashboard-panel">
+                                            <div class="drag-handle">
+                                                <a  class="delete-panel">x</a>
+                                                <div class="handle-inner"></div>
+                                            </div>
+                                            <div class="panel-title">
+                                                <input class="title-editor label-editor" type="text" placeholder="无标题">
+                                            </div>
+                                            <div class="panel-description">
+                                                <input class="title-editor label-editor" type="text" placeholder="无描述">
+                                            </div>
+                                            <div class="panel-body" id="view24" style="padding:0px"></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -502,7 +540,7 @@
     $("#view5").chart(splineData);
     $("#view6").chart(areaSplineData);
     $("#view7").chart(pieData);
-    $("#view8").chart(ringRuleData,optionsRing); 
+    $("#view8").chart(ringRuleData); 
     $("#view9").chart(pieDrillData);
     $("#view10").chart(scatterData);
     $("#view11").chart(columnData);
@@ -513,10 +551,12 @@
     $("#view16").chart(barPerData);
     $("#view17").chart(barNorData);
     $("#view18").chart(columnDrillData);
-    $("#view19").chart(solidgaugeData,{tooltip: {enabled:true},color:["#50cc4b","#e6e6e6"]});
-    $("#view20").chart(solidgaugeNumData,{tooltip: {enabled:true},color:["#50cc4b","#e6e6e6"]});
-    $("#view21").chart(ringData);
-    $("#view22").chart(ringData,{pie:{startAngle:-180,endAngle:180}});
+    $("#view19").chart(solidgaugeData);
+    $("#view20").chart(solidgaugeNumData);
+    $("#view21").chart(ringHalfData);
+    $("#view22").chart(ringData);
+    $("#view23").chart(solidgaugehalfData);
+    $("#view24").chart(solidgaugeNumHalfData);
     $(function () {
         var options = {
             verticalMargin: 5,

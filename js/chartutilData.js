@@ -1226,10 +1226,10 @@ var solidgaugeData=[
         "result":[
             {
                 "seriesAttr":{
-                    "monitor_host":""
+                    "monitor_host":"内存占用"
                 },
                 "values":[
-                    ["","100000"]
+                    ["","100"]
                 ]
             },
             {
@@ -1237,7 +1237,7 @@ var solidgaugeData=[
                     "monitor_host":""
                 },
                 "values":[
-                    ["","105888"]
+                    ["","10"]
                 ]
             }
         ]
@@ -1257,7 +1257,7 @@ var solidgaugeNumData=[
         "result":[
             {
                 "seriesAttr":{
-                    "monitor_host":""
+                    "monitor_host":"内存占用"
                 },
                 "values":[
                     ["","100000.488"]
@@ -1269,6 +1269,116 @@ var solidgaugeNumData=[
                 },
                 "values":[
                     ["","105888"]
+                ]
+            }
+        ]
+    }
+];
+var solidgaugehalfData=[
+    {
+        "label":{
+            "seriesReg":"{{monitor_host}}",
+            "type":"solidgaugecharthalf",
+            "yAxisUnit":"-KiB",
+            "xAxisUnit":"-",
+            "zAxisUnit":"-",
+            "xAxisType":"",
+            "title":"CPU使用率"
+        },
+        "result":[
+            {
+                "seriesAttr":{
+                    "monitor_host":"内存占用"
+                },
+                "values":[
+                    ["","15"]
+                ]
+            },
+            {
+                "seriesAttr":{                 
+                    "monitor_host":""
+                },
+                "values":[
+                    ["","15"]
+                ]
+            }
+        ]
+    }
+];
+var solidgaugeNumHalfData=[
+    {
+        "label":{
+            "seriesReg":"{{monitor_host}}",
+            "type":"solidgaugechartnumhalf",
+            "yAxisUnit":"-KiB",
+            "xAxisUnit":"-",
+            "zAxisUnit":"-",
+            "xAxisType":"",
+            "title":"CPU使用率"
+        },
+        "result":[
+            {
+                "seriesAttr":{
+                    "monitor_host":"内存占用"
+                },
+                "values":[
+                    ["","2048"]
+                ]
+            },
+            {
+                "seriesAttr":{                 
+                    "monitor_host":""
+                },
+                "values":[
+                    ["","2048"]
+                ]
+            }
+        ]
+    }
+];
+var ringHalfData=[
+    {
+        "label":{
+            "seriesReg":"{{monitor_host}}",
+            "type":"piechartringhalf",
+            "yAxisUnit":"时间-用户",
+            "xAxisUnit":"-",
+            "zAxisUnit":"-",
+            "xAxisType":"",
+            "title":"2018 年浏览器市场份额",
+            "drillData":[]
+        },
+        "result":[
+            {
+                "seriesAttr":{
+                    "monitor_host":"谷歌"
+                },
+                "values":[
+                    ["",'25']
+                ]
+            },
+            {
+                "seriesAttr":{                 
+                    "monitor_host":"火狐"
+                },
+                "values":[
+                    ["",5000]
+                ]
+            },
+            {
+                "seriesAttr":{
+                    "monitor_host":"IE"
+                },
+                "values":[
+                    ["",300]
+                ]
+            },
+            {
+                "seriesAttr":{                 
+                    "monitor_host":"其它"
+                },
+                "values":[
+                    ["",300]
                 ]
             }
         ]
