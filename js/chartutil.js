@@ -673,6 +673,11 @@ var chart;
                 };
                 defaultChart["series"]=dataproArr;
                 break;
+            case "wordcloudchart":
+                defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
+                defaultChart["tooltip"]["headerFormat"]=null;
+                defaultChart["series"]=dataproArr;
+                break;
         }
         return defaultChart;
     };
@@ -956,6 +961,25 @@ var parseData=function(data){
                 }]
             }];
             break;
+        case "wordcloudchart":
+            var string="";
+            data.map(function(batchData){
+                for(var oneDataResult of batchData.result){
+                    if(oneDataResult.values!=null){
+                        oneDataResult.values.map(function(text){
+                            string+=text;
+                        });
+                    }
+                }
+            });
+            var wordcloudData=wordcloud(string);
+            dataproArr=[{
+                data:wordcloudData,
+                tooltip: {
+                    "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"tooltip",data[0].label.type,false)
+                },
+            }];
+            break;
         default:
     }
     return dataproArr;
@@ -1083,6 +1107,8 @@ function formatterFun(xUnit,yUnit,zUnit,positionType,chartType,dataLabelsBoolean
             return '<span style="color: '+ this.series.color + '">\u25CF</span> '+'<b>'+ pointY+'</b><br/>'
         }else if(chartType=="solidgaugechart"||chartType=="solidgaugechartnum"||chartType=="solidgaugecharthalf"||chartType=="solidgaugechartnumhalf"){
             return '<span style="color: '+ this.color + '">\u25CF值</span> '+': <b>'+pointY+'</b>'
+        }else if(chartType=="wordcloudchart"){
+            return '<span style="color: '+ this.color + '">\u25CF'+this.name+'</span> '+': <b>1:'+this.weight+'</b>'
         }else{
             return '<span style="color: '+ this.series.color + '">\u25CF'+this.series.name+'</span> '+': <b>'+ pointY+'</b><br/>'
         }
@@ -1216,4 +1242,25 @@ function tickPositions(amount,max){
         tickArr.push(tick);
     }
     return tickArr;
+}
+//词云图series.data处理
+function wordcloud(string){
+    var data=string
+    .split(/[,\. ]+/g)
+    .reduce(function (arr, word) {
+        var obj = arr.find(function (obj) {
+            return obj.name === word;
+        });
+        if (obj) {
+            obj.weight += 1;
+        } else {
+            obj = {
+                name: word,
+                weight: 1
+            };
+            arr.push(obj);
+        }
+        return arr;
+    }, []);
+    return data;
 }

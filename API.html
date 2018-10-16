@@ -25,9 +25,12 @@
             &lt;script type="text/javascript" src='../../../js/jquery/jquery.min.js'&gt;&lt;/script&gt;
             &lt;script type="text/javascript" src='../../../js/dashBoard/highcharts.js'&gt;&lt;/script&gt;
             &lt;script type="text/javascript" src='../../../js/dashBoard/chartutil.js'&gt;&lt;/script&gt;//chart方法
+            &lt;script type="text/javascript" src='../../../js/dashBoard/no-data-to-display.js'&gt;&lt;/script&gt;//无数据时显示提示
             &lt;script type="text/javascript" src='../../../js/dashBoard/drilldown.js'&gt;&lt;/script&gt;//下钻图表
             &lt;script type="text/javascript" src='../../../js/dashBoard/highcharts-more.js'&gt;&lt;/script&gt;//气泡图
             &lt;script type="text/javascript" src='../../../js/dashBoard/solid-gauge.js'&gt;&lt;/script&gt;//仪表图
+            &lt;script type="text/javascript" src='../../../js/dashBoard/wordcloud.js'&gt;&lt;/script&gt;//词云图
+            &lt;script type="text/javascript" src='../../../js/dashBoard/oldie.js'&gt;&lt;/script&gt;//词云图
             //以下三个文件在开启图表导出功能时使用(options.export=true时)
             &lt;script type="text/javascript" src='../../../js/dashBoard/exporting.js'&gt;&lt;/script&gt;//导出图表
             &lt;script type="text/javascript" src='../../../js/dashBoard/offline-exporting.js'&gt;&lt;/script&gt;//导出图表
@@ -66,6 +69,7 @@
                                             条形图-"barchart";百分比条形图-"barchartpercent";堆叠条形图-"barchartnormal";
                                             散点图-"scatterchart";气泡图-"bubblechart";饼图-"piechart";可下钻饼图-"piechart"(与饼图相同，只是属性多一个数据项drillData);环形图-"piechartring";双环图-"piechartringrule";)
                                             百分比活动图-"solidgaugechart";数值活动图-"solidgaugechartnum";"百分比仪表盘"-"solidgaugecharthalf";"数值仪表盘"-"solidgaugechartnumhalf";
+                                            词云图-"wordcloudchart";
                         "title":"内存大小",//图标题名称
                         "outerData":[['健康','20'],['良好',50],['一般',30]],//外环数据(只双环图需要，数组大小不限制)
                         "drillData": [{                                   //只下钻饼图所需要的二级，三级..数据

@@ -505,6 +505,25 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="dashboard-row grid-stack-item"
+                                data-gs-x="0" data-gs-y="200"
+                                data-gs-width="4" data-gs-height="25">
+                                    <div class="grid-stack-item-content" style="width:100%">
+                                        <div class="dashboard-panel">
+                                            <div class="drag-handle">
+                                                <a  class="delete-panel">x</a>
+                                                <div class="handle-inner"></div>
+                                            </div>
+                                            <div class="panel-title">
+                                                <input class="title-editor label-editor" type="text" placeholder="无标题">
+                                            </div>
+                                            <div class="panel-description">
+                                                <input class="title-editor label-editor" type="text" placeholder="无描述">
+                                            </div>
+                                            <div class="panel-body" id="view25" style="padding:0px"></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -524,6 +543,8 @@
 <script type="text/javascript" src='./js/highcharts-zh_CN.js'></script>
 <script type="text/javascript" src='./js/drilldown.js'></script>
 <script type="text/javascript" src='./js/no-data-to-display.js'></script>
+<script type="text/javascript" src='./js/wordcloud.js'></script>
+<script type="text/javascript" src='./js/oldie.js'></script>
 <script type="text/javascript" src='./js/addBoard.js'></script>
 <script type="text/javascript" src='./js/common.js'></script>
 <script type="text/javascript" src='./js/chartutil.js'></script>
@@ -557,6 +578,7 @@
     $("#view22").chart(ringData);
     $("#view23").chart(solidgaugehalfData);
     $("#view24").chart(solidgaugeNumHalfData);
+    $("#view25").chart(wordcloudData);
     $(function () {
         var options = {
             verticalMargin: 5,
