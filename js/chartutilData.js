@@ -1472,3 +1472,34 @@ var wordcloudData=[
         ]
     }
 ];
+var gaugehalfData=[
+    {
+        "label":{
+            "seriesReg":"{{monitor_host}}",
+            "type":"gaugecharthalf",
+            "yAxisUnit":"-KiB",
+            "xAxisUnit":"-",
+            "zAxisUnit":"-",
+            "xAxisType":"",
+            "title":"CPU使用率"
+        },
+        "result":[
+            {
+                "seriesAttr":{
+                    "monitor_host":"内存占用"
+                },
+                "values":[
+                    ["","80"]
+                ]
+            },
+            {
+                "seriesAttr":{                 
+                    "monitor_host":""
+                },
+                "values":[
+                    ["","150"]
+                ]
+            }
+        ]
+    }
+];

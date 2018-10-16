@@ -69,7 +69,7 @@
                                             条形图-"barchart";百分比条形图-"barchartpercent";堆叠条形图-"barchartnormal";
                                             散点图-"scatterchart";气泡图-"bubblechart";饼图-"piechart";可下钻饼图-"piechart"(与饼图相同，只是属性多一个数据项drillData);环形图-"piechartring";双环图-"piechartringrule";)
                                             百分比活动图-"solidgaugechart";数值活动图-"solidgaugechartnum";"百分比仪表盘"-"solidgaugecharthalf";"数值仪表盘"-"solidgaugechartnumhalf";
-                                            词云图-"wordcloudchart";
+                                            词云图-"wordcloudchart";指针仪表盘-"gaugecharthalf";
                         "title":"内存大小",//图标题名称
                         "outerData":[['健康','20'],['良好',50],['一般',30]],//外环数据(只双环图需要，数组大小不限制)
                         "drillData": [{                                   //只下钻饼图所需要的二级，三级..数据
@@ -257,13 +257,18 @@
                     subY:55,//双环图中心文字Y坐标
                     subfontSize:'35px'//双环图中心文字大小
                 },
-                gauge:{//仪表盘特殊样式
-                    subY:20,//中心文字Y坐标
+                solidgauge:{//仪表盘特殊样式
+                    subY:-22,//中心文字Y坐标
                     subfontSize:'35px',//中心文字大小
-                    //borderWidth:'28px',//占用部分粗细
                     outerRadius:'100%',
-                    innerRadius:'70%',
+                    innerRadius:'75%',
                     tickAmount:2//刻度总数
+                },
+                gauge:{//带指针仪表盘特殊样式
+                    subY:0,//中心文字Y坐标
+                    subfontSize:'25px',//中心文字大小
+                    dialColor:"#0f0f0f",//指针颜色
+                    dialSize:4//指针粗细
                 },
                 pieRing:{//环形图特殊样式
                     subEnabled:true,//环形图中心文字是否显示
