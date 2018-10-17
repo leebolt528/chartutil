@@ -1477,7 +1477,7 @@ var gaugehalfData=[
         "label":{
             "seriesReg":"{{monitor_host}}",
             "type":"gaugecharthalf",
-            "yAxisUnit":"-KiB",
+            "yAxisUnit":"-辆",
             "xAxisUnit":"-",
             "zAxisUnit":"-",
             "xAxisType":"",

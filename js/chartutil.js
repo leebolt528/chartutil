@@ -83,14 +83,16 @@ var chart;
                 subfontSize:'35px'
             },
             solidgauge:{
-                subY:-22,
+                labelY:-22,
                 subfontSize:'35px',
                 outerRadius:'100%',
                 innerRadius:'75%',
-                tickAmount:2
+                tickAmount:2,
+                titleY:10,
+                titleSize:"14px"
             },
             gauge:{
-                subY:0,
+                labelY:0,
                 subfontSize:'35px',
                 dialColor:"#0f0f0f",
                 dialSize:4
@@ -596,6 +598,13 @@ var chart;
                 var color=preValue<=50?options.colorRule[0]:preValue>80?options.colorRule[2]:options.colorRule[1];
                 if(data[0].label.type=="gaugecharthalf"){
                     var yAxis={
+                        title: {
+                            text: yTitleUnit()?yTitleUnitTrans():"",
+                            y:options.solidgauge.titleY,
+                            style:{
+                                fontSize:options.solidgauge.titleSize
+                            }
+                        },
                         labels:{
                             formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"yAxis",data[0].label.type,false),
                             y:15
@@ -648,7 +657,7 @@ var chart;
                                 //     fontSize:options.solidgauge.subfontSize
                                 // },
                                 borderWidth: 0,
-                                y: options.gauge.subY,
+                                y: options.gauge.labelY,
                                 useHTML: true,
                             /*  format: '<div style="text-align:center"><span style="font-size:25px;color:' +
                                 ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}%</span><br/>' +
@@ -660,6 +669,13 @@ var chart;
                     };
                 }else{
                     var yAxis={
+                        title: {
+                            text: yTitleUnit()?yTitleUnitTrans():"",
+                            y:options.solidgauge.titleY,
+                            style:{
+                                fontSize:options.solidgauge.titleSize
+                            }
+                        },
                         labels:{
                             formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"yAxis",data[0].label.type,false),
                             y:15
@@ -684,7 +700,7 @@ var chart;
                                 //     fontSize:options.solidgauge.subfontSize
                                 // },
                                 borderWidth: 0,
-                                y: options.solidgauge.subY,
+                                y: options.solidgauge.labelY,
                                 useHTML: true,
                             /*  format: '<div style="text-align:center"><span style="font-size:25px;color:' +
                                 ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}%</span><br/>' +
@@ -715,7 +731,8 @@ var chart;
                 }
                 if(options.solidgauge.tickAmount==0){
                     defaultChart["yAxis"]["showFirstLabel"]=false,
-                    defaultChart["yAxis"]["showLastLabel"]=false
+                    defaultChart["yAxis"]["showLastLabel"]=false,
+                    defaultChart["yAxis"]["tickPositions"]=[]
                 }else{
                     defaultChart["yAxis"]["tickPositions"]=tickPositions(options.solidgauge.tickAmount,maxV)
                 }
@@ -732,6 +749,9 @@ var chart;
 })( jQuery );
 //Y轴单位显示在标题后面时yTitleUnit=true;
 function yTitleUnitTrans(){
+    if((data[0].label.type.split("chart")[0]=="gauge"||data[0].label.type.split("chart")[0]=="solidgauge")&&options.solidgauge.tickAmount==0){
+        return " ";
+    }
     if(data[0].label.type=="columnchartpercent"||data[0].label.type=="areachartpercent"||data[0].label.type=="barchartpercent"){
         return "%";
     }else{
