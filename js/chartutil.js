@@ -69,7 +69,7 @@ var chart;
             "#90ed7d", "#f15c80", "#e4d354","#91e8e1",
             '#4572A7', '#AA4643', '#89A54E', '#80699B', '#3D96AE',
             '#DB843D', '#92A8CD', '#A47D7C', '#B5CA92'],
-            colorRule:['#38ae33','#ef8f40','#f64a4a',"#e6e6e6"],
+            colorRule:['#38ae33','#ef8f40','#f64a4a',"#e6e6e6","#f4a6c4"],
             size:'100%',
             halfChart:{
                 startAngle:-110,
@@ -85,11 +85,28 @@ var chart;
             solidgauge:{
                 labelY:-22,
                 subfontSize:'35px',
-                outerRadius:'100%',
-                innerRadius:'75%',
+                panelOuterRadius:'100%',//100
+                dataOuterRadius:'100%',//85
+                plotOuterRadius:'100%',//100
+
+                panelInnerRadius:'75%',//65
+                dataInnerRadius:'75%',//65
+                plotInnerRadius:'75%',//90
+                ylabelsEnabled:true,
+                ylabelsY:15,
+                ylabelsColor:"#666666",
+                ylabelsFontSize:"11px",
                 tickAmount:2,
+                minorTickWidth: 1,
+                minorTickLength: 10,
+                minorTickColor: '#999999',
+                tickWidth: 2,
+                tickLength: 15,
+                tickColor: '#ffffff',
                 titleY:10,
-                titleSize:"14px"
+                titleSize:"14px",
+                dialBaseLength:"60%",
+                dialRearLength:"15%"
             },
             gauge:{
                 labelY:0,
@@ -588,58 +605,71 @@ var chart;
                     // startAngle: 395,
                     // endAngle: 35,
                     background: [{
-                        outerRadius: options.solidgauge.outerRadius,
-                        innerRadius: options.solidgauge.innerRadius,
-                        backgroundColor: data[0].label.type=="gaugecharthalf"?"transparent":options.colorRule[3],
+                        outerRadius: options.solidgauge.panelOuterRadius,
+                        innerRadius: options.solidgauge.panelInnerRadius,
+                        backgroundColor: data[0].label.type=="gaugecharthalf"?options.colorRule[3]:options.colorRule[3],
                         shape: 'arc'
                     }]
                 };
                 var maxV=Number(data[0].result[0].values[0][1])+Number(data[0].result[1].values[0][1]);
                 var color=preValue<=50?options.colorRule[0]:preValue>80?options.colorRule[2]:options.colorRule[1];
+                var yAxis={
+                    title: {
+                        text: yTitleUnit()?yTitleUnitTrans():"",
+                        y:options.solidgauge.titleY,
+                        style:{
+                            fontSize:options.solidgauge.titleSize
+                        }
+                    },
+                    labels:{
+                        enabled:options.solidgauge.ylabelsEnabled,
+                        formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"yAxis",data[0].label.type,false),
+                        y:options.solidgauge.ylabelsY,
+                        style:{
+                            color:options.solidgauge.ylabelsColor,
+                            fontSize:options.solidgauge.ylabelsFontSize
+                        }
+                    },
+                    min: 0,
+                    max: maxV,
+                    lineWidth: 0,
+                    minorTickInterval: maxV/(options.solidgauge.tickAmount*3),
+                    minorTickWidth: options.solidgauge.minorTickWidth,
+                    minorTickLength: options.solidgauge.minorTickLength,
+                    minorTickColor: options.solidgauge.minorTickColor,
+
+                    tickWidth: options.solidgauge.tickWidth,
+                    tickLength: options.solidgauge.tickLength,
+                    tickColor: options.solidgauge.tickColor
+                };
                 if(data[0].label.type=="gaugecharthalf"){
-                    var yAxis={
-                        title: {
-                            text: yTitleUnit()?yTitleUnitTrans():"",
-                            y:options.solidgauge.titleY,
-                            style:{
-                                fontSize:options.solidgauge.titleSize
-                            }
-                        },
-                        labels:{
-                            formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"yAxis",data[0].label.type,false),
-                            y:15
-                        },
-                        min: 0,
-                        max: maxV,
-                        //lineWidth: 0,
-                        plotBands: [{
-                            from: 0,
-                            to: maxV*0.5,
-                            color: options.colorRule[0], // green,
-                            outerRadius: options.solidgauge.outerRadius,
-                            innerRadius: options.solidgauge.innerRadius
-                        }, {
-                            from: maxV*0.5,
-                            to: maxV*0.8,
-                            color: options.colorRule[1], // yellow
-                            outerRadius: options.solidgauge.outerRadius,
-                            innerRadius: options.solidgauge.innerRadius
-                        }, {
-                            from: maxV*0.8,
-                            to: maxV,
-                            color: options.colorRule[2], // red
-                            outerRadius: options.solidgauge.outerRadius,
-                            innerRadius: options.solidgauge.innerRadius
-                        }]
-                    };
+                    defaultChart["yAxis"]["plotBands"]=[{
+                        from: 0,
+                        to: maxV*0.5,
+                        color: options.colorRule[0], // green,
+                        outerRadius: options.solidgauge.plotOuterRadius,
+                        innerRadius: options.solidgauge.plotInnerRadius
+                    }, {
+                        from: maxV*0.5,
+                        to: maxV*0.8,
+                        color: options.colorRule[1], // yellow
+                        outerRadius: options.solidgauge.plotOuterRadius,
+                        innerRadius: options.solidgauge.plotInnerRadius
+                    }, {
+                        from: maxV*0.8,
+                        to: maxV,
+                        color: options.colorRule[2], // red
+                        outerRadius: options.solidgauge.plotOuterRadius,
+                        innerRadius: options.solidgauge.plotInnerRadius
+                    }];
                     defaultChart["plotOptions"]={
                         gauge: {
                             dial:{
                                 backgroundColor: options.gauge.dialColor,
-                                baseLength: "60%",
+                                baseLength: options.gauge.dialBaseLength,
                                 baseWidth: options.gauge.dialSize,
                                 radius: "60%",
-                                rearLength: "15%",
+                                rearLength:options.gauge.dialRearLength,
                                 topWidth:1
                             },
                             pivot:{
@@ -668,25 +698,37 @@ var chart;
                         }
                     };
                 }else{
-                    var yAxis={
-                        title: {
-                            text: yTitleUnit()?yTitleUnitTrans():"",
-                            y:options.solidgauge.titleY,
-                            style:{
-                                fontSize:options.solidgauge.titleSize
-                            }
-                        },
-                        labels:{
-                            formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"yAxis",data[0].label.type,false),
-                            y:15
-                        },
-                        min: 0,
-                        max: maxV,
-                        lineWidth: 0,
-                        stops: [
-                            [1,color]
-                        ]
-                    };
+                    defaultChart["yAxis"]["stops"]= [[1,color]];
+                    if(options.solidgauge.panelInnerRadius!=options.solidgauge.plotInnerRadius){
+                        yAxis.plotBands= [{
+                            from: 0,
+                            to: maxV,
+                            color: options.colorRule[4], // green,
+                            outerRadius: options.solidgauge.plotOuterRadius,
+                            innerRadius: options.solidgauge.plotInnerRadius
+                        }]
+                    }
+                    if(options.solidgauge.dataOuterRadius!=options.solidgauge.plotOuterRadius){
+                         yAxis.plotBands=[{
+                            from: 0,
+                            to: maxV*0.5,
+                            color: options.colorRule[0], // green,
+                            outerRadius: options.solidgauge.plotOuterRadius,
+                            innerRadius: options.solidgauge.plotInnerRadius
+                        }, {
+                            from: maxV*0.5,
+                            to: maxV*0.8,
+                            color: options.colorRule[1], // yellow
+                            outerRadius: options.solidgauge.plotOuterRadius,
+                            innerRadius: options.solidgauge.plotInnerRadius
+                        }, {
+                            from: maxV*0.8,
+                            to: maxV,
+                            color: options.colorRule[2], // red
+                            outerRadius: options.solidgauge.plotOuterRadius,
+                            innerRadius: options.solidgauge.plotInnerRadius
+                        }];
+                    }
                     defaultChart["plotOptions"]={
                         solidgauge: {
                             cursor: options.cursor,
@@ -1024,8 +1066,8 @@ var parseData=function(data){
                 },
                 data: [{
                     color:options.color[0],
-                    radius: options.solidgauge.outerRadius,
-                    innerRadius: options.solidgauge.innerRadius,
+                    radius: options.solidgauge.dataOuterRadius,
+                    innerRadius:options.solidgauge.dataInnerRadius,
                     y: yValue
                 }]
             }];

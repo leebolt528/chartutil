@@ -543,6 +543,25 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="dashboard-row grid-stack-item"
+                                data-gs-x="8" data-gs-y="200"
+                                data-gs-width="4" data-gs-height="25">
+                                    <div class="grid-stack-item-content" style="width:100%">
+                                        <div class="dashboard-panel">
+                                            <div class="drag-handle">
+                                                <a  class="delete-panel">x</a>
+                                                <div class="handle-inner"></div>
+                                            </div>
+                                            <div class="panel-title">
+                                                <input class="title-editor label-editor" type="text" placeholder="无标题">
+                                            </div>
+                                            <div class="panel-description">
+                                                <input class="title-editor label-editor" type="text" placeholder="无描述">
+                                            </div>
+                                            <div class="panel-body" id="view27" style="padding:0px"></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -591,14 +610,15 @@
     $("#view16").chart(barPerData);
     $("#view17").chart(barNorData);
     $("#view18").chart(columnDrillData);
-    $("#view19").chart(solidgaugeData);
+    $("#view19").chart(solidgaugeData,{solidgauge:{dataOuterRadius:"85%",panelInnerRadius:"65%",dataInnerRadius:"65%",plotInnerRadius:"90%",tickAmount:5}});
     $("#view20").chart(solidgaugeNumData);
     $("#view21").chart(ringHalfData);
     $("#view22").chart(ringData);
-    $("#view23").chart(solidgaugehalfData);
+    $("#view23").chart(solidgaugehalfData,{solidgauge:{panelInnerRadius:"65%",dataInnerRadius:"80%",plotInnerRadius:"90%",tickAmount:5}});
     $("#view24").chart(solidgaugeNumHalfData);
     $("#view25").chart(wordcloudData);
-    $("#view26").chart(gaugehalfData);
+    $("#view26").chart(gaugehalfData,{solidgauge:{tickAmount:5}, yAxis:{yTitleUnit:true}});
+    $("#view27").chart(gaugehalfData1,{solidgauge:{panelInnerRadius:"65%",plotInnerRadius:"90%",tickAmount:5}});
     $(function () {
         var options = {
             verticalMargin: 5,
