@@ -1212,11 +1212,11 @@ var columnDrillData=[
         ]
     }
 ];
-var solidgaugeData=[
+var solidgaugePreData=[
     {
         "label":{
             "seriesReg":"{{monitor_host}}",
-            "type":"solidgaugechart",
+            "type":"solidgaugechartpre",
             "yAxisUnit":"-KiB",
             "xAxisUnit":"-",
             "zAxisUnit":"-",
@@ -1274,11 +1274,11 @@ var solidgaugeNumData=[
         ]
     }
 ];
-var solidgaugehalfData=[
+var solidgaugePreHalfData=[
     {
         "label":{
             "seriesReg":"{{monitor_host}}",
-            "type":"solidgaugecharthalf",
+            "type":"solidgaugechartpre",
             "yAxisUnit":"-KiB",
             "xAxisUnit":"-",
             "zAxisUnit":"-",
@@ -1309,7 +1309,7 @@ var solidgaugeNumHalfData=[
     {
         "label":{
             "seriesReg":"{{monitor_host}}",
-            "type":"solidgaugechartnumhalf",
+            "type":"solidgaugechartnum",
             "yAxisUnit":"-KiB",
             "xAxisUnit":"-",
             "zAxisUnit":"-",
@@ -1340,7 +1340,7 @@ var ringHalfData=[
     {
         "label":{
             "seriesReg":"{{monitor_host}}",
-            "type":"piechartringhalf",
+            "type":"piechartring",
             "yAxisUnit":"时间-用户",
             "xAxisUnit":"-",
             "zAxisUnit":"-",
@@ -1472,11 +1472,11 @@ var wordcloudData=[
         ]
     }
 ];
-var gaugehalfData=[
+var gaugePreHalfData=[
     {
         "label":{
             "seriesReg":"{{monitor_host}}",
-            "type":"gaugecharthalf",
+            "type":"gaugechartpre",
             "yAxisUnit":"-辆",
             "xAxisUnit":"-",
             "zAxisUnit":"-",
@@ -1503,11 +1503,42 @@ var gaugehalfData=[
         ]
     }
 ];
-var gaugehalfData1=[
+var gaugePreHalfData1=[
     {
         "label":{
             "seriesReg":"{{monitor_host}}",
-            "type":"gaugecharthalf",
+            "type":"gaugechartpre",
+            "yAxisUnit":"-辆",
+            "xAxisUnit":"-",
+            "zAxisUnit":"-",
+            "xAxisType":"",
+            "title":"CPU使用率"
+        },
+        "result":[
+            {
+                "seriesAttr":{
+                    "monitor_host":"内存占用"
+                },
+                "values":[
+                    ["","80"]
+                ]
+            },
+            {
+                "seriesAttr":{                 
+                    "monitor_host":""
+                },
+                "values":[
+                    ["","150"]
+                ]
+            }
+        ]
+    }
+];
+var gaugeNumHalfData=[
+    {
+        "label":{
+            "seriesReg":"{{monitor_host}}",
+            "type":"gaugechartnum",
             "yAxisUnit":"-辆",
             "xAxisUnit":"-",
             "zAxisUnit":"-",
