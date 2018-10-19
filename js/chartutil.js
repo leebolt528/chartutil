@@ -72,8 +72,8 @@ var chart;
             colorRule:['#38ae33','#ef8f40','#f64a4a',"#e6e6e6","#f4a6c4"],
             size:'100%',
             ring:{
-                startAngle:-110,
-                endAngle:110,
+                startAngle:-135,
+                endAngle:135,
                 center:['50%', '50%']
             },
             pieRing:{
@@ -117,8 +117,28 @@ var chart;
                 dialSize:4
             }
        };
-       options=$.extend(true,{},options0,options1);
        data=data1;
+       switch(data[0].label.type){
+        case "solidgaugechartnumIn":
+        case "solidgaugechartpreIn":
+            options0["solidgauge"]["panelInnerRadius"]="65%",
+            options0["solidgauge"]["dataInnerRadius"]="80%",
+            options0["solidgauge"]["plotInnerRadius"]="90%"
+            break;
+        case "solidgaugechartnumOut":
+        case "solidgaugechartpreOut":
+            options0["solidgauge"]["dataOuterRadius"]="85%",
+            options0["solidgauge"]["panelInnerRadius"]="65%",
+            options0["solidgauge"]["dataInnerRadius"]="65%",
+            options0["solidgauge"]["plotInnerRadius"]="90%"
+            break;
+        case "gaugechartpreOut":
+        case "gaugechartnumOut":
+            options0["solidgauge"]["panelInnerRadius"]="65%",
+            options0["solidgauge"]["plotInnerRadius"]="90%"
+            break;
+       }
+       options=$.extend(true,{},options0,options1);
        xAxisUnit=data[0].label.xAxisUnit;
        yAxisUnit=data[0].label.yAxisUnit;
        zAxisUnit=data[0].label.zAxisUnit;
@@ -355,7 +375,7 @@ var chart;
                     }
                 };
                 defaultChart["tooltip"]["headerFormat"]='<span>{point.key}</span><br/>';
-                var center=Math.abs(options.ring.startAngle-options.ring.endAngle)<360?[options.ring.center[0],Number(options.ring.center[1].replace("%",""))+15+"%"]:options.ring.center;
+                var center=Math.abs(options.ring.startAngle-options.ring.endAngle)==270?[options.ring.center[0],Number(options.ring.center[1].replace("%",""))+7+"%"]:options.ring.center;
                 defaultChart["plotOptions"]={
                     pie: {
                         dataLabels: {
@@ -411,7 +431,7 @@ var chart;
                     }
                 };
                 defaultChart["tooltip"]["headerFormat"]='<span>{point.key}</span><br/>';
-                var center=Math.abs(options.ring.startAngle-options.ring.endAngle)<360?[options.ring.center[0],Number(options.ring.center[1].replace("%",""))+15+"%"]:options.ring.center;
+                var center=Math.abs(options.ring.startAngle-options.ring.endAngle)==270?[options.ring.center[0],Number(options.ring.center[1].replace("%",""))+7+"%"]:options.ring.center;
                 defaultChart["plotOptions"]={
                     pie: {
                         cursor: options.cursor,
@@ -582,20 +602,27 @@ var chart;
                 }
                 break;
             case "solidgaugechartnum":
+            case "solidgaugechartnumIn":
+            case "solidgaugechartnumOut":
+
             case "solidgaugechartpre":
+            case "solidgaugechartpreIn":
+            case "solidgaugechartpreOut":
+
             case "gaugechartpre":
+            case "gaugechartpreOut":
             case "gaugechartnum":
+            case "gaugechartnumOut":
                 defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
-                if(data[0].label.type.split("chart")[1]=="pre"){
+                if(data[0].label.type.split("chart")[1]=="pre"||data[0].label.type.split("chart")[1]=="preIn"||data[0].label.type.split("chart")[1]=="preOut"){
                     var title=singlePreValue();
                 }else{
                     var title=singleValue(data[0].result[0].values[0][1],data[0].label.yAxisUnit.split("-")[1],false);
                 }
                 var preValue=Number(singlePreValue().replace("%",""));
                 defaultChart["tooltip"]["headerFormat"]='<span>{point.key}</span><br/>';
-                var size=Math.abs(options.ring.startAngle-options.ring.endAngle)<360?options.size:(Number(options.size.replace("%",""))-20)+"%";
-                var center=Math.abs(options.ring.startAngle-options.ring.endAngle)<360?[options.ring.center[0],Number(options.ring.center[1].replace("%",""))+15+"%"]:options.ring.center;
-                
+                var size=Math.abs(options.ring.startAngle-options.ring.endAngle)==360||270?(Number(options.size.replace("%",""))-15)+"%":options.size;
+                var center=Math.abs(options.ring.startAngle-options.ring.endAngle)==270?[options.ring.center[0],Number(options.ring.center[1].replace("%",""))+7+"%"]:options.ring.center;
                 defaultChart["pane"]={
                     size:size,
                     startAngle:options.ring.startAngle, // 圆环的开始角度
@@ -644,7 +671,7 @@ var chart;
                     tickLength: options.solidgauge.tickLength,
                     tickColor: options.solidgauge.tickColor
                 };
-                if(data[0].label.type=="gaugechartpre"||data[0].label.type=="gaugechartnum"){
+                if(data[0].label.type.split("chart")[0]=="gauge"){
                     defaultChart["yAxis"]["plotBands"]=[{
                         from: 0,
                         to: maxV*0.5,
@@ -920,7 +947,7 @@ var parseData=function(data){
         case "piechart":
         case "piechartring":
             if(data[0].label.type=="piechartringrule"||data[0].label.type=="piechartring"){
-                var size=Math.abs(options.ring.startAngle-options.ring.endAngle)<360?options.size:(Number(options.size.replace("%",""))-20)+"%";
+                var size=Math.abs(options.ring.startAngle-options.ring.endAngle)==360||270?(Number(options.size.replace("%",""))-10)+"%":options.size;
             }else{
                 var size=options.size;
             }
@@ -1046,10 +1073,18 @@ var parseData=function(data){
                 }
             });
             break;
-        case "solidgaugechartnum":
-        case "solidgaugechartpre":
-        case "gaugechartpre":
-        case "gaugechartnum":
+            case "solidgaugechartnum":
+            case "solidgaugechartnumIn":
+            case "solidgaugechartnumOut":
+
+            case "solidgaugechartpre":
+            case "solidgaugechartpreIn":
+            case "solidgaugechartpreOut":
+
+            case "gaugechartpre":
+            case "gaugechartpreOut":
+            case "gaugechartnum":
+            case "gaugechartnumOut":
             var yValue=Number(data[0].result[0].values[0][1]);
             dataproArr=[{
                 name: transSeriesName(data[0],data[0].result[0]),
@@ -1208,7 +1243,7 @@ function formatterFun(xUnit,yUnit,zUnit,positionType,chartType,dataLabelsBoolean
             return '<span style="color: '+ this.series.color + '">\u25CF'+this.series.name+'</span> '+': <b>'+ pointY+'('+decimal(Number(this.percentage))+'%)</b><br/>'
         }else if(chartType=="columnchartdrill"){
             return '<span style="color: '+ this.series.color + '">\u25CF</span> '+'<b>'+ pointY+'</b><br/>'
-        }else if(chartType=="solidgaugechartpre"||chartType=="solidgaugechartnum"||chartType=="gaugechartpre"||chartType=="gaugechartnum"){
+        }else if(chartType.split("chart")[0]=="solidgauge"||chartType.split("chart")[0]=="gauge"){
             return '<span style="color: '+ this.color + '">\u25CF值</span> '+': <b>'+pointY+'</b>'
         }else if(chartType=="wordcloudchart"){
             return '<span style="color: '+ this.color + '">\u25CF'+this.name+'</span> '+': <b>1:'+this.weight+'</b>'

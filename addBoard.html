@@ -629,16 +629,16 @@
     $("#view16").chart(barPerData);
     $("#view17").chart(barNorData);
     $("#view18").chart(columnDrillData);
-    $("#view19").chart(solidgaugePreData,{solidgauge:{dataOuterRadius:"85%",panelInnerRadius:"65%",dataInnerRadius:"65%",plotInnerRadius:"90%",tickAmount:5},ring:{startAngle:0,endAngle:360}});
+    $("#view19").chart(solidgaugePreData,{solidgauge:{tickAmount:5},ring:{startAngle:0,endAngle:360}});
     $("#view20").chart(solidgaugeNumData,{ring:{startAngle:0,endAngle:360}});
     $("#view21").chart(ringHalfData,{pieRing:{subY:25}});
     $("#view22").chart(ringData,{ring:{startAngle:0,endAngle:360}});
-    $("#view23").chart(solidgaugePreHalfData,{solidgauge:{panelInnerRadius:"65%",dataInnerRadius:"80%",plotInnerRadius:"90%",tickAmount:5}});
+    $("#view23").chart(solidgaugePreHalfData,{solidgauge:{tickAmount:5}});
     $("#view24").chart(solidgaugeNumHalfData);
     $("#view25").chart(wordcloudData);
     $("#view26").chart(gaugePreHalfData,{solidgauge:{tickAmount:5}, yAxis:{yTitleUnit:true}});
-    $("#view27").chart(gaugePreHalfData1,{solidgauge:{panelInnerRadius:"65%",plotInnerRadius:"90%",tickAmount:5}});
-    $("#view28").chart(gaugeNumHalfData,{solidgauge:{panelInnerRadius:"65%",plotInnerRadius:"90%",tickAmount:5}});
+    $("#view27").chart(gaugePreHalfData1,{solidgauge:{tickAmount:5}});
+    $("#view28").chart(gaugeNumHalfData,{solidgauge:{tickAmount:5}});
     $(function () {
         var options = {
             verticalMargin: 5,

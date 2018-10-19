@@ -1216,7 +1216,7 @@ var solidgaugePreData=[
     {
         "label":{
             "seriesReg":"{{monitor_host}}",
-            "type":"solidgaugechartpre",
+            "type":"solidgaugechartpreOut",
             "yAxisUnit":"-KiB",
             "xAxisUnit":"-",
             "zAxisUnit":"-",
@@ -1278,7 +1278,7 @@ var solidgaugePreHalfData=[
     {
         "label":{
             "seriesReg":"{{monitor_host}}",
-            "type":"solidgaugechartpre",
+            "type":"solidgaugechartpreIn",
             "yAxisUnit":"-KiB",
             "xAxisUnit":"-",
             "zAxisUnit":"-",
@@ -1507,7 +1507,7 @@ var gaugePreHalfData1=[
     {
         "label":{
             "seriesReg":"{{monitor_host}}",
-            "type":"gaugechartpre",
+            "type":"gaugechartpreOut",
             "yAxisUnit":"-辆",
             "xAxisUnit":"-",
             "zAxisUnit":"-",
@@ -1538,7 +1538,7 @@ var gaugeNumHalfData=[
     {
         "label":{
             "seriesReg":"{{monitor_host}}",
-            "type":"gaugechartnum",
+            "type":"gaugechartnumOut",
             "yAxisUnit":"-辆",
             "xAxisUnit":"-",
             "zAxisUnit":"-",

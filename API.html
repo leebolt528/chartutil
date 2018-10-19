@@ -68,8 +68,11 @@
                         "type":"areachart",//图表类型(面积图-"areachart";曲线面积图-"areasplinechart";百分比面积图-"areachartpercent";堆叠面积图-"areachartnormal";
                                             折线图-"linechart";曲线图-"splinechart";柱状图-"columnchart";百分比柱状图-"columnchartpercent";堆叠柱状图-"columnchartnormal";可下钻柱状图-"columnchartdrill";
                                             条形图-"barchart";百分比条形图-"barchartpercent";堆叠条形图-"barchartnormal";词云图-"wordcloudchart";
-                                            散点图-"scatterchart";气泡图-"bubblechart";饼图-"piechart";可下钻饼图-"piechart"(与饼图相同，只是属性多一个数据项drillData);环形图-"piechartring";双环图-"piechartringrule";)
-                                            "百分比仪表盘"-"solidgaugechartpre";"数值仪表盘"-"solidgaugechartnum";百分比指针仪表盘-"gaugechartpre";数值指针仪表盘-"gaugechartnum";
+                                            散点图-"scatterchart";气泡图-"bubblechart";饼图-"piechart";可下钻饼图-"piechart"(与饼图相同，只是属性多一个数据项drillData);环形图-"piechartring";饼图双环图-"piechartringrule";)
+                                            "百分比仪表盘"-"solidgaugechartpre""solidgaugechartpreIn""solidgaugechartpreOut"
+                                            "数值仪表盘"-"solidgaugechartnum""solidgaugechartnumIn""solidgaugechartnumOut"
+                                            百分比指针仪表盘-"gaugechartpre""gaugechartpreOut"
+                                            数值指针仪表盘-"gaugechartnum""gaugechartnumOut"
                         "title":"内存大小",//图标题名称
                         "outerData":[['健康','20'],['良好',50],['一般',30]],//外环数据(只双环图需要，数组大小不限制)
                         "drillData": [{                                   //只下钻饼图所需要的二级，三级..数据
@@ -247,8 +250,8 @@
                 colorRule:['#38ae33','#ef8f40','#f64a4a',"#e6e6e6","#f4a6c4"],,//双环图和仪表盘图颜色(前三个刻度等级颜色，第四个面板背景色，第五个刻度背景色)
                 size:'100%',//扇形图，环图，仪表盘图大小
                 ring:{//环形图特殊样式(饼图和仪表盘)
-                    startAngle:-110,//起始角度
-                    endAngle:110,//终止角度
+                    startAngle:-135,//起始角度
+                    endAngle:135,//终止角度
                     center:['50%', '50%']//图中心位置
                 },
                 pieRing:{//环形饼图特殊样式
