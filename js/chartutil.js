@@ -361,6 +361,10 @@ var chart;
                         shadow: false
                     }
                 };
+                if(data[0].label.type=="areachart"||data[0].label.type=="areasplinechart") {
+                    var minExtreme=getMinYaxis(defaultChart);
+                    defaultChart["yAxis"]["min"] = minExtreme;
+                }
                 break;
             case "piechartringrule":
                 defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
@@ -1401,4 +1405,24 @@ function wordcloud(string){
         return arr;
     }, []);
     return data;
+}
+//获取series数据的最小Y值
+function getMinYaxis(defaultChart){
+    var resultSeries = defaultChart["series"];
+    var minExtreme = 0;
+    for(var i = 0; i < resultSeries.length; i++) {
+        var rs = resultSeries[i];
+        var rsDatas = rs["data"];
+        for(var j = 0; j < rsDatas.length; j++) {
+            var yval = parseInt(rsDatas[j][1]);
+            if(minExtreme == 0) {
+                minExtreme = yval;
+            } else {
+                if(minExtreme > yval) {
+                    minExtreme = yval;
+                }
+            }
+        }
+    }
+    return minExtreme;
 }
