@@ -612,33 +612,33 @@
         color:['#38ae33','#ef8f40','#f64a4a']
     };
     $("#view1").chart(areaData);
-    $("#view2").chart(areaPerData);
-    $("#view3").chart(areaNorData);
-    $("#view4").chart(lineData);
-    $("#view5").chart(splineData);
-    $("#view6").chart(areaSplineData);
+    $("#view2").chart(areaSplineData);
+    $("#view3").chart(areaPerData);
+    $("#view4").chart(areaNorData);
+    $("#view5").chart(lineData);
+    $("#view6").chart(splineData);
     $("#view7").chart(pieData);
-    $("#view8").chart(ringRuleData,{pieRing:{subY:55,subfontSize:"35px"}}); 
-    $("#view9").chart(pieDrillData);
-    $("#view10").chart(scatterData);
-    $("#view11").chart(columnData);
-    $("#view12").chart(barData);
+    $("#view8").chart(pieDrillData);
+    $("#view9").chart(ringRuleData,{pieRing:{subY:55,subfontSize:"35px"}}); 
+    $("#view10").chart(ringHalfData,{pieRing:{subY:25}});
+    $("#view11").chart(ringData,{ring:{startAngle:0,endAngle:360}});
+    $("#view12").chart(scatterData);
     $("#view13").chart(bubbleData);
-    $("#view14").chart(columnPerData);
-    $("#view15").chart(columnNorData);
-    $("#view16").chart(barPerData);
-    $("#view17").chart(barNorData);
-    $("#view18").chart(columnDrillData);
-    $("#view19").chart(solidgaugePreData,{solidgauge:{tickAmount:5},ring:{startAngle:0,endAngle:360}});
-    $("#view20").chart(solidgaugeNumData,{ring:{startAngle:0,endAngle:360}});
-    $("#view21").chart(ringHalfData,{pieRing:{subY:25}});
-    $("#view22").chart(ringData,{ring:{startAngle:0,endAngle:360}});
-    $("#view23").chart(solidgaugePreHalfData,{solidgauge:{tickAmount:5}});
-    $("#view24").chart(solidgaugeNumHalfData);
-    $("#view25").chart(wordcloudData);
-    $("#view26").chart(gaugePreHalfData,{solidgauge:{tickAmount:5}, yAxis:{yTitleUnit:true}});
-    $("#view27").chart(gaugePreHalfData1,{solidgauge:{tickAmount:5}});
-    $("#view28").chart(gaugeNumHalfData,{solidgauge:{tickAmount:5}});
+    $("#view14").chart(columnData);
+    $("#view15").chart(columnDrillData);
+    $("#view16").chart(columnPerData);
+    $("#view17").chart(columnNorData);
+    $("#view18").chart(barData);
+    $("#view19").chart(barPerData);
+    $("#view20").chart(barNorData);
+    $("#view21").chart(solidgaugePreHalfData,{solidgauge:{tickAmount:5}});
+    $("#view22").chart(solidgaugePreData,{solidgauge:{tickAmount:5},ring:{startAngle:0,endAngle:360}});
+    $("#view23").chart(solidgaugeNumData,{ring:{startAngle:0,endAngle:360}});
+    $("#view24").chart(solidgaugeNumHalfData,{solidgauge:{tickAmount:2}});
+    $("#view25").chart(gaugePreHalfData,{solidgauge:{tickAmount:5}, yAxis:{yTitleUnit:true}});
+    $("#view26").chart(gaugePreHalfData1,{solidgauge:{tickAmount:5}});
+    $("#view27").chart(gaugeNumHalfData,{solidgauge:{tickAmount:5}});
+    $("#view28").chart(wordcloudData);
     $(function () {
         var options = {
             verticalMargin: 5,

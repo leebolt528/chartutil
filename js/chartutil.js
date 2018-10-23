@@ -98,7 +98,7 @@ var chart;
                 ylabelsY:15,
                 ylabelsColor:"#666666",
                 ylabelsFontSize:"11px",
-                tickAmount:2,
+                tickAmount:0,
                 minorTickWidth: 1,
                 minorTickLength: 10,
                 minorTickColor: '#999999',
@@ -142,11 +142,11 @@ var chart;
        xAxisUnit=data[0].label.xAxisUnit;
        yAxisUnit=data[0].label.yAxisUnit;
        zAxisUnit=data[0].label.zAxisUnit;
-        if(!$(this).attr("id")){
-            return false;
-        }
-        var id=$(this).attr("id");
-        chart=new Highcharts.Chart(defaultChart(id,data,options));
+        // if(!$(this).attr("id")){
+        //     return false;
+        // }
+        // var id=$(this).attr("id");
+        chart=new Highcharts.Chart(defaultChart($(this)[0],data,options));
     }
     var defaultChart = function(divId,data,options) {
         Highcharts.setOptions({
@@ -639,7 +639,11 @@ var chart;
                         shape: 'arc'
                     }]
                 };
-                var maxV=Number(data[0].result[0].values[0][1])+Number(data[0].result[1].values[0][1]);
+                if(data.length==2){
+                    var maxV=Number(data[0].result[0].values[0][1])+Number(data[1].result[0].values[0][1]);
+                }else{
+                    var maxV=Number(data[0].result[0].values[0][1])+Number(data[0].result[1].values[0][1]);
+                }
                 var color=preValue<=50?options.colorRule[0]:preValue>80?options.colorRule[2]:options.colorRule[1];
                 var tickAmount=Math.abs(options.ring.startAngle-options.ring.endAngle)<360?options.solidgauge.tickAmount:options.solidgauge.tickAmount-1;
                 var showFirstLabel=Math.abs(options.ring.startAngle-options.ring.endAngle)<360?true:false;
