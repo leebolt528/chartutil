@@ -14,6 +14,10 @@ var chart;
             export:false,
             lineWidth:1.7,
             cursor:'pointer',
+            chart:{
+                //marginBottom
+                // marginTop
+            },
             title: {
                 enabled:false,
                 align: 'left',
@@ -26,7 +30,8 @@ var chart;
                 fontSize:"12px",
                 color:'#000',
                 navEnabled:true,
-                navHeight:40
+                navHeight:40,
+                y:0
             },
             labels: {
                 color: "#666666", 
@@ -43,7 +48,8 @@ var chart;
                 enabled: true,
                 color: "contrast",
                 fontSize: "11px",
-                fontWeight: "bold"
+                fontWeight: "bold",
+                distance:30
             },
             marker:{
                 enabled:false,
@@ -239,7 +245,8 @@ var chart;
                 maxHeight:options.legend.navHeight,
                 navigation:{
                     enabled:options.legend.navEnabled
-                }
+                },
+                y:options.legend.y
             },
             tooltip: {
                 enabled:options.tooltip.enabled,
@@ -252,6 +259,12 @@ var chart;
                 }
             }
         };
+        if(options["chart"].hasOwnProperty("marginBottom")){
+            defaultChart["chart"]["marginBottom"]=options.chart.marginBottom;
+        }
+        if(options["chart"].hasOwnProperty("marginTop")){
+            defaultChart["chart"]["marginTop"]=options.chart.marginTop;
+        }
         switch(data[0].label.type){
             case "areachart":  
             case "areasplinechart":
@@ -388,7 +401,8 @@ var chart;
                                 color: options.dataLabels.color, 
                                 fontSize: options.dataLabels.fontSize ,
                                 fontWeight:options.dataLabels.fontWeight
-                            }
+                            },
+                            distance:options.dataLabels.distance
                         },
                         startAngle: options.ring.startAngle, // 圆环的开始角度
                         endAngle: options.ring.endAngle,    // 圆环的结束角度
@@ -414,7 +428,8 @@ var chart;
                                 color: options.dataLabels.color, 
                                 fontSize: options.dataLabels.fontSize ,
                                 fontWeight:options.dataLabels.fontWeight
-                            }
+                            },
+                            distance:options.dataLabels.distance
                         },
                         showInLegend: options.legend?true:false
                     }
@@ -448,7 +463,8 @@ var chart;
                                 color: options.dataLabels.color, 
                                 fontSize: options.dataLabels.fontSize ,
                                 fontWeight:options.dataLabels.fontWeight
-                            }
+                            },
+                            distance:options.dataLabels.distance
                         },
                         startAngle:options.ring.startAngle, // 圆环的开始角度
                         endAngle:options.ring.endAngle,  // 圆环的结束角度

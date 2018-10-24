@@ -193,6 +193,10 @@
                 export:false,//是否开启导出图表功能
                 lineWidth:1.7,//直线图和曲线图线的粗细
                 cursor:'pointer',//光标形状(可点击-"pointer";无绑定事件-null)
+                chart:{
+                    //marginBottom //底边距
+                    // marginTop  //上边距
+                },
                 title: { //图表名称样式
                     enabled:true,
                     align: 'left',
@@ -205,7 +209,8 @@
                     fontSize:"12px",
                     color:'#000',
                     navEnabled:true,
-                    navHeight:40
+                    navHeight:40,
+                    y:0
                 },
                 labels: {//刻度名称样式
                     color: "#666666", 
@@ -222,7 +227,8 @@
                     enabled: true,//(双环图内部默认false不可配置)
                     color: "contrast",
                     fontSize: "11px",
-                    fontWeight: "bold"
+                    fontWeight: "bold",
+                    distance:30
                 },
                 marker:{
                     enabled:false,//点标记是否开始
