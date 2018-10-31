@@ -15,9 +15,10 @@
             3.所有的百分比堆叠图,饼图和双环扇形图返回的Y值需是实际值,单位是实际单位;
             4.前端会对数值类型进行小数点保留处理;
             5.调用该方法时可以查看API,查看图对应的假数据更方便快捷;
-            6.无数据时values为null或[];
+            6.无数据时data,result和values都可以任意为null||"null"||[],values的y值无值时为null||"null";
             7.词云图字段分割通过"," "."或" "分割;
-            8.多Y轴图待补充;
+            8.特殊单位标准：内存大小单位-KiB,KiB/s;
+            9.多Y轴图待补充;
         </pre>
     </div>
     <h4>2.需要引用的js</h4>
@@ -68,13 +69,13 @@
                         "type":"areachart",//图表类型(面积图-"areachart";曲线面积图-"areasplinechart";百分比面积图-"areachartpercent";堆叠面积图-"areachartnormal";
                                             折线图-"linechart";曲线图-"splinechart";柱状图-"columnchart";百分比柱状图-"columnchartpercent";堆叠柱状图-"columnchartnormal";可下钻柱状图-"columnchartdrill";
                                             条形图-"barchart";百分比条形图-"barchartpercent";堆叠条形图-"barchartnormal";词云图-"wordcloudchart";
-                                            散点图-"scatterchart";气泡图-"bubblechart";饼图-"piechart";可下钻饼图-"piechart"(与饼图相同，只是属性多一个数据项drillData);环形图-"piechartring";饼图双环图-"piechartringrule";)
+                                            散点图-"scatterchart";气泡图-"bubblechart";饼图-"piechart";可下钻饼图-"piechart"(与饼图相同，只是属性多一个数据项drillData和values元素多一个参数);环形图-"piechartring";饼图双环图-"piechartringrule";)
                                             "百分比仪表盘"-"solidgaugechartpre""solidgaugechartpreIn""solidgaugechartpreOut"
                                             "数值仪表盘"-"solidgaugechartnum""solidgaugechartnumIn""solidgaugechartnumOut"
                                             百分比指针仪表盘-"gaugechartpre""gaugechartpreOut"
                                             数值指针仪表盘-"gaugechartnum""gaugechartnumOut"
                         "title":"内存大小",//图标题名称
-                        "outerData":[['健康','20'],['良好',50],['一般',30]],//外环数据(只双环图需要，数组大小不限制)
+                        "outerData":[['健康','20'],['良好',50],['一般',30]],//外环数据(只双环图需要，数组长度为三,值只需成比例即可)
                         "drillData": [{                                   //只下钻饼图所需要的二级，三级..数据
                             id: 'dazhong',
                             data: [
@@ -193,8 +194,9 @@
                 export:false,//是否开启导出图表功能
                 lineWidth:1.7,//直线图和曲线图线的粗细
                 cursor:'pointer',//光标形状(可点击-"pointer";无绑定事件-null)
+                gaugeLevel:[50,30,20],//仪表盘颜色变化标准,数值大小成比例即可
                 chart:{
-                    //marginBottom //底边距
+                    //marginBottom //底边距 额外附加属性,内部没有默认值
                     // marginTop  //上边距
                 },
                 title: { //图表名称样式

@@ -1,5 +1,17 @@
 (function( $ ){
     $.fn.chart = function(data,options1) {
+        if(data==null||data=="null"||data.length==0){
+            data=[{
+                "label":{
+                    "yAxisUnit":"-",
+                    "xAxisUnit":"-",
+                    "zAxisUnit":"-",
+                    "type":"",
+                    "title":""
+                },
+                "result":[]
+            }];
+        }
         if (arguments.length == 1) {
             var options1={};
         }
@@ -8,8 +20,9 @@
             export:false,
             lineWidth:1.7,
             cursor:'pointer',
+            gaugeLevel:[50,30,20],
             chart:{
-                //marginBottom
+                //marginBottom 额外附加属性，内部没有默认值
                 // marginTop
             },
             title: {
@@ -181,6 +194,25 @@
             };
             defaultChart["xAxis"]=$.extend(true,{},defaultChart["xAxis"],xAxis);
         }
+        //去除饼图和柱状图drillData里值为null||"null"的数据
+        function updateDrillData(batchData,drillData){
+            if(batchData.label.drillData){
+                batchData.label.drillData.map(function(batchDataDrill,index){
+                function updateData(){
+                    var data=[];
+                    batchDataDrill.data.map(function(oneData){
+                        if(typeof oneData === 'object' && isNaN(oneData.length) &&oneData.y!=null&&oneData.y!="null"||typeof oneData === 'object' && !isNaN(oneData.length)&&oneData[1]!=null&&oneData[1]!="null"){  
+                            data.push(oneData);
+                        }
+                    });
+                    return data;
+                }
+                batchData.label.drillData[index].data=updateData();
+                });
+                drillData=drillData.concat(batchData.label.drillData);
+            }
+            return drillData;
+        };
         //饼图下钻处理
         function pieDrilldown(defaultChart){
             data.map(function(batchData){
@@ -215,9 +247,7 @@
         function getColDrillData(){
             var drillData=[];
             data.map(function(batchData){
-                if(batchData.label.drillData){
-                    drillData=drillData.concat(batchData.label.drillData);
-                }
+                drillData=updateDrillData(batchData,drillData);
             });
             return drillData;
         }
@@ -262,21 +292,22 @@
                 case "linechart":
                 case "splinechart":
                     data.map(function(batchData){
+                        if(batchData.result==null||batchData.result=="null"){return}
                         for(var oneDataResult of batchData.result){
-                            if(oneDataResult.values!=null){
+                            if(oneDataResult.values!=null&&oneDataResult.values!="null"&&oneDataResult.values.length!=0){
                                 oneDataResult.values.map(function(point){
                                     xAxisTypeFun(data,point);
                                     point[1]=((point[1]=='null'||point[1]==null)?null:Number(point[1]));
                                 });
+                                var seriesElem={
+                                    "data":oneDataResult.values,
+                                    "tooltip": {
+                                        "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"tooltip",data[0].label.type,false)
+                                    },
+                                    "name":transSeriesName(batchData,oneDataResult)
+                                };
+                                dataproArr.push(seriesElem);
                             }
-                            var seriesElem={
-                                "data":oneDataResult.values,
-                                "tooltip": {
-                                    "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"tooltip",data[0].label.type,false)
-                                },
-                                "name":transSeriesName(batchData,oneDataResult)
-                            };
-                            dataproArr.push(seriesElem);
                         }
                     });
                     break;
@@ -323,37 +354,41 @@
                 case "barchartpercent":
                 case "barchartnormal":
                     data.map(function(batchData){
+                        if(batchData.result==null||batchData.result=="null"){return}
                         for(var oneDataResult of batchData.result){
-                            if(oneDataResult.values!=null){
+                            if(oneDataResult.values!=null&&oneDataResult.values!="null"&&oneDataResult.values.length!=0){
                                 oneDataResult.values.map(function(point){
                                     point[1]=((point[1]=='null'||point[1]==null)?null:Number(point[1]));
                                 });
+                                var seriesElem={
+                                    "data":oneDataResult.values,
+                                    "tooltip": {
+                                        "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"tooltip",data[0].label.type,false)
+                                    },
+                                    "name":transSeriesName(batchData,oneDataResult)
+                                };
+                                dataproArr.push(seriesElem);
                             }
-                            var seriesElem={
-                                "data":oneDataResult.values,
-                                "tooltip": {
-                                    "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"tooltip",data[0].label.type,false)
-                                },
-                                "name":transSeriesName(batchData,oneDataResult)
-                            };
-                            dataproArr.push(seriesElem);
                         }
                     });
                     break;
                 case "columnchartdrill":
                     var series=[];
                     data.map(function(batchData){
+                        if(batchData.result==null||batchData.result=="null"){return}
                         for(var oneDataResult of batchData.result){
-                            if(oneDataResult.values!=null){
+                            if(oneDataResult.values!=null&&oneDataResult.values!="null"&&oneDataResult.values.length!=0){
                                 oneDataResult.values.map(function(point){
-                                    xAxisTypeFun(data,point);
-                                    point[1]=((point[1]=='null'||point[1]==null)?null:Number(point[1]));
-                                    var seriesElem={
-                                        "name":point[0],
-                                        "y":point[1],
-                                        "drilldown":point[2]
-                                    };
-                                    series.push(seriesElem);
+                                    if(point[1]!=null&&point[1]!="null"){
+                                        xAxisTypeFun(data,point);
+                                        point[1]=((point[1]=='null'||point[1]==null)?null:Number(point[1]));
+                                        var seriesElem={
+                                            "name":point[0],
+                                            "y":point[1],
+                                            "drilldown":point[2]
+                                        };
+                                        series.push(seriesElem);
+                                    }
                                 });
                             }
                         };
@@ -369,44 +404,46 @@
                     break;
                 case "scatterchart":
                     data.map(function(batchData){
+                        if(batchData.result==null||batchData.result=="null"){return}
                         for(var oneDataResult of batchData.result){
-                            if(oneDataResult.values!=null){
+                            if(oneDataResult.values!=null&&oneDataResult.values!="null"&&oneDataResult.values.length!=0){
                                 oneDataResult.values.map(function(point){
                                     xAxisTypeFun(data,point);
                                     point[1]=((point[1]=='null'||point[1]==null)?null:Number(point[1]));
                                 });
+                                var seriesElem={
+                                    "marker":{enabled: true},
+                                    "data":oneDataResult.values,
+                                    "tooltip": {
+                                        "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"tooltip",data[0].label.type,false)
+                                    },
+                                    "name":transSeriesName(batchData,oneDataResult)
+                                };
+                                dataproArr.push(seriesElem);
                             }
-                            var seriesElem={
-                                "marker":{enabled: true},
-                                "data":oneDataResult.values,
-                                "tooltip": {
-                                    "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"tooltip",data[0].label.type,false)
-                                },
-                                "name":transSeriesName(batchData,oneDataResult)
-                            };
-                            dataproArr.push(seriesElem);
                         }
                     });
                     break;
                 case "bubblechart":
                     data.map(function(batchData){
+                        if(batchData.result==null||batchData.result=="null"){return}
                         for(var oneDataResult of batchData.result){
-                            if(oneDataResult.values!=null){
+                            if(oneDataResult.values!=null&&oneDataResult.values!="null"&&oneDataResult.values.length!=0){
                                 oneDataResult.values.map(function(point){
                                     xAxisTypeFun(data,point);
                                     point[1]=((point[1]=='null'||point[1]==null)?null:Number(point[1]));
                                     point[2]=((point[2]=='null'||point[2]==null)?null:Number(point[2]));
                                 });
+                                var seriesElem={
+                                    "marker":{enabled: true},
+                                    "data":oneDataResult.values,
+                                    "tooltip": {
+                                        "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"tooltip",data[0].label.type,false)
+                                    },
+                                    "name":transSeriesName(batchData,oneDataResult)
+                                };
+                                dataproArr.push(seriesElem);
                             }
-                            var seriesElem={
-                                "marker":{enabled: true},
-                                "data":oneDataResult.values,
-                                "tooltip": {
-                                    "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"tooltip",data[0].label.type,false)
-                                },
-                                "name":transSeriesName(batchData,oneDataResult)
-                            };
-                            dataproArr.push(seriesElem);
                         }
                     });
                     break;
@@ -422,25 +459,26 @@
                     case "gaugechartpreOut":
                     case "gaugechartnum":
                     case "gaugechartnumOut":
-                    var yValue=Number(data[0].result[0].values[0][1]);
-                    dataproArr=[{
-                        name: transSeriesName(data[0],data[0].result[0]),
-                        tooltip: {
-                            "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"tooltip",data[0].label.type,false)
-                        },
-                        data: [{
-                            color:options.color[0],
-                            radius: options.solidgauge.dataOuterRadius,
-                            innerRadius:options.solidgauge.dataInnerRadius,
-                            y: yValue
-                        }]
-                    }];
+                        var yValue=Number(data[0].result[0].values[0][1]);
+                        dataproArr=[{
+                            name: transSeriesName(data[0],data[0].result[0]),
+                            tooltip: {
+                                "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"tooltip",data[0].label.type,false)
+                            },
+                            data: [{
+                                color:options.color[0],
+                                radius: options.solidgauge.dataOuterRadius,
+                                innerRadius:options.solidgauge.dataInnerRadius,
+                                y: yValue
+                            }]
+                        }];
                     break;
                 case "wordcloudchart":
                     var string="";
                     data.map(function(batchData){
+                        if(batchData.result==null||batchData.result=="null"||batchData.result.length==0){return}
                         for(var oneDataResult of batchData.result){
-                            if(oneDataResult.values!=null){
+                            if(oneDataResult.values!=null&&oneDataResult.values!="null"){
                                 oneDataResult.values.map(function(text){
                                     string+=text;
                                 });
@@ -448,12 +486,16 @@
                         }
                     });
                     var wordcloudData=wordcloud(string);
-                    dataproArr=[{
-                        data:wordcloudData,
-                        tooltip: {
-                            "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"tooltip",data[0].label.type,false)
-                        },
-                    }];
+                    if(string==""){
+                        dataproArr=[];
+                    }else{
+                        dataproArr=[{
+                            data:wordcloudData,
+                            tooltip: {
+                                "pointFormatter":formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"tooltip",data[0].label.type,false)
+                            },
+                        }];
+                    }
                     break;
                 default:
             }
@@ -655,8 +697,9 @@
             var innerData=[];
             var drillData=[];
             data.map(function(batchData){
+                if(batchData.result==null||batchData.result=="null"){return}
                 for(var oneDataResult of batchData.result){
-                    if(oneDataResult.values!=null&&oneDataResult.values!=[]){
+                    if(oneDataResult.values!=null&&oneDataResult.values!="null"&&oneDataResult.values.length!=0&&oneDataResult.values[0][1]!=null&&oneDataResult.values[0][1]!="null"){
                         var elem=oneDataResult.values[0];
                         elem[1]=((elem[1]=='null'||elem[1]==null)?null:Number((Number(elem[1]).toFixed(2))));
                         innerData.push({
@@ -666,37 +709,30 @@
                         if(batchData.label.hasOwnProperty("drillData")){
                             innerData[innerData.length-1]["drilldown"]=elem[2];
                         }
-                    }else{
-                        innerData.push({
-                            name:transSeriesName(batchData,oneDataResult),
-                            y:null
-                        });
-                        if(batchData.label.hasOwnProperty("drillData")){
-                            innerData[innerData.length-1]["drilldown"]=null;
-                        }
                     }
                 };
-                if(batchData.label.drillData){
-                    drillData=drillData.concat(batchData.label.drillData);
-                }
+                drillData=updateDrillData(batchData,drillData);
             });
             var outerData=[];
             var color=options.color;
             if(data[0].label.type=="piechartringrule"){
                 var allValue=innerData[0]["y"]+innerData[1]["y"];
-                //color=[options.color[0],'#e6e6e6'];
                 var allPre=0;
                 data[0].label.outerData.map(function(elem,index){
-                    elem[1]=((elem[1]=='null'||elem[1]==null)?null:Number((Number(elem[1]).toFixed(2))));
+                    elem[1]=Number((Number(elem[1]).toFixed(2)));
                     outerData.push({
                         name:elem[0],
                         y:elem[1]
                     });
                     allPre+=elem[1];
-                    if(innerData[0]["y"]/allValue>allPre/100){
-                        color=[index==options.colorRule.length-1?options.colorRule[index]:options.colorRule[index+1],options.colorRule[3]];
-                    }
                 });
+                if(innerData[0]["y"]/allValue>outerData[0]["y"]+outerData[1]["y"]/allPre){
+                    color=[options.colorRule[2],options.colorRule[3]];
+                }else if(innerData[0]["y"]/allValue>outerData[0]["y"]/allPre){
+                    color=[options.colorRule[1],options.colorRule[3]];
+                }else{
+                    color=[options.colorRule[0],options.colorRule[3]];
+                }
             }
             return {color:color,innerData:innerData,outerData:outerData,drillData:drillData};
         }
@@ -740,12 +776,21 @@
             return data;
         }
         //获取series数据的最小Y值
+        function updateData(data){//去除值为null||"null"的数据
+            var rsDatas=[];
+            data.map(function(oneData){
+                if(oneData[1]!=null&&oneData[1]!="null"){  
+                    rsDatas.push(oneData);
+                }
+            });
+            return rsDatas;
+        }
         function getMinYaxis(defaultChart){
             var resultSeries = defaultChart["series"];
             var minExtreme = 0;
             for(var i = 0; i < resultSeries.length; i++) {
                 var rs = resultSeries[i];
-                var rsDatas = rs["data"];
+                var rsDatas=updateData(rs["data"]);
                 for(var j = 0; j < rsDatas.length; j++) {
                     var yval = parseInt(rsDatas[j][1]);
                     if(minExtreme == 0) {
@@ -759,11 +804,23 @@
             }
             return minExtreme;
         }
+        //双环图和仪表板(两组数据缺一不可)数据不全时返回false
+        function booleanNull(data){
+            var boolean=true;
+            data.map(function(batchData){
+                if(batchData.result==null||batchData.result=="null"||batchData.result.length==0){ boolean=false;return}
+                for(var oneDataResult of batchData.result){
+                    if(oneDataResult.values==null||oneDataResult.values=="null"||oneDataResult.values.length==0){
+                        boolean=false;return
+                    }else if(!(/^([-+]?\d[\d\.]+)$/).test(oneDataResult.values[0][1])){
+                        boolean=false;return
+                    }
+                }
+            });
+            return boolean;
+        }
 
-        // if(!$(this).attr("id")){
-        //     return false;
-        // }
-        // var id=$(this).attr("id");
+
         var defaultChart = function(divId,data,options) {
             Highcharts.setOptions({
                 lang : {
@@ -775,7 +832,6 @@
                 },
                 colors: options.color
             });
-            var dataproArr = parseData(data);
             var defaultChart = {
                 chart: {
                     renderTo : divId,
@@ -869,6 +925,7 @@
                     }
                 }
             };
+            //额外附加属性，内部没有默认值
             if(options["chart"].hasOwnProperty("marginBottom")){
                 defaultChart["chart"]["marginBottom"]=options.chart.marginBottom;
             }
@@ -902,7 +959,7 @@
                         }
                     };
                     defaultChart["yAxis"]=$.extend(true,{},defaultChart["yAxis"],yAxis);
-                    defaultChart["series"]=dataproArr;
+                    defaultChart["series"]=parseData(data);
                     defaultChart["tooltip"]["headerFormat"]='<span>{point.key}</span><br/>';
                     defaultChart["plotOptions"]={
                         area: {
@@ -990,38 +1047,41 @@
                     }
                     break;
                 case "piechartringrule":
-                    defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
-                    defaultChart["subtitle"]={
-                        text:options.pieRing.subEnabled?singlePreValue():null,
-                        align: 'center',
-                        verticalAlign: 'middle',
-                        y: options.pieRing.subY,
-                        style: {
-                            color: getPieColorData(data).color[0],
-                            fontSize:options.pieRing.subfontSize
-                        }
-                    };
-                    defaultChart["tooltip"]["headerFormat"]='<span>{point.key}</span><br/>';
-                    var center=Math.abs(options.ring.startAngle-options.ring.endAngle)==270?[options.ring.center[0],Number(options.ring.center[1].replace("%",""))+7+"%"]:options.ring.center;
-                    defaultChart["plotOptions"]={
-                        pie: {
-                            dataLabels: {
-                                enabled: false,
-                                style: {
-                                    color: options.dataLabels.color, 
-                                    fontSize: options.dataLabels.fontSize ,
-                                    fontWeight:options.dataLabels.fontWeight
+                    var boolean=booleanNull(data);
+                    if(boolean){
+                        defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
+                        defaultChart["subtitle"]={
+                            text:options.pieRing.subEnabled?singlePreValue():null,
+                            align: 'center',
+                            verticalAlign: 'middle',
+                            y: options.pieRing.subY,
+                            style: {
+                                color: getPieColorData(data).color[0],
+                                fontSize:options.pieRing.subfontSize
+                            }
+                        };
+                        defaultChart["tooltip"]["headerFormat"]='<span>{point.key}</span><br/>';
+                        var center=Math.abs(options.ring.startAngle-options.ring.endAngle)==270?[options.ring.center[0],Number(options.ring.center[1].replace("%",""))+7+"%"]:options.ring.center;
+                        defaultChart["plotOptions"]={
+                            pie: {
+                                dataLabels: {
+                                    enabled: false,
+                                    style: {
+                                        color: options.dataLabels.color, 
+                                        fontSize: options.dataLabels.fontSize ,
+                                        fontWeight:options.dataLabels.fontWeight
+                                    },
+                                    distance:options.dataLabels.distance
                                 },
-                                distance:options.dataLabels.distance
-                            },
-                            startAngle: options.ring.startAngle, // 圆环的开始角度
-                            endAngle: options.ring.endAngle,    // 圆环的结束角度
-                            center: center,
-                            showInLegend: false,
-                            cursor: options.cursor
-                        }
-                    };
-                    defaultChart["series"]=dataproArr;
+                                startAngle: options.ring.startAngle, // 圆环的开始角度
+                                endAngle: options.ring.endAngle,    // 圆环的结束角度
+                                center: center,
+                                showInLegend: false,
+                                cursor: options.cursor
+                            }
+                        };
+                        defaultChart["series"]=parseData(data);
+                    }
                     break;
                 case "piechart":
                     defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
@@ -1029,7 +1089,6 @@
                     defaultChart["plotOptions"]={
                         pie: {
                             cursor: options.cursor,
-                            fillOpacity: 0.3,
                             allowPointSelect: true,
                             dataLabels: {
                                 enabled:options.dataLabels.enabled,
@@ -1044,7 +1103,7 @@
                             showInLegend: options.legend?true:false
                         }
                     };
-                    defaultChart["series"]=dataproArr;
+                    defaultChart["series"]=parseData(data);
                     pieDrilldown(defaultChart);
                     break;
                 case "piechartring":
@@ -1064,7 +1123,6 @@
                     defaultChart["plotOptions"]={
                         pie: {
                             cursor: options.cursor,
-                            fillOpacity: 0.3,
                             allowPointSelect: true,
                             dataLabels: {
                                 enabled:options.dataLabels.enabled,
@@ -1082,7 +1140,7 @@
                             showInLegend: options.legend?true:false,
                         }
                     };
-                    defaultChart["series"]=dataproArr;
+                    defaultChart["series"]=parseData(data);
                 break;
                 case "columnchartdrill":
                     defaultChart["legend"]["enabled"]=false;
@@ -1109,7 +1167,7 @@
                         }
                     };
                     defaultChart["yAxis"]=$.extend(true,{},defaultChart["yAxis"],yAxis);
-                    defaultChart["series"]=dataproArr;
+                    defaultChart["series"]=parseData(data);
                     defaultChart["tooltip"]["headerFormat"]='<span>{point.key}</span><br/>';
                     defaultChart["plotOptions"]={
                         column: {
@@ -1154,7 +1212,7 @@
                     };
                     defaultChart["yAxis"]=$.extend(true,{},defaultChart["yAxis"],yAxis);
                     defaultChart["xAxis"]["title"]["align"]="middle";
-                    defaultChart["series"]=dataproArr;
+                    defaultChart["series"]=parseData(data);
                     defaultChart["tooltip"]["headerFormat"]='<span>{point.key}</span><br/>';
                     defaultChart["plotOptions"]={
                         bar: {
@@ -1193,7 +1251,7 @@
                         }
                     };
                     defaultChart["yAxis"]=$.extend(true,{},defaultChart["yAxis"],yAxis);
-                    defaultChart["series"]=dataproArr;
+                    defaultChart["series"]=parseData(data);
                     defaultChart["plotOptions"]={
                         scatter: {
                             cursor: options.cursor,
@@ -1224,7 +1282,7 @@
                         }
                     };
                     defaultChart["yAxis"]=$.extend(true,{},defaultChart["yAxis"],yAxis);
-                    defaultChart["series"]=dataproArr;
+                    defaultChart["series"]=parseData(data);
                     defaultChart["plotOptions"]={
                         bubble: {
                             cursor: options.cursor
@@ -1243,197 +1301,195 @@
                 case "gaugechartpreOut":
                 case "gaugechartnum":
                 case "gaugechartnumOut":
-                    defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
-                    if(data[0].label.type.split("chart")[1]=="pre"||data[0].label.type.split("chart")[1]=="preIn"||data[0].label.type.split("chart")[1]=="preOut"){
-                        var title=singlePreValue();
-                    }else{
-                        var title=singleValue(data[0].result[0].values[0][1],data[0].label.yAxisUnit.split("-")[1],false);
-                    }
-                    var preValue=Number(singlePreValue().replace("%",""));
-                    defaultChart["tooltip"]["headerFormat"]='<span>{point.key}</span><br/>';
-                    var size=Math.abs(options.ring.startAngle-options.ring.endAngle)==360||270?(Number(options.size.replace("%",""))-15)+"%":options.size;
-                    var center=Math.abs(options.ring.startAngle-options.ring.endAngle)==270?[options.ring.center[0],Number(options.ring.center[1].replace("%",""))+7+"%"]:options.ring.center;
-                    defaultChart["pane"]={
-                        size:size,
-                        startAngle:options.ring.startAngle, // 圆环的开始角度
-                        endAngle:options.ring.endAngle,   // 圆环的结束角度
-                        center:center,
-                        background: [{
-                            outerRadius: options.solidgauge.panelOuterRadius,
-                            innerRadius: options.solidgauge.panelInnerRadius,
-                            backgroundColor: options.colorRule[3],
-                            shape: 'arc'
-                        }]
-                    };
-                    if(data.length==2){
-                        var maxV=Number(data[0].result[0].values[0][1])+Number(data[1].result[0].values[0][1]);
-                    }else{
-                        var maxV=Number(data[0].result[0].values[0][1])+Number(data[0].result[1].values[0][1]);
-                    }
-                    var color=preValue<=50?options.colorRule[0]:preValue>80?options.colorRule[2]:options.colorRule[1];
-                    var tickAmount=Math.abs(options.ring.startAngle-options.ring.endAngle)<360?options.solidgauge.tickAmount:options.solidgauge.tickAmount-1;
-                    var showFirstLabel=Math.abs(options.ring.startAngle-options.ring.endAngle)<360?true:false;
-                    var yAxis={
-                        title: {
-                            text: yTitleUnit()?yTitleUnitTrans():"",
-                            y:options.solidgauge.titleY,
-                            style:{
-                                fontSize:options.solidgauge.titleSize
-                            }
-                        },
-                        labels:{
-                            enabled:options.solidgauge.ylabelsEnabled,
-                            formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"yAxis",data[0].label.type,false),
-                            y:options.solidgauge.ylabelsY,
-                            style:{
-                                color:options.solidgauge.ylabelsColor,
-                                fontSize:options.solidgauge.ylabelsFontSize
-                            }
-                        },
-                        min: 0,
-                        max: maxV,
-                        lineWidth: 0,
-                        tickAmount:tickAmount,
-                        showFirstLabel:showFirstLabel,
-                        showLastLabel:true,
-                        minorTickInterval: maxV/(options.solidgauge.tickAmount*3),
-                        minorTickWidth: options.solidgauge.minorTickWidth,
-                        minorTickLength: options.solidgauge.minorTickLength,
-                        minorTickColor: options.solidgauge.minorTickColor,
-
-                        tickWidth: options.solidgauge.tickWidth,
-                        tickLength: options.solidgauge.tickLength,
-                        tickColor: options.solidgauge.tickColor
-                    };
-                    if(data[0].label.type.split("chart")[0]=="gauge"){
-                        defaultChart["yAxis"]["plotBands"]=[{
-                            from: 0,
-                            to: maxV*0.5,
-                            color: options.colorRule[0], // green,
-                            outerRadius: options.solidgauge.plotOuterRadius,
-                            innerRadius: options.solidgauge.plotInnerRadius
-                        }, {
-                            from: maxV*0.5,
-                            to: maxV*0.8,
-                            color: options.colorRule[1], // yellow
-                            outerRadius: options.solidgauge.plotOuterRadius,
-                            innerRadius: options.solidgauge.plotInnerRadius
-                        }, {
-                            from: maxV*0.8,
-                            to: maxV,
-                            color: options.colorRule[2], // red
-                            outerRadius: options.solidgauge.plotOuterRadius,
-                            innerRadius: options.solidgauge.plotInnerRadius
-                        }];
-                        defaultChart["plotOptions"]={
-                            gauge: {
-                                dial:{
-                                    backgroundColor: options.gauge.dialColor,
-                                    baseLength: options.gauge.dialBaseLength,
-                                    baseWidth: options.gauge.dialSize,
-                                    radius: "60%",
-                                    rearLength:options.gauge.dialRearLength,
-                                    topWidth:1
-                                },
-                                pivot:{
-                                    radius: options.gauge.dialSize,
-                                    backgroundColor: options.gauge.dialColor
-                                },
-                                cursor: options.cursor,
-                                fillOpacity: 0.3,
-                                linecap: 'round',
-                                stickyTracking: false,
-                                showInLegend: false,
-                                dataLabels: {
-                                    // style: {
-                                    //     color:color,
-                                    //     fontSize:options.solidgauge.subfontSize
-                                    // },
-                                    borderWidth: 0,
-                                    y: options.gauge.labelY,
-                                    useHTML: true,
-                                /*  format: '<div style="text-align:center"><span style="font-size:25px;color:' +
-                                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}%</span><br/>' +
-                                    '<span style="font-size:12px;color:silver">58M</span></div>' */
-                                    format: '<div style="text-align:center"><span style="font-size:'+options.gauge.subfontSize+';color:' +
-                                    color+ '">'+title+'</span>' 
-                                }
-                            }
-                        };
-                    }else{
-                        defaultChart["yAxis"]["stops"]= [[1,color]];
-                        if(options.solidgauge.panelInnerRadius!=options.solidgauge.plotInnerRadius){
-                            yAxis.plotBands= [{
-                                from: 0,
-                                to: maxV,
-                                color: options.colorRule[4], // green,
-                                outerRadius: options.solidgauge.plotOuterRadius,
-                                innerRadius: options.solidgauge.plotInnerRadius
-                            }]
+                    var boolean=booleanNull(data);
+                    if(boolean){
+                        defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
+                        if(data[0].label.type.split("chart")[1]=="pre"||data[0].label.type.split("chart")[1]=="preIn"||data[0].label.type.split("chart")[1]=="preOut"){
+                            var title=singlePreValue();
+                        }else{
+                            var title=singleValue(data[0].result[0].values[0][1],data[0].label.yAxisUnit.split("-")[1],false);
                         }
-                        if(options.solidgauge.dataOuterRadius!=options.solidgauge.plotOuterRadius){
-                            yAxis.plotBands=[{
+                        var preValue=Number(singlePreValue().replace("%",""));
+                        defaultChart["tooltip"]["headerFormat"]='<span>{point.key}</span><br/>';
+                        var size=Math.abs(options.ring.startAngle-options.ring.endAngle)==360||270?(Number(options.size.replace("%",""))-15)+"%":options.size;
+                        var center=Math.abs(options.ring.startAngle-options.ring.endAngle)==270?[options.ring.center[0],Number(options.ring.center[1].replace("%",""))+7+"%"]:options.ring.center;
+                        defaultChart["pane"]={
+                            size:size,
+                            startAngle:options.ring.startAngle, // 圆环的开始角度
+                            endAngle:options.ring.endAngle,   // 圆环的结束角度
+                            center:center,
+                            background: [{
+                                outerRadius: options.solidgauge.panelOuterRadius,
+                                innerRadius: options.solidgauge.panelInnerRadius,
+                                backgroundColor: options.colorRule[3],
+                                shape: 'arc'
+                            }]
+                        };
+                        if(data.length==2){
+                            var maxV=Number(data[0].result[0].values[0][1])+Number(data[1].result[0].values[0][1]);
+                        }else{
+                            var maxV=Number(data[0].result[0].values[0][1])+Number(data[0].result[1].values[0][1]);
+                        }
+                        var agaugeLevelAll=options.gaugeLevel[0]+options.gaugeLevel[1]+options.gaugeLevel[2];
+                        var firstL=options.gaugeLevel[0]/agaugeLevelAll;
+                        var secondL=(options.gaugeLevel[0]+options.gaugeLevel[1])/agaugeLevelAll;
+
+                        var color=preValue<=firstL*100?options.colorRule[0]:preValue>secondL*100?options.colorRule[2]:options.colorRule[1];
+                        var tickAmount=Math.abs(options.ring.startAngle-options.ring.endAngle)<360?options.solidgauge.tickAmount:options.solidgauge.tickAmount-1;
+                        var showFirstLabel=Math.abs(options.ring.startAngle-options.ring.endAngle)<360?true:false;
+                        var yAxis={
+                            title: {
+                                text: yTitleUnit()?yTitleUnitTrans():"",
+                                y:options.solidgauge.titleY,
+                                style:{
+                                    fontSize:options.solidgauge.titleSize
+                                }
+                            },
+                            labels:{
+                                enabled:options.solidgauge.ylabelsEnabled,
+                                formatter:formatterFun(xAxisUnit.split("-")[1],yAxisUnit.split("-")[1],zAxisUnit.split("-")[1],"yAxis",data[0].label.type,false),
+                                y:options.solidgauge.ylabelsY,
+                                style:{
+                                    color:options.solidgauge.ylabelsColor,
+                                    fontSize:options.solidgauge.ylabelsFontSize
+                                }
+                            },
+                            min: 0,
+                            max: maxV,
+                            lineWidth: 0,
+                            tickAmount:tickAmount,
+                            showFirstLabel:showFirstLabel,
+                            showLastLabel:true,
+                            minorTickInterval: maxV/(options.solidgauge.tickAmount*3),
+                            minorTickWidth: options.solidgauge.minorTickWidth,
+                            minorTickLength: options.solidgauge.minorTickLength,
+                            minorTickColor: options.solidgauge.minorTickColor,
+
+                            tickWidth: options.solidgauge.tickWidth,
+                            tickLength: options.solidgauge.tickLength,
+                            tickColor: options.solidgauge.tickColor
+                        };
+                        if(data[0].label.type.split("chart")[0]=="gauge"){
+                            defaultChart["yAxis"]["plotBands"]=[{
                                 from: 0,
-                                to: maxV*0.5,
+                                to: maxV*firstL,//gaugeLevel
                                 color: options.colorRule[0], // green,
                                 outerRadius: options.solidgauge.plotOuterRadius,
                                 innerRadius: options.solidgauge.plotInnerRadius
                             }, {
-                                from: maxV*0.5,
-                                to: maxV*0.8,
+                                from: maxV*firstL,
+                                to: maxV*secondL,
                                 color: options.colorRule[1], // yellow
                                 outerRadius: options.solidgauge.plotOuterRadius,
                                 innerRadius: options.solidgauge.plotInnerRadius
                             }, {
-                                from: maxV*0.8,
+                                from: maxV*secondL,
                                 to: maxV,
                                 color: options.colorRule[2], // red
                                 outerRadius: options.solidgauge.plotOuterRadius,
                                 innerRadius: options.solidgauge.plotInnerRadius
                             }];
-                        }
-                        defaultChart["plotOptions"]={
-                            solidgauge: {
-                                cursor: options.cursor,
-                                fillOpacity: 0.3,
-                                linecap: 'round',
-                                stickyTracking: false,
-                                showInLegend: false,
-                                dataLabels: {
-                                    // style: {
-                                    //     color:color,
-                                    //     fontSize:options.solidgauge.subfontSize
-                                    // },
-                                    borderWidth: 0,
-                                    y: options.solidgauge.labelY,
-                                    useHTML: true,
-                                /*  format: '<div style="text-align:center"><span style="font-size:25px;color:' +
-                                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}%</span><br/>' +
-                                    '<span style="font-size:12px;color:silver">58M</span></div>' */
-                                    format: '<div style="text-align:center"><span style="font-size:'+options.solidgauge.subfontSize+';color:' +
-                                    color+ '">'+title+'</span>' 
+                            defaultChart["plotOptions"]={
+                                gauge: {
+                                    dial:{
+                                        backgroundColor: options.gauge.dialColor,
+                                        baseLength: options.gauge.dialBaseLength,
+                                        baseWidth: options.gauge.dialSize,
+                                        radius: "60%",
+                                        rearLength:options.gauge.dialRearLength,
+                                        topWidth:1
+                                    },
+                                    pivot:{
+                                        radius: options.gauge.dialSize,
+                                        backgroundColor: options.gauge.dialColor
+                                    },
+                                    cursor: options.cursor,
+                                    linecap: 'round',
+                                    stickyTracking: false,
+                                    showInLegend: false,
+                                    dataLabels: {
+                                        borderWidth: 0,
+                                        y: options.gauge.labelY,
+                                        useHTML: true,
+                                        format: '<div style="text-align:center"><span style="font-size:'+options.gauge.subfontSize+';color:' +
+                                        color+ '">'+title+'</span>' 
+                                    }
                                 }
+                            };
+                        }else{
+                            defaultChart["yAxis"]["stops"]= [[1,color]];
+                            if(options.solidgauge.panelInnerRadius!=options.solidgauge.plotInnerRadius){
+                                yAxis.plotBands= [{
+                                    from: 0,
+                                    to: maxV,
+                                    color: options.colorRule[4], // green,
+                                    outerRadius: options.solidgauge.plotOuterRadius,
+                                    innerRadius: options.solidgauge.plotInnerRadius
+                                }]
                             }
-                        };
+                            if(options.solidgauge.dataOuterRadius!=options.solidgauge.plotOuterRadius){
+                                yAxis.plotBands=[{
+                                    from: 0,
+                                    to: maxV*firstL,
+                                    color: options.colorRule[0], // green,
+                                    outerRadius: options.solidgauge.plotOuterRadius,
+                                    innerRadius: options.solidgauge.plotInnerRadius
+                                }, {
+                                    from: maxV*firstL,
+                                    to: maxV*secondL,
+                                    color: options.colorRule[1], // yellow
+                                    outerRadius: options.solidgauge.plotOuterRadius,
+                                    innerRadius: options.solidgauge.plotInnerRadius
+                                }, {
+                                    from: maxV*secondL,
+                                    to: maxV,
+                                    color: options.colorRule[2], // red
+                                    outerRadius: options.solidgauge.plotOuterRadius,
+                                    innerRadius: options.solidgauge.plotInnerRadius
+                                }];
+                            }
+                            defaultChart["plotOptions"]={
+                                solidgauge: {
+                                    cursor: options.cursor,
+                                    linecap: 'round',
+                                    stickyTracking: false,
+                                    showInLegend: false,
+                                    dataLabels: {
+                                        // style: {
+                                        //     color:color,
+                                        //     fontSize:options.solidgauge.subfontSize
+                                        // },
+                                        borderWidth: 0,
+                                        y: options.solidgauge.labelY,
+                                        useHTML: true,
+                                    /*  format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                                        ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}%</span><br/>' +
+                                        '<span style="font-size:12px;color:silver">58M</span></div>' */
+                                        format: '<div style="text-align:center"><span style="font-size:'+options.solidgauge.subfontSize+';color:' +
+                                        color+ '">'+title+'</span>' 
+                                    }
+                                }
+                            };
+                        }
+                        defaultChart["yAxis"]=$.extend(true,{},defaultChart["yAxis"],yAxis);
+                        if(options.solidgauge.tickAmount<=2){
+                            defaultChart["yAxis"]["minorTickInterval"]=null,
+                            defaultChart["yAxis"]["tickPixelInterval"]=[]
+                        }
+                        if(options.solidgauge.tickAmount==0){
+                            defaultChart["yAxis"]["showFirstLabel"]=false,
+                            defaultChart["yAxis"]["showLastLabel"]=false,
+                            defaultChart["yAxis"]["tickPositions"]=[]
+                        }else{
+                            defaultChart["yAxis"]["tickPositions"]=tickPositions(options.solidgauge.tickAmount,maxV)
+                        }
+                        defaultChart["series"]=parseData(data);
                     }
-                    defaultChart["yAxis"]=$.extend(true,{},defaultChart["yAxis"],yAxis);
-                    if(options.solidgauge.tickAmount<=2){
-                        defaultChart["yAxis"]["minorTickInterval"]=null,
-                        defaultChart["yAxis"]["tickPixelInterval"]=[]
-                    }
-                    if(options.solidgauge.tickAmount==0){
-                        defaultChart["yAxis"]["showFirstLabel"]=false,
-                        defaultChart["yAxis"]["showLastLabel"]=false,
-                        defaultChart["yAxis"]["tickPositions"]=[]
-                    }else{
-                        defaultChart["yAxis"]["tickPositions"]=tickPositions(options.solidgauge.tickAmount,maxV)
-                    }
-                    defaultChart["series"]=dataproArr;
                     break;
                 case "wordcloudchart":
                     defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
                     defaultChart["tooltip"]["headerFormat"]=null;
-                    defaultChart["series"]=dataproArr;
+                    defaultChart["series"]=parseData(data);
                     break;
             }
             return defaultChart;
