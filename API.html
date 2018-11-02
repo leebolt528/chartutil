@@ -17,7 +17,7 @@
             5.调用该方法时可以查看API,查看图对应的假数据更方便快捷;
             6.无数据时data,result和values都可以任意为null||"null"||[],values的y值无值时为null||"null";
             7.词云图字段分割通过"," "."或" "分割;
-            8.特殊单位标准：内存大小单位-KiB,KiB/s;
+            8.特殊单位标准：内存大小单位-KiB,KiB/s,s;
             9.多Y轴图待补充;
         </pre>
     </div>
@@ -200,7 +200,7 @@
                     // marginTop  //上边距
                 },
                 title: { //图表名称样式
-                    enabled:true,
+                    enabled:true,//false显示仪表盘中心文字附加行
                     align: 'left',
                     color: '#55B951',
                     fontSize:'14px'
@@ -266,13 +266,19 @@
                     subEnabled:true,//中心文字是否显示
                     subY:-10,//中心文字Y坐标
                     subfontSize:'15px',//中心文字大小
+                    subunitSize:'20px'//中心单位字体大小
+                    subfontWeight:700,//中心文字粗细
                     subColor:"#333333",//中心文字颜色
                     innerSize:'65%',//内环粗细
                     outerSize:'90%',//外环粗细
                 },
                 solidgauge:{//仪表盘特殊样式
                     labelY:-22,//中心文字Y坐标
-                    subfontSize:'35px',//中心文字大小
+                    subfontSize:'30px',//中心文字大小
+                    subunitSize:'20px',//中心单位字体大小
+                    dlfontWeight:700,//中心文字粗细
+                    subBottomfontSize:'20px',//中心文字附加行字体大小
+
                     panelOuterRadius:'100%',//面板宽度外界
                     dataOuterRadius:'100%',//数值宽度外界
                     plotOuterRadius:'100%',//刻度宽度外界
@@ -297,7 +303,7 @@
                 },
                 gauge:{//带指针仪表盘特殊样式
                     labelY:-10,//中心文字Y坐标
-                    subfontSize:'35px',//中心文字大小
+                    subfontSize:'30px',//中心文字大小
                     dialColor:"#0f0f0f",//指针颜色
                     dialSize:4//指针粗细
                 },

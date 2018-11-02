@@ -93,13 +93,18 @@
                 subEnabled:true,
                 subY:-10,
                 subfontSize:'15px',
+                subunitSize:'20px',
+                subfontWeight:700,
                 subColor:"#333333",
                 innerSize:'65%',
                 outerSize:'90%',
             },
             solidgauge:{
                 labelY:-22,
-                subfontSize:'35px',
+                subfontSize:'30px',
+                subunitSize:'20px',
+                dlfontWeight:700,
+                subBottomfontSize:'20px',
                 panelOuterRadius:'100%',//100
                 dataOuterRadius:'100%',//85
                 plotOuterRadius:'100%',//100
@@ -125,7 +130,7 @@
             },
             gauge:{
                 labelY:-10,
-                subfontSize:'35px',
+                subfontSize:'30px',
                 dialColor:"#0f0f0f",
                 dialSize:4
             }
@@ -518,10 +523,14 @@
         //保留两位小数并去除小数点后无用的0
         function decimal(number){
             number=Number(number);
-            if(Math.abs(number)<10000){
-                return parseFloat(number.toFixed(2));
-            }else{
+            if((Math.abs(number)>=10000||Math.abs(number)<0.1)&&Math.abs(number)!=0){
                 return scienceNum(number);
+            }else{
+                // if(Math.abs(number)>=100){
+                //     return parseInt(number);//整数部分超过两位数时不保留小数
+                // }else{
+                    return parseFloat(number.toFixed(2));
+                //}
             }
         }
         //Y轴刻度是否显示单位判断
@@ -555,7 +564,8 @@
             }else if(Math.abs(thisValue)<1){
                 return decimal(thisValue*1024)+'Byte/s';
             }else{
-                return parseInt(thisValue)+'KiB/s';
+                //return parseInt(thisValue)+'KiB/s';
+                return decimal(thisValue)+'KiB/s';
             }
         };
         var formatterKiB=function(value,tooltipBoolean,dataLabelsBoolean) {
@@ -572,7 +582,26 @@
             }else if(Math.abs(thisValue)<1){
                 return decimal(thisValue*1024)+'Byte';
             }else{
-                return parseInt(thisValue)+'KiB';
+                //return parseInt(thisValue)+'KiB';
+                return decimal(thisValue)+'KiB';
+            }
+        };
+        var formatterS=function(value,tooltipBoolean,dataLabelsBoolean) {
+            var thisValue=dataLabelsBoolean?this.y:this.value;
+            if(tooltipBoolean){
+                thisValue=value;
+            }
+            if(Math.abs(thisValue)>=Math.pow(60,2)){
+                return decimal(thisValue/Math.pow(60,2))+ 'h';
+            }else if(Math.abs(thisValue)>=60){
+                return decimal(thisValue/60)+'min';
+            }else if(Math.abs(thisValue)<1){
+                return decimal(thisValue*1000)+'ms';
+            }else if(Math.abs(thisValue)<0.001){
+                return decimal(thisValue*Math.pow(1000,2))+'μs';
+            }else{
+                //return parseInt(thisValue)+'s';
+                return decimal(thisValue)+'s';
             }
         };
         //Y轴和Z轴单位刻度+提示框格式单位处理
@@ -583,6 +612,8 @@
                     var pointY=formatterKiBs(this.y,"y",dataLabelsBoolean);
                 }else if(yUnit=="KiB"){
                     var pointY=formatterKiB(this.y,"y",dataLabelsBoolean);
+                }else if(yUnit=="s"){
+                    var pointY=formatterS(this.y,"y",dataLabelsBoolean);
                 }else{
                     var pointY=formatterOtherY(this.y)+yUnit;
                 }
@@ -591,6 +622,8 @@
                     var pointZ=formatterKiBs(this.z,"z",dataLabelsBoolean);
                 }else if(zUnit=="KiB"){
                     var pointZ=formatterKiB(this.z,"z",dataLabelsBoolean);
+                }else if(zUnit=="s"){
+                    var pointZ=formatterS(this.z,"z",dataLabelsBoolean);
                 }else{
                     var pointZ=formatterOtherY(this.z)+zUnit;
                 }
@@ -601,6 +634,8 @@
                         var pointX=formatterKiBs(this.x,"x",dataLabelsBoolean);
                     }else if(xUnit=="KiB"){
                         var pointX=formatterKiB(this.x,"x",dataLabelsBoolean);
+                    }else if(xUnit=="s"){
+                        var pointX=formatterS(this.x,"x",dataLabelsBoolean);
                     }else{
                         var pointX=formatterOtherY(this.x)+xUnit;
                     }
@@ -664,6 +699,8 @@
                     return formatterKiBs;
                 }else if(yUnit=="KiB"){
                     return formatterKiB;
+                }else if(yUnit=="s"){
+                    return formatterS;
                 }else{
                     return formatterOtherV;
                 }
@@ -672,12 +709,14 @@
                     return formatterKiBs;
                 }else if(xUnit=="KiB"){
                     return formatterKiB;
+                }else if(xUnit=="s"){
+                    return formatterS;
                 }else{
                     return formatterOtherV;
                 }
             }
         }
-        //活动图单值单位换算
+        //仪表盘单值单位换算
         function singleValue(value,unit,dataLabelsBoolean){
             if(unit=="KiB/s"){
                 var pointZ=formatterKiBs(value,true,dataLabelsBoolean);
@@ -686,11 +725,16 @@
             }else{
                 var pointZ=formatterOtherY(value)+unit;
             }
-            return pointZ.indexOf(".")==-1?pointZ:pointZ.split(/\.\d*/)[0]+pointZ.split(/\.\d*/)[1];
+            if(Math.abs(pointZ.split('.')[0])>=100){
+                return parseInt(pointZ.match(/^[-+]?\d[\d\.]*/)[0])+pointZ.split(/^[-+]?\d[\d\.]*/)[1];//整数部分超过两位数时不保留小数
+            }else{
+                return pointZ;
+            }
         }
-        //环图和活动图百分比计算
+        //环图和仪表盘百分比计算
         function singlePreValue(){
-            return parseInt(getPieColorData(data).innerData[0].y/(getPieColorData(data).innerData[0].y+getPieColorData(data).innerData[1].y)*100)+"%";
+            //return parseInt(getPieColorData(data).innerData[0].y/(getPieColorData(data).innerData[0].y+getPieColorData(data).innerData[1].y)*100)+"%";
+            return decimal(getPieColorData(data).innerData[0].y/(getPieColorData(data).innerData[0].y+getPieColorData(data).innerData[1].y)*100)+"%";
         }
         //得到饼图内环颜色+内外环值
         function getPieColorData(data){
@@ -804,7 +848,7 @@
             }
             return minExtreme;
         }
-        //双环图和仪表板(两组数据缺一不可)数据不全时返回false
+        //双环图和仪表盘(两组数据缺一不可)数据不全时返回false
         function booleanNull(data){
             var boolean=true;
             data.map(function(batchData){
@@ -812,12 +856,37 @@
                 for(var oneDataResult of batchData.result){
                     if(oneDataResult.values==null||oneDataResult.values=="null"||oneDataResult.values.length==0){
                         boolean=false;return
-                    }else if(!(/^([-+]?\d[\d\.]+)$/).test(oneDataResult.values[0][1])){
+                    }else if(!(/^([-+]?\d[\d\.]*)$/).test(oneDataResult.values[0][1])){
                         boolean=false;return
                     }
                 }
             });
             return boolean;
+        }
+        //仪表盘dataLabels展示格式
+        function formatGuageFun(data,options,color,titlePre,titleVal){
+            var format='';
+            if(data[0].label.type.split("chart")[1]=="pre"||data[0].label.type.split("chart")[1]=="preIn"||data[0].label.type.split("chart")[1]=="preOut"){
+                format='<div style="display:inline-block;text-align:center;color:' +
+                color+ '"><span style="font-size:'+options.solidgauge.subfontSize+';">'+titlePre.match(/^[-+]?\d[\d\.]*/)[0]+'</span><span style="font-size:'+options.solidgauge.subunitSize+';">'+titlePre.replace(/^[-+]?\d[\d\.]*/,'')+'</span></div><br/>'
+                if(!options.tooltip.enabled){
+                    format+='<div style="display:block;text-align:center;color:' +
+                    'silver;font-size:'+options.solidgauge.subBottomfontSize+ '"><span>'+titleVal.match(/^[-+]?\d[\d\.]*/)[0]+'</span><span>'+titleVal.replace(/^[-+]?\d[\d\.]*/,'')+'</span></div>';
+                }
+            }else{
+                format='<div style="display:inline-block;text-align:center;color:' +
+                color+ '"><span style="font-size:'+options.solidgauge.subfontSize+';">'+titleVal.match(/^[-+]?\d[\d\.]*/)[0]+'</span><span style="font-size:'+options.solidgauge.subunitSize+';">'+titleVal.replace(/^[-+]?\d[\d\.]*/,'')+'</span></div><br/>'
+                if(!options.tooltip.enabled){
+                    format+='<div style="display:block;text-align:center;color:' +
+                    'silver;font-size:'+options.solidgauge.subBottomfontSize+ '"><span>'+titlePre.match(/^[-+]?\d[\d\.]*/)[0]+'</span><span>'+titlePre.replace(/^[-+]?\d[\d\.]*/,'')+'</span></div>';
+                }
+            }
+            return format;
+        }
+        //双环图副标题text展示格式
+        function ruleSubText(options){
+            var title=singlePreValue();
+            return '<div><span style="font-size:'+options.pieRing.subfontSize+';">'+title.match(/^[-+]?\d[\d\.]*/)[0]+'</span><span style="font-size:'+options.pieRing.subunitSize+';">'+title.replace(/^[-+]?\d[\d\.]*/,'')+'</span></div><br/>'
         }
 
 
@@ -1051,13 +1120,14 @@
                     if(boolean){
                         defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
                         defaultChart["subtitle"]={
-                            text:options.pieRing.subEnabled?singlePreValue():null,
+                            text:options.pieRing.subEnabled?ruleSubText(options,color):null,
                             align: 'center',
                             verticalAlign: 'middle',
                             y: options.pieRing.subY,
                             style: {
                                 color: getPieColorData(data).color[0],
-                                fontSize:options.pieRing.subfontSize
+                                fontSize:options.pieRing.subfontSize,
+                                fontWeight:options.pieRing.subfontWeight
                             }
                         };
                         defaultChart["tooltip"]["headerFormat"]='<span>{point.key}</span><br/>';
@@ -1115,7 +1185,8 @@
                         y: options.pieRing.subY,
                         style: {
                             color: options.pieRing.subColor,
-                            fontSize:options.pieRing.subfontSize
+                            fontSize:options.pieRing.subfontSize,
+                            fontWeight:options.pieRing.subfontWeight
                         }
                     };
                     defaultChart["tooltip"]["headerFormat"]='<span>{point.key}</span><br/>';
@@ -1304,11 +1375,11 @@
                     var boolean=booleanNull(data);
                     if(boolean){
                         defaultChart["chart"]["type"]=data[0].label.type.split("chart")[0];
-                        if(data[0].label.type.split("chart")[1]=="pre"||data[0].label.type.split("chart")[1]=="preIn"||data[0].label.type.split("chart")[1]=="preOut"){
-                            var title=singlePreValue();
-                        }else{
-                            var title=singleValue(data[0].result[0].values[0][1],data[0].label.yAxisUnit.split("-")[1],false);
-                        }
+                        //if(data[0].label.type.split("chart")[1]=="pre"||data[0].label.type.split("chart")[1]=="preIn"||data[0].label.type.split("chart")[1]=="preOut"){
+                            var titlePre=singlePreValue();
+                        //}else{
+                            var titleVal=singleValue(data[0].result[0].values[0][1],data[0].label.yAxisUnit.split("-")[1],false);
+                        //}
                         var preValue=Number(singlePreValue().replace("%",""));
                         defaultChart["tooltip"]["headerFormat"]='<span>{point.key}</span><br/>';
                         var size=Math.abs(options.ring.startAngle-options.ring.endAngle)==360||270?(Number(options.size.replace("%",""))-15)+"%":options.size;
@@ -1411,8 +1482,10 @@
                                         borderWidth: 0,
                                         y: options.gauge.labelY,
                                         useHTML: true,
-                                        format: '<div style="text-align:center"><span style="font-size:'+options.gauge.subfontSize+';color:' +
-                                        color+ '">'+title+'</span>' 
+                                        format: formatGuageFun(data,options,color,titlePre,titleVal),
+                                        style:{
+                                            fontWeight: options.solidgauge.dlfontWeight
+                                        }
                                     }
                                 }
                             };
@@ -1465,8 +1538,10 @@
                                     /*  format: '<div style="text-align:center"><span style="font-size:25px;color:' +
                                         ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}%</span><br/>' +
                                         '<span style="font-size:12px;color:silver">58M</span></div>' */
-                                        format: '<div style="text-align:center"><span style="font-size:'+options.solidgauge.subfontSize+';color:' +
-                                        color+ '">'+title+'</span>' 
+                                        format:formatGuageFun(data,options,color,titlePre,titleVal),
+                                        style:{
+                                            fontWeight: options.solidgauge.dlfontWeight
+                                        }
                                     }
                                 }
                             };
