@@ -101,10 +101,10 @@
             },
             solidgauge:{
                 labelY:-22,
-                subfontSize:'30px',
-                subunitSize:'20px',
+                dlfontSize:'30px',
+                dlunitSize:'20px',
                 dlfontWeight:700,
-                subBottomfontSize:'20px',
+                dlBottomfontSize:'20px',
                 panelOuterRadius:'100%',//100
                 dataOuterRadius:'100%',//85
                 plotOuterRadius:'100%',//100
@@ -130,7 +130,6 @@
             },
             gauge:{
                 labelY:-10,
-                subfontSize:'30px',
                 dialColor:"#0f0f0f",
                 dialSize:4
             }
@@ -868,17 +867,17 @@
             var format='';
             if(data[0].label.type.split("chart")[1]=="pre"||data[0].label.type.split("chart")[1]=="preIn"||data[0].label.type.split("chart")[1]=="preOut"){
                 format='<div style="display:inline-block;text-align:center;color:' +
-                color+ '"><span style="font-size:'+options.solidgauge.subfontSize+';">'+titlePre.match(/^[-+]?\d[\d\.]*/)[0]+'</span><span style="font-size:'+options.solidgauge.subunitSize+';">'+titlePre.replace(/^[-+]?\d[\d\.]*/,'')+'</span></div><br/>'
+                color+ '"><span style="font-size:'+options.solidgauge.dlfontSize+';">'+titlePre.match(/^[-+]?\d[\d\.]*/)[0]+'</span><span style="font-size:'+options.solidgauge.dlunitSize+';">'+titlePre.replace(/^[-+]?\d[\d\.]*/,'')+'</span></div><br/>'
                 if(!options.tooltip.enabled){
                     format+='<div style="display:block;text-align:center;color:' +
-                    'silver;font-size:'+options.solidgauge.subBottomfontSize+ '"><span>'+titleVal.match(/^[-+]?\d[\d\.]*/)[0]+'</span><span>'+titleVal.replace(/^[-+]?\d[\d\.]*/,'')+'</span></div>';
+                    'silver;font-size:'+options.solidgauge.dlBottomfontSize+ '"><span>'+titleVal.match(/^[-+]?\d[\d\.]*/)[0]+'</span><span>'+titleVal.replace(/^[-+]?\d[\d\.]*/,'')+'</span></div>';
                 }
             }else{
                 format='<div style="display:inline-block;text-align:center;color:' +
-                color+ '"><span style="font-size:'+options.solidgauge.subfontSize+';">'+titleVal.match(/^[-+]?\d[\d\.]*/)[0]+'</span><span style="font-size:'+options.solidgauge.subunitSize+';">'+titleVal.replace(/^[-+]?\d[\d\.]*/,'')+'</span></div><br/>'
+                color+ '"><span style="font-size:'+options.solidgauge.dlfontSize+';">'+titleVal.match(/^[-+]?\d[\d\.]*/)[0]+'</span><span style="font-size:'+options.solidgauge.dlunitSize+';">'+titleVal.replace(/^[-+]?\d[\d\.]*/,'')+'</span></div><br/>'
                 if(!options.tooltip.enabled){
                     format+='<div style="display:block;text-align:center;color:' +
-                    'silver;font-size:'+options.solidgauge.subBottomfontSize+ '"><span>'+titlePre.match(/^[-+]?\d[\d\.]*/)[0]+'</span><span>'+titlePre.replace(/^[-+]?\d[\d\.]*/,'')+'</span></div>';
+                    'silver;font-size:'+options.solidgauge.dlBottomfontSize+ '"><span>'+titlePre.match(/^[-+]?\d[\d\.]*/)[0]+'</span><span>'+titlePre.replace(/^[-+]?\d[\d\.]*/,'')+'</span></div>';
                 }
             }
             return format;
@@ -1530,7 +1529,7 @@
                                     dataLabels: {
                                         // style: {
                                         //     color:color,
-                                        //     fontSize:options.solidgauge.subfontSize
+                                        //     fontSize:options.solidgauge.dlfontSize
                                         // },
                                         borderWidth: 0,
                                         y: options.solidgauge.labelY,

@@ -1388,7 +1388,7 @@ var solidgaugeNumData=[
                     "monitor_host":"内存占用"
                 },
                 "values":[
-                    ["","53.6870912"]
+                    ["","0"]
                 ]
             },
             {
@@ -1396,7 +1396,7 @@ var solidgaugeNumData=[
                     "monitor_host":""
                 },
                 "values":[
-                    ["","15"]
+                    ["","0.1"]
                 ]
             }
         ]
