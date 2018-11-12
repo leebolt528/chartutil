@@ -132,6 +132,13 @@
                 labelY:-10,
                 dialColor:"#0f0f0f",
                 dialSize:4
+            },
+            singleValue:{
+                fontSize:'30px',
+                unitFontSize:'20px',
+                fontWeight:700,
+                color:"#333"
+
             }
        };
        switch(data[0].label.type){
@@ -184,6 +191,12 @@
                     week: '%Y-%m',
                     month: '%Y-%m',
                     year: '%Y'
+                },
+                labels:{
+                    align:"right"
+                    // style:{
+                    //     textOverflow: 'none'
+                    // }
                 }
             };
             defaultChart["tooltip"]["dateTimeLabelFormats"]={
@@ -718,16 +731,18 @@
         //仪表盘单值单位换算
         function singleValue(value,unit,dataLabelsBoolean){
             if(unit=="KiB/s"){
-                var pointZ=formatterKiBs(value,true,dataLabelsBoolean);
+                var pointY=formatterKiBs(value,true,dataLabelsBoolean);
             }else if(unit=="KiB"){
-                var pointZ=formatterKiB(value,true,dataLabelsBoolean);
+                var pointY=formatterKiB(value,true,dataLabelsBoolean);
+            }else if(unit=="s"){
+                var pointY=formatterS(value,true,dataLabelsBoolean);
             }else{
-                var pointZ=formatterOtherY(value)+unit;
+                var pointY=formatterOtherY(value)+unit;
             }
-            if(Math.abs(pointZ.split('.')[0])>=100){
-                return parseInt(pointZ.match(/^[-+]?\d[\d\.]*/)[0])+pointZ.split(/^[-+]?\d[\d\.]*/)[1];//整数部分超过两位数时不保留小数
+            if(Math.abs(pointY.split('.')[0])>=100){
+                return parseInt(pointY.match(/^[-+]?\d[\d\.]*/)[0])+pointY.split(/^[-+]?\d[\d\.]*/)[1];//整数部分超过两位数时不保留小数
             }else{
-                return pointZ;
+                return pointY;
             }
         }
         //环图和仪表盘百分比计算
@@ -865,20 +880,17 @@
         //仪表盘dataLabels展示格式
         function formatGuageFun(data,options,color,titlePre,titleVal){
             var format='';
+            var dlBottomDisplay=options.tooltip.enabled?"none":"block";
             if(data[0].label.type.split("chart")[1]=="pre"||data[0].label.type.split("chart")[1]=="preIn"||data[0].label.type.split("chart")[1]=="preOut"){
                 format='<div style="display:inline-block;text-align:center;color:' +
                 color+ '"><span style="font-size:'+options.solidgauge.dlfontSize+';">'+titlePre.match(/^[-+]?\d[\d\.]*/)[0]+'</span><span style="font-size:'+options.solidgauge.dlunitSize+';">'+titlePre.replace(/^[-+]?\d[\d\.]*/,'')+'</span></div><br/>'
-                if(!options.tooltip.enabled){
-                    format+='<div style="display:block;text-align:center;color:' +
-                    'silver;font-size:'+options.solidgauge.dlBottomfontSize+ '"><span>'+titleVal.match(/^[-+]?\d[\d\.]*/)[0]+'</span><span>'+titleVal.replace(/^[-+]?\d[\d\.]*/,'')+'</span></div>';
-                }
+                format+='<div style="display:'+dlBottomDisplay+';text-align:center;color:' +
+                'silver;font-size:'+options.solidgauge.dlBottomfontSize+ ';margin-top:-15px"><span>'+titleVal.match(/^[-+]?\d[\d\.]*/)[0]+'</span><span>'+titleVal.replace(/^[-+]?\d[\d\.]*/,'')+'</span></div>';
             }else{
                 format='<div style="display:inline-block;text-align:center;color:' +
                 color+ '"><span style="font-size:'+options.solidgauge.dlfontSize+';">'+titleVal.match(/^[-+]?\d[\d\.]*/)[0]+'</span><span style="font-size:'+options.solidgauge.dlunitSize+';">'+titleVal.replace(/^[-+]?\d[\d\.]*/,'')+'</span></div><br/>'
-                if(!options.tooltip.enabled){
-                    format+='<div style="display:block;text-align:center;color:' +
-                    'silver;font-size:'+options.solidgauge.dlBottomfontSize+ '"><span>'+titlePre.match(/^[-+]?\d[\d\.]*/)[0]+'</span><span>'+titlePre.replace(/^[-+]?\d[\d\.]*/,'')+'</span></div>';
-                }
+                format+='<div style="display:'+dlBottomDisplay+';text-align:center;color:' +
+                'silver;font-size:'+options.solidgauge.dlBottomfontSize+ ';margin-top:-15px"><span>'+titlePre.match(/^[-+]?\d[\d\.]*/)[0]+'</span><span>'+titlePre.replace(/^[-+]?\d[\d\.]*/,'')+'</span></div>';
             }
             return format;
         }
@@ -1568,6 +1580,21 @@
             }
             return defaultChart;
         };
-        chart=new Highcharts.Chart(defaultChart($(this)[0],data,options));
+        if(data[0].label.type=="singleValuechart"){
+            var singleValue=singleValue(data[0].result[0].values[0],data[0].label.yAxisUnit.split("-")[1],false);
+            var value=singleValue.match(/^[-+]?\d[e-\d\.]*/)[0];
+            var postfix=singleValue.split(/^[-+]?\d[e-\d\.]*/)[1];
+            var diaplayBoolean=options.title.enabled?"block":"none";
+            var html='<div class="singlestat-panel" style="position:relative;display:table;width:100%;height:100%;">';
+                html+='<div class="title" style="position:absolute;text-align:'+options.title.align+';color:'+options.title.color+';font-size:'+options.title.fontSize+';display:'+diaplayBoolean+';padding:7px 10px 0px;width:100%">词云图</div>';
+                html+='<div style="line-height:1;display:table-cell;vertical-align:middle;text-align:center;position:relative;">';
+                html+='<span class="single-value" style="font-size:'+options.singleValue.fontSize+';font-weight:'+options.singleValue.fontWeight+';color:'+options.singleValue.color+'">'+value+'</span>';
+                html+='<span class="single-postfix" style="font-size:'+options.singleValue.unitFontSize+';font-weight:'+options.singleValue.fontWeight+';color:'+options.singleValue.color+'"> '+postfix+'</span>';
+                html+='</div>';
+                html+='</div>';
+            $(this).html(html);
+        }else{
+            chart=new Highcharts.Chart(defaultChart($(this)[0],data,options));
+        }
     }
 })( jQuery );

@@ -1566,5 +1566,18 @@ var wordcloudData=[
         ]
     }
 ];
-
+var singleValueData=[
+    {
+        "label":{
+            "type":"singleValuechart",
+            "yAxisUnit":"-KiB",
+            "title":"CPU使用率"
+        },
+        "result":[
+            {
+                "values":["0.00000000000000000000000000000000000000150177777777777777777777777777777777777777777777"]
+            }
+        ]
+    }
+];
 

@@ -581,6 +581,25 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="dashboard-row grid-stack-item"
+                                data-gs-x="4" data-gs-y="225"
+                                data-gs-width="4" data-gs-height="25">
+                                    <div class="grid-stack-item-content" style="width:100%">
+                                        <div class="dashboard-panel">
+                                            <div class="drag-handle">
+                                                <a  class="delete-panel">x</a>
+                                                <div class="handle-inner"></div>
+                                            </div>
+                                            <div class="panel-title">
+                                                <input class="title-editor label-editor" type="text" placeholder="无标题">
+                                            </div>
+                                            <div class="panel-description">
+                                                <input class="title-editor label-editor" type="text" placeholder="无描述">
+                                            </div>
+                                            <div class="panel-body" id="view29" style="padding:0px"></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -635,11 +654,12 @@
     $("#view22").chart(solidgaugePreData,{solidgauge:{tickAmount:5},ring:{startAngle:0,endAngle:360}});
     //$("#view23").chart(solidgaugeNumData,{ring:{startAngle:0,endAngle:360},tooltip:{enabled:false}});
     $("#view23").chart(solidgaugeNumData,{ring:{startAngle:0,endAngle:360}});
-    $("#view24").chart(solidgaugeNumHalfData,{solidgauge:{tickAmount:2}});
-    $("#view25").chart(gaugePreHalfData,{solidgauge:{tickAmount:5}, yAxis:{yTitleUnit:true}});
-    $("#view26").chart(gaugePreHalfData1,{solidgauge:{tickAmount:5}});
+    $("#view24").chart(solidgaugeNumHalfData,{solidgauge:{tickAmount:2},tooltip:{enabled:false}});
+    $("#view25").chart(gaugePreHalfData,{solidgauge:{tickAmount:5}, yAxis:{yTitleUnit:true},tooltip:{enabled:false}});
+    $("#view26").chart(gaugePreHalfData1,{solidgauge:{tickAmount:5},tooltip:{enabled:true}});
     $("#view27").chart(gaugeNumHalfData,{solidgauge:{tickAmount:5}});
     $("#view28").chart(wordcloudData);
+    $("#view29").chart(singleValueData);
     $(function () {
         var options = {
             verticalMargin: 5,
@@ -654,12 +674,32 @@
             var handleH=$(elem).find(".drag-handle").outerHeight(true);
             var titleH=$(elem).find(".panel-title").outerHeight(true);
             var descH=$(elem).find(".panel-description").outerHeight(true);
-            var aa=contentH-panelH-handleH-titleH-descH;
-
+            var chartBodyH=contentH-panelH-handleH-titleH-descH;
             var $chart = $(elem).find('.panel-body');
-            $chart.height(aa);
-           
-            $chart.highcharts().reflow();
+            $chart.height(chartBodyH);
+
+            if($chart.highcharts()){
+                $chart.highcharts().reflow();
+            }
+
+            //拖拽改变图大小时，仪表盘部分自适应大小
+            var fontStandard=Math.min.apply(null, [$chart.height(),$chart.width()]);
+            var dlfontSize=fontStandard*0.105<=80?fontStandard*0.105+"px":80+"px";//仪表盘中心文字大小
+            $chart.find(".highcharts-label span div:first span:first").css("fontSize",dlfontSize);
+            var dlBottomfontSize=fontStandard*0.07<=53?fontStandard*0.07+"px":53+"px";//仪表盘中心文字附加行字体大小
+            $chart.find(".highcharts-label span div:first span:last").css("fontSize",dlBottomfontSize);
+            $chart.find(".highcharts-label span div:last span").css("fontSize",dlBottomfontSize);
+            var left=($chart.width()-$chart.find(".highcharts-data-label>span").width()-28.84)/2+"px";//仪表盘中心数据标签定位left
+            $chart.find(".highcharts-label").css("left",left);
+            var titleSize=fontStandard*0.05<=37?fontStandard*0.05+"px":37+"px";//仪表盘单位显示字体大小
+            $(".highcharts-axis.highcharts-yaxis .highcharts-axis-title").css("fontSize",titleSize);
+            //拖拽改变图大小时，单值图部分自适应大小
+            var valuefontSize=fontStandard*0.15<=80?fontStandard*0.15+"px":80+"px";//单值图中心文字大小
+            $chart.find(".singlestat-panel span.single-value").css("fontSize");
+            $chart.find(".singlestat-panel span.single-value").css("fontSize",valuefontSize);
+            var postfixfontSize=fontStandard*0.15<=53?fontStandard*0.15+"px":53+"px";//单值图中心文字后缀大小
+            $chart.find(".singlestat-panel span.single-postfix").css("fontSize",postfixfontSize);
+
         });  
     });
 </script>
