@@ -298,8 +298,14 @@
             var s = time.getSeconds();
             return y+'-'+add0(m)+'-'+add0(d)+' '+add0(h)+':'+add0(mm)+':'+add0(s);
         }
+        //替换数组中两个值位置
+        function swap(array,index1,index2){
+            var t = array[index1];
+            array[index1] = array[index2];
+            array[index2] = t;
+        }
         //获取series
-        var parseData=function(data){
+        var parseData=function(data,count,maxValue,maxValueIndex){
             var dataproArr=[];
             switch(data[0].label.type){
                 case "areachart":
@@ -315,6 +321,10 @@
                                 oneDataResult.values.map(function(point){
                                     xAxisTypeFun(data,point);
                                     point[1]=((point[1]=='null'||point[1]==null)?null:Number(point[1]));
+                                    if(point[1]>maxValue){
+                                        maxValueIndex=count;
+                                        maxValue=point[1];
+                                    }
                                 });
                                 var seriesElem={
                                     "data":oneDataResult.values,
@@ -324,9 +334,11 @@
                                     "name":transSeriesName(batchData,oneDataResult)
                                 };
                                 dataproArr.push(seriesElem);
+                                count++;
                             }
                         }
                     });
+                    swap(dataproArr,0,maxValueIndex);//hightcharts第一组数据最大值较小时会导致丢失此数据
                     break;
                 case "piechartringrule":
                 case "piechart":
@@ -1039,7 +1051,7 @@
                         }
                     };
                     defaultChart["yAxis"]=$.extend(true,{},defaultChart["yAxis"],yAxis);
-                    defaultChart["series"]=parseData(data);
+                    defaultChart["series"]=parseData(data,0,Number.MIN_VALUE,0);
                     defaultChart["tooltip"]["headerFormat"]='<span>{point.key}</span><br/>';
                     defaultChart["plotOptions"]={
                         area: {
@@ -1581,18 +1593,26 @@
             return defaultChart;
         };
         if(data[0].label.type=="singleValuechart"){
-            var singleValue=singleValue(data[0].result[0].values[0],data[0].label.yAxisUnit.split("-")[1],false);
-            var value=singleValue.match(/^[-+]?\d[e-\d\.]*/)[0];
-            var postfix=singleValue.split(/^[-+]?\d[e-\d\.]*/)[1];
-            var diaplayBoolean=options.title.enabled?"block":"none";
-            var html='<div class="singlestat-panel" style="position:relative;display:table;width:100%;height:100%;">';
-                html+='<div class="title" style="position:absolute;text-align:'+options.title.align+';color:'+options.title.color+';font-size:'+options.title.fontSize+';display:'+diaplayBoolean+';padding:7px 10px 0px;width:100%">词云图</div>';
-                html+='<div style="line-height:1;display:table-cell;vertical-align:middle;text-align:center;position:relative;">';
-                html+='<span class="single-value" style="font-size:'+options.singleValue.fontSize+';font-weight:'+options.singleValue.fontWeight+';color:'+options.singleValue.color+'">'+value+'</span>';
-                html+='<span class="single-postfix" style="font-size:'+options.singleValue.unitFontSize+';font-weight:'+options.singleValue.fontWeight+';color:'+options.singleValue.color+'"> '+postfix+'</span>';
-                html+='</div>';
-                html+='</div>';
-            $(this).html(html);
+            if(data[0].result==null||data[0].result=="null"||data[0].result.length==0||data[0].result[0].values==null||data[0].result[0].values=="null"||data[0].result[0].values.length==0){
+                var html='<div class="singlestat-panel" style="position:relative;display:table;width:100%;height:100%;text-align: center;">';
+                    html+='<span style="font-size: 12px;font-weight: bold;color: #666666;fill: #666666;display: inline-block;vertical-align: middle;">无响应数据</span>';
+                    html+='<span style="display: inline-block;vertical-align: middle;height: 100%;width: 0px;"></span>';
+                    html+='</div>';
+                $(this).html(html);
+            }else{
+                var singleValue=singleValue(data[0].result[0].values[0],data[0].label.yAxisUnit.split("-")[1],false);
+                var value=singleValue.match(/^[-+]?\d[e-\d\.]*/)[0];
+                var postfix=singleValue.split(/^[-+]?\d[e-\d\.]*/)[1];
+                var diaplayBoolean=options.title.enabled?"block":"none";
+                var html='<div class="singlestat-panel" style="position:relative;display:table;width:100%;height:100%;">';
+                    html+='<div class="title" style="position:absolute;text-align:'+options.title.align+';color:'+options.title.color+';font-size:'+options.title.fontSize+';display:'+diaplayBoolean+';padding:7px 10px 0px;width:100%">词云图</div>';
+                    html+='<div style="line-height:1;display:table-cell;vertical-align:middle;text-align:center;position:relative;">';
+                    html+='<span class="single-value" style="font-size:'+options.singleValue.fontSize+';font-weight:'+options.singleValue.fontWeight+';color:'+options.singleValue.color+'">'+value+'</span>';
+                    html+='<span class="single-postfix" style="font-size:'+options.singleValue.unitFontSize+';font-weight:'+options.singleValue.fontWeight+';color:'+options.singleValue.color+'"> '+postfix+'</span>';
+                    html+='</div>';
+                    html+='</div>';
+                }
+                $(this).html(html);
         }else{
             chart=new Highcharts.Chart(defaultChart($(this)[0],data,options));
         }
